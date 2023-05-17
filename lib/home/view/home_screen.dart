@@ -17,7 +17,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   //fixme
-  int currentPageIndex = 1;
+  int currentPageIndex = 0;
   //repos
   final authRepository = AuthRepository();
 
@@ -39,22 +39,24 @@ class _HomeScreenState extends State<HomeScreen> {
             labelType: NavigationRailLabelType.all,
             destinations: [
               NavigationRailDestination(
-                  icon: Icon(Icons.check_box_outline_blank_rounded),
+                  icon: Icon(Icons.home),
                   label: Text(l10n.home)),
               NavigationRailDestination(
-                  icon: Icon(Icons.check_box_outline_blank_rounded),
+                  icon: Icon(Icons.settings),
                   label: Text(l10n.setting)),
             ],
           ),
-          Column(children: [
-            Padding(
-              padding: AppStyle.paddingWebBody,
-              child: <Widget>[
-                HomeScreenContent(),
-                SettingScreen(),
-              ][currentPageIndex],
-            ),
-          ]),
+         
+          Expanded(
+            child:
+              Padding(
+                padding: AppStyle.paddingWebBody,
+                child: <Widget>[
+                  HomeScreenContent(),
+                  SettingScreen(),
+                ][currentPageIndex],
+              ),
+          ),
         ],
       )),
     );

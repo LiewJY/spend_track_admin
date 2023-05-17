@@ -23,7 +23,7 @@ class _LoginFormState extends State<LoginForm> {
 
   //text field controllers
   //fixme remove setted value
-  final _emailController = TextEditingController(text: "test@mail.com");
+  final _emailController = TextEditingController(text: "liewjunyoung01@gmail.com");
 
   final _passwordController = TextEditingController(text: "123456");
 

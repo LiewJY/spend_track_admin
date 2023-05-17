@@ -48,6 +48,7 @@
   "home": "Home",
   "setting": "Setting",
   "youDoNotHavePermissionToAccess": "You do not have permission to access this site",
+  "verifying": "Verifying",
 
 
 "@firebaseAuthErrors": {},

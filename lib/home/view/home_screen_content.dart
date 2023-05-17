@@ -13,9 +13,8 @@ class HomeScreenContent extends StatelessWidget {
     //todo
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [Text("HomeScreenContent"),
-
+      children: [
+        Text("HomeScreenContent"),
       ],
     );
   }
