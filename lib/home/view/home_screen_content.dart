@@ -10,11 +10,18 @@ class HomeScreenContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    //todo
+
+    //user's informaiton
+    final user = context.select((AppBloc bloc) => bloc.state.user);
 
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("HomeScreenContent"),
+        Text(
+          l10n.hi(user.name ?? ''),
+          style: Theme.of(context).textTheme.titleLarge,
+          textAlign: TextAlign.center,
+        ),
       ],
     );
   }

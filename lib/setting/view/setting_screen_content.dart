@@ -4,8 +4,8 @@ import 'package:track_admin/app/app.dart';
 import 'package:track_admin/l10n/l10n.dart';
 import 'package:track_theme/track_theme.dart';
 
-class SettingScreen extends StatelessWidget {
-  const SettingScreen({super.key});
+class SettingScreenContent extends StatelessWidget {
+  const SettingScreenContent({super.key});
 
   @override
   Widget build(BuildContext context) {

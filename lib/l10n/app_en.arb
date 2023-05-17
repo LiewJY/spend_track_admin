@@ -27,17 +27,6 @@
   "forgetPassword": "Forget Password",
 
 
-"@profilePage": {},
-  "myAccount": "My Account",
-  "editName": "Edit Name",
-  "changeEmail": "Change Email",
-  "resetPassword": "Reset Password",
-  "myWallet": "My Wallet",
-  "manageWallet": "Manage Wallet",
-  "manageCard": "Manage Card",
-  "manageCategory": "Manage Category",
-  "reAuth": "Re Authenticate",
-
 "@SuccessMessage": {},
   "nameChanged": "Name successfully changed",
   "emailChanged": "Email successfully changed",
@@ -49,6 +38,12 @@
   "setting": "Setting",
   "youDoNotHavePermissionToAccess": "You do not have permission to access this site",
   "verifying": "Verifying",
+  "card" : "Card",
+  "category": "Category",
+  "management": "Management",
+
+"@home": {},
+  "hi": "Hi {name},",
 
 
 "@firebaseAuthErrors": {},
