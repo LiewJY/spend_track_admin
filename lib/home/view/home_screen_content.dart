@@ -17,10 +17,8 @@ class HomeScreenContent extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          l10n.hi(user.name ?? ''),
-          style: Theme.of(context).textTheme.titleLarge,
-          textAlign: TextAlign.center,
+        PageTitleText(
+          title: l10n.hi(user.name ?? ''),
         ),
       ],
     );
