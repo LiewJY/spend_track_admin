@@ -21,7 +21,8 @@ class AppBloc extends Bloc<AppEvent, AppState> {
               : const AppState.unauthenticated(),
         ) {
     //listen for user changes
-    userSubscription = authRepository.user.listen(
+    userSubscription = 
+    authRepository.user.listen(
       (user) => add(AppUserChanged(user)),
     );
 

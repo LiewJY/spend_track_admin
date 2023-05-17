@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:track_admin/l10n/l10n.dart';
 import 'package:track_admin/repositories/repositories.dart';
 import 'package:track_admin/home/home.dart';
+import 'package:track_admin/setting/setting.dart';
+import 'package:track_theme/track_theme.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -15,7 +17,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   //fixme
-  int currentPageIndex = 0;
+  int currentPageIndex = 1;
   //repos
   final authRepository = AuthRepository();
 
@@ -25,7 +27,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       body: SafeArea(
-        child: Row(children: [
+          child: Row(
+        children: [
           NavigationRail(
             selectedIndex: currentPageIndex,
             onDestinationSelected: (index) {
@@ -37,12 +40,23 @@ class _HomeScreenState extends State<HomeScreen> {
             destinations: [
               NavigationRailDestination(
                   icon: Icon(Icons.check_box_outline_blank_rounded),
-                  label: Text('temp'))
+                  label: Text(l10n.home)),
+              NavigationRailDestination(
+                  icon: Icon(Icons.check_box_outline_blank_rounded),
+                  label: Text(l10n.setting)),
             ],
           ),
-          const VerticalDivider(thickness: 1, width: 1),
-        ]),
-      ),
+          Column(children: [
+            Padding(
+              padding: AppStyle.paddingWebBody,
+              child: <Widget>[
+                HomeScreenContent(),
+                SettingScreen(),
+              ][currentPageIndex],
+            ),
+          ]),
+        ],
+      )),
     );
   }
 }

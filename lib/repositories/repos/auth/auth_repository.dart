@@ -1,6 +1,8 @@
 import 'dart:developer';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
+import 'package:intl/date_time_patterns.dart';
 import 'package:track_admin/repositories/models/user.dart';
 
 class AuthRepository {
@@ -50,7 +52,7 @@ class AuthRepository {
   Future<void> loginWithCredentials(
       {required String email, required String password}) async {
     try {
-      await _firebaseAuth.signInWithEmailAndPassword(
+      var authLoginResult = await _firebaseAuth.signInWithEmailAndPassword(
           email: email, password: password);
     } on firebase_auth.FirebaseAuthException catch (e) {
       throw e.code;
@@ -80,31 +82,44 @@ class AuthRepository {
     }
   }
 
+  //check user role
+  get isAdmin async {
+    try {
+      bool documentExists = false;
+      documentExists = await FirebaseFirestore.instance
+          .collection('admins')
+          .doc(_firebaseAuth.currentUser?.uid)
+          .get()
+          .then((doc) => doc.exists);
+      return documentExists;
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
   //reauth
-  //todo now not in use
-  Future<void> reAuth({required String email, required String password}) async {
-    try {
-      final credential = firebase_auth.EmailAuthProvider.credential(email : email, password : password);
-      await _firebaseAuth.currentUser
-          ?.reauthenticateWithCredential(credential);
-    } on firebase_auth.FirebaseAuthException catch (e) {
-      throw e.code;
-    } catch (_) {
-      throw "unknown";
-    }
-  }
+  // //todo now not in use
+  // Future<void> reAuth({required String email, required String password}) async {
+  //   try {
+  //     final credential = firebase_auth.EmailAuthProvider.credential(email : email, password : password);
+  //     await _firebaseAuth.currentUser
+  //         ?.reauthenticateWithCredential(credential);
+  //   } on firebase_auth.FirebaseAuthException catch (e) {
+  //     throw e.code;
+  //   } catch (_) {
+  //     throw "unknown";
+  //   }
+  // }
 
-    Future<void> sendResetPasswordEmail({required String email}) async {
-    try {
-      await _firebaseAuth.sendPasswordResetEmail(email: email);
-    } on firebase_auth.FirebaseAuthException catch (e) {
-      throw e.code;
-    } catch (_) {
-      throw "unknown";
-    }
-  }
-
-
+  //   Future<void> sendResetPasswordEmail({required String email}) async {
+  //   try {
+  //     await _firebaseAuth.sendPasswordResetEmail(email: email);
+  //   } on firebase_auth.FirebaseAuthException catch (e) {
+  //     throw e.code;
+  //   } catch (_) {
+  //     throw "unknown";
+  //   }
+  // }
 
   //todo
   //update profile

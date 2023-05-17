@@ -43,6 +43,13 @@
   "emailChanged": "Email successfully changed",
   "resetPasswordEmailSent": "Reset your password with the link sent to your email",
 
+
+"@navigation": {},
+  "home": "Home",
+  "setting": "Setting",
+  "youDoNotHavePermissionToAccess": "You do not have permission to access this site",
+
+
 "@firebaseAuthErrors": {},
   "userDisabled": "This user has been disabled. Please contact support for help.",
   "userNotFound": "Email is not found, please create an account.",

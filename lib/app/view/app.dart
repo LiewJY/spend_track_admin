@@ -1,12 +1,18 @@
+import 'dart:developer';
+
 import 'package:flow_builder/flow_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:track_admin/app/app.dart';
 import 'package:track_admin/app/bloc/app_bloc.dart';
+import 'package:track_admin/app/view/loading_screen.dart';
+import 'package:track_admin/bloc_observer.dart';
 import 'package:track_admin/home/home.dart';
 import 'package:track_admin/l10n/l10n.dart';
 import 'package:track_admin/login/view/login_screen.dart';
 import 'package:track_admin/repositories/repos/auth/auth_repository.dart';
+import 'package:track_admin/unauthorized/unauthorized.dart';
 import 'package:track_theme/track_theme.dart';
 
 class App extends StatelessWidget {
@@ -18,15 +24,21 @@ class App extends StatelessWidget {
     final authRepository = AuthRepository();
 
     //bloc
-    //Bloc.observer = AppBlocObserver();
+    Bloc.observer = AppBlocObserver();
 
     return RepositoryProvider.value(
       value: authRepository,
-      child:         BlocProvider(
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider(
             create: (_) => AppBloc(authRepository: authRepository),
-                   child: AppView(),
-
           ),
+          BlocProvider(
+            create: (context) => IsAdminCubit(authRepository),
+          ),
+        ],
+        child: AppView(),
+      ),
     );
   }
 }
@@ -84,16 +96,18 @@ class _AppViewState extends State<AppView> {
       onGeneratePages: routes,
     );
   }
-}
 
-List<Page> routes(
-  AppStatus state,
-  List<Page<dynamic>> pages,
-) {
-  switch (state) {
-    case AppStatus.authenticated:
-      return [HomeScreen.page()];
-    case AppStatus.unauthenticated:
-      return [LoginScreen.page()];
+  List<Page> routes(
+    AppStatus state,
+    List<Page<dynamic>> pages,
+  ) {
+    switch (state) {
+      case AppStatus.authenticated:
+      //check if the user is admin
+        context.read<IsAdminCubit>().isAdmin();
+        return [LoadingScreen.page()];
+      case AppStatus.unauthenticated:
+        return [LoginScreen.page()];
+    }
   }
 }
