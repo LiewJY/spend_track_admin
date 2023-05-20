@@ -20,6 +20,7 @@ class HomeScreenContent extends StatelessWidget {
         PageTitleText(
           title: l10n.hi(user.name ?? ''),
         ),
+        
       ],
     );
   }

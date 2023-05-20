@@ -6,7 +6,7 @@ import 'package:track_admin/home/home.dart';
 import 'package:track_admin/l10n/l10n.dart';
 import 'package:track_admin/unauthorized/unauthorized.dart';
 
-//NOTE: THIS SCREEN IS BLANK AND INTEND TO ACT AS A PLACEHOLDER ONLY
+//THIS SCREEN IS BLANK AND INTEND TO ACT AS A PLACEHOLDER ONLY
 class LoadingScreen extends StatelessWidget {
   const LoadingScreen({super.key});
   //for routing
@@ -17,7 +17,6 @@ class LoadingScreen extends StatelessWidget {
       state: context.select((IsAdminCubit cubit) => cubit.state.status),
       onGeneratePages: routes,
     );
-    ;
   }
 
   List<Page> routes(
