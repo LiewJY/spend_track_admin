@@ -55,17 +55,21 @@ class CategoryScereenContent extends StatelessWidget {
 //fixme
 Future<void> test() async {
   try {
-    HttpsCallable callable =
-        FirebaseFunctions.instance.httpsCallable('addMessage');
+    HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('user');
+    // final result = await callable();
 
     final result = await callable.call(
-      {
-        "text": "test text",
-      },
-    );
-    log("     ${result.data} ");
-
-    //log( result.data);
+        // {
+        //   "text": "test text",
+        // },
+        );
+    print("     ${result.data} ");
+    List<Map<String, dynamic>> userList = List.from(result.data);
+    userList.forEach((user) {
+      String uid = user['uid'];
+      String email = user['email'];
+      print('UID: $uid, Email: $email');
+    });
 
     log('done ');
   } on FirebaseFunctionsException catch (error) {
