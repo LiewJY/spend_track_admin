@@ -1,6 +1,9 @@
 import 'dart:developer';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:track_admin/app/view/app.dart';
 
@@ -15,6 +18,22 @@ Future<void> main() async {
   );
   //for testing local cloud funciton
   FirebaseFunctions.instanceFor(region: 'us-central1').useFunctionsEmulator('localhost', 5001);
+
+     FirebaseFirestore.instance.useFirestoreEmulator('localhost', 8080);
+     await FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
+
+
+
+//    FirebaseFirestore.instance.collection("admins").get().then(
+//   (querySnapshot) {
+//     print("Successfully completed");
+//     for (var docSnapshot in querySnapshot.docs) {
+//       print('${docSnapshot.id}');
+//     }
+//   },
+//   onError: (e) => print("Error completing: $e"),
+// );
+
 
   runApp(const App());
 }

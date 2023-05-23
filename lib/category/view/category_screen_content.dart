@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -41,6 +42,11 @@ class CategoryScereenContent extends StatelessWidget {
                     test();
                   },
                   child: Text('lala')),
+              ElevatedButton(
+                  onPressed: () {
+                    test1();
+                  },
+                  child: Text('vvvvvvv')),
             ],
           ),
           //todo
@@ -52,24 +58,71 @@ class CategoryScereenContent extends StatelessWidget {
   todo() {}
 }
 
+List<Map<String, dynamic>> adminDataList = [];
+
+pr() {
+  print(adminDataList.length);
+  print(adminDataList);
+
+  for (Map<String, dynamic> map in adminDataList) {
+    String uid = map['uid']; // Access 'uid' instead of 'id'
+    print('UID: $uid');
+  }
+}
+
+test1() async {
+  // adminDataList = [];
+  await FirebaseFirestore.instance.collection("admins").get().then(
+    (querySnapshot) {
+      print("Successfully completed");
+      for (var docSnapshot in querySnapshot.docs) {
+        print('${docSnapshot.id}');
+        adminDataList.add({'uid': docSnapshot.id});
+      }
+    },
+    onError: (e) => print("Error completing: $e"),
+  );
+}
+
 //fixme
 Future<void> test() async {
+   await test1();
   try {
-    HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('user');
+    HttpsCallable callable =
+        FirebaseFunctions.instance.httpsCallable('adminUsers');
     // final result = await callable();
 
     final result = await callable.call(
-        // {
-        //   "text": "test text",
-        // },
-        );
-    print("     ${result.data} ");
+      {
+        "filter": adminDataList,
+      },
+    );
+
+    print("res    ${result.data} ");
     List<Map<String, dynamic>> userList = List.from(result.data);
     userList.forEach((user) {
       String uid = user['uid'];
       String email = user['email'];
       print('UID: $uid, Email: $email');
     });
+
+//?   seperator
+
+    // HttpsCallable callable1 = FirebaseFunctions.instance.httpsCallable('user');
+    // // final result = await callable();
+
+    // final result1 = await callable1.call(
+    //     // {
+    //     //   "text": "test text",
+    //     // },
+    //     );
+    // print("     ${result1.data} ");
+    // List<Map<String, dynamic>> userList1 = List.from(result1.data);
+    // userList1.forEach((user) {
+    //   String uid = user['uid'];
+    //   String email = user['email'];
+    //   print('UID: $uid, Email: $email');
+    // });
 
     log('done ');
   } on FirebaseFunctionsException catch (error) {
