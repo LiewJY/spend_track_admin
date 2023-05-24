@@ -13,9 +13,7 @@ class ManagementRepository {
     List<Map<String, dynamic>> adminDataList = [];
     await FirebaseFirestore.instance.collection("admins").get().then(
       (querySnapshot) {
-        print("Successfully completed");
         for (var docSnapshot in querySnapshot.docs) {
-          print('${docSnapshot.id}');
           adminDataList.add({'uid': docSnapshot.id});
         }
       },
@@ -37,7 +35,6 @@ class ManagementRepository {
         },
       );
       List<Map<String, dynamic>> userList = List.from(result.data);
-
       return userList;
     } catch (e) {
       log(e.toString());

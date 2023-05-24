@@ -42,6 +42,7 @@
   "card" : "Card",
   "category": "Category",
   "management": "Management",
+  "adminManagement": "Admin Management",
 
 "@home": {},
   "hi": "Hi {name},",

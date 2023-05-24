@@ -36,9 +36,9 @@ class ManagementBloc extends Bloc<ManagementEvent, ManagementState> {
         );
       }).toList();
 
-      for (var element in mappedList) {
-        log(element.id);
-      }
+      // for (var element in mappedList) {
+      //   log(element.id);
+      // }
 
       // aa.forEach((user) {
       //   String uid = user['uid'];
@@ -46,7 +46,7 @@ class ManagementBloc extends Bloc<ManagementEvent, ManagementState> {
       //   print('UID: $uid, Email: $email');
       // });
 
-      // emit(state.copyWith(status: ManagementStatus.success, adminUsersList: .adminUsersList));
+      emit(state.copyWith(status: ManagementStatus.success, adminUsersList: mappedList));
     } catch (e) {
       emit(state.copyWith(
         status: ManagementStatus.failure,

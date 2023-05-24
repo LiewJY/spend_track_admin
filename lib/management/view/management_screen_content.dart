@@ -1,147 +1,166 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:track_admin/l10n/l10n.dart';
 import 'package:track_admin/management/management.dart';
 import 'package:track_admin/repositories/models/user.dart';
 import 'package:track_admin/repositories/repositories.dart';
+import 'package:track_admin/widgets/widgets.dart';
 
 class ManagementScereenContent extends StatelessWidget {
   const ManagementScereenContent({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final managementRepository = ManagementRepository();
+
+//for datatable
+    final List<DataColumn> colHeader = [
+      DataColumn(label: Text('Header A')),
+      DataColumn(label: Text('Header B')),
+      DataColumn(label: Text('Header C')),
+      DataColumn(label: Text('Header D')),
+    ];
+
     return RepositoryProvider.value(
       value: managementRepository,
       child: BlocProvider(
         create: (context) =>
             ManagementBloc(managementRepository: managementRepository),
-        child: View(),
+        child: ListView(
+          children: [
+            PaginatedTable(
+              title: l10n.adminManagement,
+              headers: colHeader,
+              dataSource: _DataSource(context),
+            ),
+          ],
+        ),
       ),
     );
   }
 }
 
-class View extends StatefulWidget {
-  const View({
-    super.key,
-  });
-
-  @override
-  State<View> createState() => _ViewState();
+class DataTableDemo extends StatelessWidget {
+  Widget build(BuildContext context) {
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: [
+        PaginatedDataTable(
+          header: Text('Header Text'),
+          rowsPerPage: 2,
+          columns: [
+            DataColumn(label: Text('Header A')),
+            DataColumn(label: Text('Header B')),
+            DataColumn(label: Text('Header C')),
+            DataColumn(label: Text('Header D')),
+          ],
+          source: _DataSource(context),
+        ),
+      ],
+    );
+  }
 }
 
-class _ViewState extends State<View> {
+class _Row {
+  _Row(
+    this.valueA,
+    this.valueB,
+    this.valueC,
+    this.valueD,
+  );
+
+  final String valueA;
+  final String valueB;
+  final String valueC;
+  final int valueD;
+
+  //bool selected = false;
+}
+
+class _DataSource extends DataTableSource {
+  _DataSource(this.context) {
+    _rows = <_Row>[
+      _Row('Cell A1', 'CellB1', 'CellC1', 1),
+      _Row('Cell A2', 'CellB2', 'CellC2', 2),
+      _Row('Cell A3', 'CellB3', 'CellC3', 3),
+    ];
+  }
+
+  final BuildContext context;
+  late List<_Row> _rows;
+
+  // int _selectedCount = 0;
+
   @override
-  Widget build(BuildContext context) {
-    List<User> aa =
-        context.select((ManagementBloc bloc) => bloc.state.adminUsersList);
-
-    // class aa {
-
-    // }
-
-    return Column(
-      mainAxisSize: MainAxisSize.max,
-      children: [
-        ElevatedButton(onPressed: () => loadTable(), child: Text('lala')),
-        PaginatedDataTable(
-            header: Text('table header'),
-            columns: [
-              DataColumn(
-                label: Text('uiddd'),
-                // onSort: (columnIndex, ascending) =>
-                //     _sort<String>((d) => d.name, columnIndex, ascending),
-              ),
-            ],
-            source: _source),
-
-        // PaginatedDataTable(
-        //     columns: <DataColumn>[
-        //       DataColumn(
-        //         label: Text('fffff'),
-        //       ),
-        //     ],
-        //     //source: DataTableSource(aa, 1),
-        //     )
-        //?    sssssssssssssssssssssssssssssssssssss
-
-        //           DataTable(columns: <DataColumn>[
-        //             DataColumn(label: Text('fffff'))
-        //           ], rows: <DataRow>[
-        //             DataRow(cells: [
-        //                         DataCell(Text('ffffsd')),]
-        // )
-        //           ]),
+  DataRow getRow(int index) {
+    assert(index >= 0);
+    // if (index >= _rows.length) return null;
+    final row = _rows[index];
+    return DataRow.byIndex(
+      index: index,
+      cells: [
+        DataCell(Text(row.valueA)),
+        DataCell(Text(row.valueB)),
+        DataCell(Text(row.valueC)),
+        DataCell(Text(row.valueD.toString())),
       ],
     );
   }
 
-  loadTable() {
-    context.read<ManagementBloc>().add(DisplayAllAdminRequested());
-  }
+  @override
+  int get rowCount => _rows.length;
+
+  @override
+  bool get isRowCountApproximate => false;
+
+  @override
+  int get selectedRowCount => 0;
 }
 
-// class _source extends DataTableSource {
-//   _source(this.context) {
-//     _user = <User>[
-//       User(id: '1111111'),
-//             User(id: '22222'),
+ 
 
+// class _DataSource extends DataTableSource {
+//   _DataSource(this.context) {
+//     _rows = <User>[
+//       User(id: 'sss', email: '0000'),
+//       User(id: '22222', email: '0000'),
 //     ];
 //   }
-
 //   final BuildContext context;
-//   late List<User> _user;
+//   List<User> _rows;
 
-
-//     @override
-//   DataRow? getRow(int index) {
-//     // final int pageIndex = index ~/ rowsPerPage;
-//     // final int pageOffset = index % rowsPerPage;
-//     // final int currentPageFirstRowIndex = pageIndex * rowsPerPage;
-
-//     // if (currentPageFirstRowIndex + pageOffset >= adminDataList.length) {
-//     //   return null;
-//     // }
-
-//     // final adminData = adminDataList[currentPageFirstRowIndex + pageOffset];
-
-//     return DataRow(cells: [
-//      // DataCell(Text(adminData.id)),
-
-//     ]);
-//   }
-// }
-
-// class _AdminDataTableSource extends DataTableSource {
-//   final List<User> adminDataList;
-//   final int rowsPerPage;
-//   int currentPage = 0;
-
-//   _AdminDataTableSource(this.adminDataList, this.rowsPerPage);
+//   int _selectedCount = 0;
 
 //   @override
 //   DataRow? getRow(int index) {
-//     final int pageIndex = index ~/ rowsPerPage;
-//     final int pageOffset = index % rowsPerPage;
-//     final int currentPageFirstRowIndex = pageIndex * rowsPerPage;
-
-//     if (currentPageFirstRowIndex + pageOffset >= adminDataList.length) {
-//       return null;
-//     }
-
-//     final adminData = adminDataList[currentPageFirstRowIndex + pageOffset];
-
-//     return DataRow(cells: [
-//       DataCell(Text(adminData.id)),
-//       DataCell(Text(adminData.email ?? '')),
-//     ]);
+//     assert(index >= 0);
+//     if (index >= _rows.length) return null;
+//     final row = _rows[index];
+//     return DataRow.byIndex(
+//       index: index,
+//       //selected: row.selected,
+//       // onSelectChanged: (value) {
+//       //   if (row.selected != value) {
+//       //     _selectedCount += value ? 1 : -1;
+//       //     assert(_selectedCount >= 0);
+//       //     row.selected = value;
+//       //     notifyListeners();
+//       //   }
+//       // },
+//       cells: [
+//         DataCell(Text(row.id)),
+//         DataCell(Text(row.email.toString())),
+//       ],
+//     );
 //   }
 
-//  @override
-//   int get rowCount => _desserts.length;
+//   @override
+//   int get rowCount => _rows.length;
 
 //   @override
 //   bool get isRowCountApproximate => false;
