@@ -12,6 +12,7 @@ import 'package:track_admin/home/home.dart';
 import 'package:track_admin/l10n/l10n.dart';
 import 'package:track_admin/login/view/login_screen.dart';
 import 'package:track_admin/repositories/repos/auth/auth_repository.dart';
+import 'package:track_admin/test.dart';
 import 'package:track_admin/unauthorized/unauthorized.dart';
 import 'package:track_theme/track_theme.dart';
 
@@ -86,7 +87,8 @@ class _AppViewState extends State<AppView> {
       darkTheme: AppTheme.darkThemeData,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
-      home: pageRoute(),
+      //ome: pageRoute(),
+      home: Test(),
     );
   }
 
