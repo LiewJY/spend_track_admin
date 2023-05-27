@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 
 class Test extends StatefulWidget {
@@ -123,14 +125,14 @@ class _TestState extends State<Test> {
                   });
                   onsortColum(columnIndex, ascending);
                 })),
-            DataColumn(
+            const DataColumn(
               label: Text(
                 "Phone",
                 style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
               ),
             ),
             DataColumn(
-                label: Text(
+                label: const Text(
                   "Age",
                   style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
                 ),
@@ -141,6 +143,12 @@ class _TestState extends State<Test> {
                   });
                   onsortColum(columnIndex, ascending);
                 })),
+                            const DataColumn(
+              label:  Text(
+                "",
+                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+              ),
+            ),
           ],
           source: RowSource(),
         ),
@@ -175,6 +183,7 @@ DataRow recentFileDataRow(var data) {
       DataCell(Text(data.name ?? "Name")),
       DataCell(Text(data.phone.toString())),
       DataCell(Text(data.Age.toString())),
+      DataCell( ElevatedButton(child: Text('d'), onPressed: () => log('ff ' + data.name),)),
     ],
   );
 }
