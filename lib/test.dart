@@ -9,18 +9,44 @@ class Test extends StatefulWidget {
 
 class _TestState extends State<Test> {
 //var
-  bool sort = true;
+  // bool sort = true;
   List<Data>? filterData;
 
   //column sorting function
+  // onsortColum(int columnIndex, bool ascending) {
+  //   // if (columnIndex == 0) {
+  //   //   if (ascending) {
+  //   //     filterData!.sort((a, b) => a.name!.compareTo(b.name!));
+  //   //   } else {
+  //   //     filterData!.sort((a, b) => b.name!.compareTo(a.name!));
+  //   //   }
+  //   // }
+  //   // if (columnIndex == 2) {
+  //   //   if (ascending) {
+  //   //     filterData!.sort((a, b) => a.Age!.compareTo(b.Age!));
+  //   //   } else {
+  //   //     filterData!.sort((a, b) => b.Age!.compareTo(a.Age!));
+  //   //   }
+  //   // }
+  // }
+  final RowSource _data = RowSource();
+
+  // int _sortColumnIndex = 0;
+  // bool _sortAscending = true;
+
+  int sortColumnIndex = 0;
+  bool isAscending = true;
+
   onsortColum(int columnIndex, bool ascending) {
-    // if (columnIndex == 0) {
-    //   if (ascending) {
-    //     filterData!.sort((a, b) => a.name!.compareTo(b.name!));
-    //   } else {
-    //     filterData!.sort((a, b) => b.name!.compareTo(a.name!));
-    //   }
-    // }
+    // switch (columnIndex) {
+    //   case 1:
+    if (columnIndex == 0) {
+      if (ascending) {
+        filterData!.sort((a, b) => a.name!.compareTo(b.name!));
+      } else {
+        filterData!.sort((a, b) => b.name!.compareTo(a.name!));
+      }
+    }
     if (columnIndex == 2) {
       if (ascending) {
         filterData!.sort((a, b) => a.Age!.compareTo(b.Age!));
@@ -28,7 +54,19 @@ class _TestState extends State<Test> {
         filterData!.sort((a, b) => b.Age!.compareTo(a.Age!));
       }
     }
+    // }
   }
+
+  // final RestorableInt _rowsPerPage =
+  //     RestorableInt(PaginatedDataTable.defaultRowsPerPage);
+  // void _sort<T>(Comparable<T> Function(Data d) getField, int columnIndex,
+  //     bool ascending) {
+  //   _data._sort<T>(getField, ascending);
+  //   setState(() {
+  //     _sortColumnIndex = columnIndex;
+  //     _sortAscending = ascending;
+  //   });
+  // }
 
   //set the data when runned
   @override
@@ -39,75 +77,80 @@ class _TestState extends State<Test> {
 
 //searching txt controller
   TextEditingController controller = TextEditingController();
-
+  int _rowsPerPage = PaginatedDataTable.defaultRowsPerPage;
   @override
   Widget build(BuildContext context) {
-    return PaginatedDataTable(
-      sortColumnIndex: 0,
-      sortAscending: sort,
-      header: Container(
-        child: TextField(
-          controller: controller,
-          onChanged: (value) {
+    return ListView(
+      children: [
+        PaginatedDataTable(
+          sortAscending: isAscending,
+          sortColumnIndex: sortColumnIndex,
+          rowsPerPage: _rowsPerPage,
+          onRowsPerPageChanged: (rowCount) {
             setState(() {
-              myData = filterData!
-                  .where((element) => element.name!.contains(value))
-                  .toList();
+              _rowsPerPage = rowCount!;
             });
           },
-        ),
-      ),
-      columns: [
-        DataColumn(
-            label: const Text(
-              "Name",
-              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+          header: Container(
+            child: TextField(
+              controller: controller,
+              onChanged: (value) {
+                setState(() {
+                  //? multiple filter
+                  myData = filterData!
+                      .where(
+                        (element) =>
+                            element.name!
+                                .toLowerCase()
+                                .contains(value.toLowerCase()) ||
+                            element.Age!.toString().contains(value),
+                      )
+                      .toList();
+                });
+              },
             ),
-            onSort: (columnIndex, ascending) {
-              setState(() {
-                sort = !sort;
-              });
-
-              onsortColum(columnIndex, ascending);
-            }),
-        DataColumn(
-            label: Text(
-              "Phone",
-              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
-            ),
-            onSort: (columnIndex, ascending) {
-              setState(() {
-                sort = !sort;
-              });
-
-              onsortColum(columnIndex, ascending);
-            }),
-         DataColumn(
-          label: Text(
-            "Age",
-            style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
           ),
-            onSort: (columnIndex, ascending) {
-              setState(() {
-                sort = !sort;
-              });
-
-              onsortColum(columnIndex, ascending);
-            }),      ],
-      source: RowSource(myData: myData, count: myData.length),
+          columns: [
+            DataColumn(
+                label: const Text(
+                  "Name",
+                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+                ),
+                onSort: ((columnIndex, ascending) {
+                  setState(() {
+                    sortColumnIndex = columnIndex;
+                    isAscending = ascending;
+                  });
+                  onsortColum(columnIndex, ascending);
+                })),
+            DataColumn(
+              label: Text(
+                "Phone",
+                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+              ),
+            ),
+            DataColumn(
+                label: Text(
+                  "Age",
+                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+                ),
+                onSort: ((columnIndex, ascending) {
+                  setState(() {
+                    sortColumnIndex = columnIndex;
+                    isAscending = ascending;
+                  });
+                  onsortColum(columnIndex, ascending);
+                })),
+          ],
+          source: RowSource(),
+        ),
+      ],
     );
   }
 }
 
 //todo data mapped
 class RowSource extends DataTableSource {
-  var myData;
-  final count;
-  RowSource({
-    required this.myData,
-    required this.count,
-  });
-
   @override
   DataRow? getRow(int index) {
     if (index < rowCount) {
@@ -120,7 +163,7 @@ class RowSource extends DataTableSource {
   bool get isRowCountApproximate => false;
 
   @override
-  int get rowCount => count;
+  int get rowCount => myData.length;
 
   @override
   int get selectedRowCount => 0;
@@ -138,7 +181,7 @@ DataRow recentFileDataRow(var data) {
 
 //fixme test data
 class Data {
-  String? name;
+  String name;
   int? phone;
   int? Age;
 
@@ -155,4 +198,15 @@ List<Data> myData = [
   Data(name: "Mehdi", phone: 5353535, Age: 36),
   Data(name: "Rex", phone: 244242, Age: 38),
   Data(name: "Alex", phone: 323232323, Age: 29),
+  Data(name: "Rex", phone: 244242, Age: 38),
+  Data(name: "Rex", phone: 244242, Age: 38),
+  Data(name: "Rex", phone: 244242, Age: 38),
+  Data(name: "Rex", phone: 244242, Age: 38),
+  Data(name: "Rex", phone: 244242, Age: 38),
+  Data(name: "Rex", phone: 244242, Age: 38),
+  Data(name: "Rex", phone: 244242, Age: 38),
+  Data(name: "Rex", phone: 244242, Age: 38),
+  Data(name: "Rex", phone: 244242, Age: 38),
+  Data(name: "Rex", phone: 244242, Age: 38),
+  Data(name: "Rex", phone: 244242, Age: 38),
 ];

@@ -47,7 +47,9 @@ dependencies:
   firebase_core: ^2.9.0
   cloud_firestore: ^4.5.2
   cloud_firestore_odm: ^1.0.0-dev.54
-
+  cloud_functions: ^4.3.1
+  firebase_admin: ^0.2.0-dev.7
+  
   # for bloc ==
   equatable: ^2.0.5
 
@@ -67,8 +69,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   intl: any
-  cloud_functions: ^4.3.1
-  firebase_admin: ^0.2.0-dev.7
+
 
 dev_dependencies:
   flutter_test:
