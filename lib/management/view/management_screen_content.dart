@@ -9,6 +9,7 @@ import 'package:track_admin/management/management.dart';
 import 'package:track_admin/repositories/models/user.dart';
 import 'package:track_admin/repositories/repositories.dart';
 import 'package:track_admin/widgets/widgets.dart';
+import 'package:track_theme/track_theme.dart';
 
 class ManagementScereenContent extends StatelessWidget {
   const ManagementScereenContent({super.key});
@@ -17,14 +18,6 @@ class ManagementScereenContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final managementRepository = ManagementRepository();
-
-// //for datatable
-//     final List<DataColumn> colHeader = [
-//       DataColumn(label: Text('Header A')),
-//       DataColumn(label: Text('Header B')),
-//       DataColumn(label: Text('Header C')),
-//       DataColumn(label: Text('Header D')),
-//     ];
 
     return RepositoryProvider.value(
       value: managementRepository,
@@ -58,13 +51,16 @@ class _AdminDataTableState extends State<AdminDataTable> {
     //load data from firebase
     context.read<ManagementBloc>().add(DisplayAllAdminRequested());
   }
+  @override
+  // TODO: implement context
+  BuildContext get context => super.context;
 
   //column sorting function
   int sortColumnIndex = 0;
   bool isAscending = true;
 
   //for searching
-  TextEditingController controller = TextEditingController();
+  TextEditingController searchController = TextEditingController();
 
   //for pagination
   int _rowsPerPage = PaginatedDataTable.defaultRowsPerPage;
@@ -78,21 +74,14 @@ class _AdminDataTableState extends State<AdminDataTable> {
         filterData!.sort((a, b) => b.email!.compareTo(a.email!));
       }
     }
-    // if (columnIndex == 2) {
-    //   if (ascending) {
-    //     filterData!.sort((a, b) => a.Age!.compareTo(b.Age!));
-    //   } else {
-    //     filterData!.sort((a, b) => b.Age!.compareTo(a.Age!));
-    //   }
-    // }
   }
 
   @override
   Widget build(BuildContext context) {
-    var originalData =
+    List<User>? myData =
         context.select((ManagementBloc bloc) => bloc.state.adminUsersList);
 
-    filterData = originalData;
+    filterData = myData!;
 
     //datatable column
     List<DataColumn> column = [
@@ -130,8 +119,49 @@ class _AdminDataTableState extends State<AdminDataTable> {
     ];
 
     return PaginatedDataTable(
+      sortAscending: isAscending,
+      header: Padding(
+        padding: EdgeInsets.only(top: 0),
+        child: Row(
+          children: [
+            Expanded(
+              flex: 7,
+              child: TextField(
+                controller: searchController,
+                // style: TextStyle(),
+                onChanged: (value) {
+                  setState(() {
+                    //add more for more field
+                    myData = filterData!
+                        .where((element) => element.email!
+                            .toLowerCase()
+                            .contains(value.toLowerCase()))
+                        .toList();
+                    myData?.forEach((element) {
+                      log(element.email.toString());
+                    });
+                  });
+                },
+              ),
+            ),
+            Expanded(
+                flex: 3,
+                child: ElevatedButton(
+                  onPressed: () => log('pressed'),
+                  child: Text('hi'),
+                )),
+          ],
+        ),
+      ),
+      sortColumnIndex: sortColumnIndex,
+      rowsPerPage: _rowsPerPage,
+      onRowsPerPageChanged: (rowCount) {
+        setState(() {
+          _rowsPerPage = rowCount!;
+        });
+      },
       columns: column,
-      source: RowSource(originalData!),
+      source: RowSource(myData!),
     );
   }
 }
@@ -142,9 +172,13 @@ class RowSource extends DataTableSource {
   final List<User> adminData;
   RowSource(this.adminData);
 
+  //  adminData?.forEach((element) {
+  //               log(element.email.toString());
+  //             });
   @override
   DataRow? getRow(int index) {
     if (index < rowCount) {
+      log('table'+adminData[index].toString());
       return recentFileDataRow(adminData![index]);
     } else
       return null;
