@@ -31,6 +31,7 @@ class ManagementBloc extends Bloc<ManagementEvent, ManagementState> {
           id: data['uid'],
           email: data['email'],
           name: data['displayName'],
+          disabled: data['disabled'],
         );
       }).toList();
       emit(state.copyWith(status: ManagementStatus.success, adminUsersList: mappedList));

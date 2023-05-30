@@ -33,6 +33,10 @@
   "searchByUserEmailOrUID": "Search by user email, or UID",
   "displayName" : "Display Name",
   "uid": "UID",
+  "enableUser": "Enable User",
+  "disableUser": "Disable User",
+  "editUser": "Edit User",
+  "deleteUser": "Delete User",
 
 "@SuccessMessage": {},
   "nameChanged": "Name successfully changed",

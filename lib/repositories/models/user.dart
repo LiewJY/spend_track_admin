@@ -8,11 +8,13 @@ class User extends Equatable {
     required this.id,
     this.email,
     this.name,
+    this.disabled,
   });
 
   final String? email;
   final String id;
   final String? name;
+  final bool? disabled;
 
   //represent unauthenticated
   static const empty = User(id: '');
@@ -44,5 +46,6 @@ class User extends Equatable {
 
   String toJson() => json.encode(toMap());
 
-  factory User.fromJson(String source) => User.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory User.fromJson(String source) =>
+      User.fromMap(json.decode(source) as Map<String, dynamic>);
 }
