@@ -31,6 +31,8 @@
 
 "@managementPage": {},
   "searchByUserEmailOrUID": "Search by user email, or UID",
+  "displayName" : "Display Name",
+  "uid": "UID",
 
 "@SuccessMessage": {},
   "nameChanged": "Name successfully changed",

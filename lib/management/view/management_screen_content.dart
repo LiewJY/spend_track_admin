@@ -100,10 +100,10 @@ class _AdminDataTableState extends State<AdminDataTable> {
     final l10n = context.l10n;
     List<DataColumn> column = [
       DataColumn(
-        label: const Text(
-          "Email",
+        label:  Text(
+          l10n.email,
           style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
-        ),
+      ),
         onSort: ((columnIndex, ascending) {
           setState(() {
             sortColumnIndex = columnIndex;
@@ -113,14 +113,14 @@ class _AdminDataTableState extends State<AdminDataTable> {
         }),
       ),
       DataColumn(
-        label: const Text(
-          "Display name",
+        label:  Text(
+          l10n.displayName,
           style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
         ),
       ),
       DataColumn(
-        label: const Text(
-          "UID",
+        label:  Text(
+          l10n.uid,
           style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
         ),
       ),
