@@ -23,10 +23,14 @@
   "update": "Update",
   "next": "Next",
   "add": "Add",
+  "addAdmin": "Add admin",
+
 
 "@loginPage": {},
   "forgetPassword": "Forget Password",
 
+"@managementPage": {},
+  "searchByUserEmailOrUID": "Search by user email, or UID",
 
 "@SuccessMessage": {},
   "nameChanged": "Name successfully changed",

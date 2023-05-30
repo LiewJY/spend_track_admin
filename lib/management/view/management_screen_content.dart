@@ -58,7 +58,7 @@ class _DataLoaderState extends State<DataLoader> {
     myData = context.select((ManagementBloc bloc) => bloc.state.adminUsersList);
 
     filterData = myData!;
-    return  AdminDataTable();
+    return AdminDataTable();
   }
 }
 
@@ -74,9 +74,6 @@ class _AdminDataTableState extends State<AdminDataTable> {
   int sortColumnIndex = 0;
   bool isAscending = true;
 
-  //for searching
-  TextEditingController searchController = TextEditingController();
-
   //for pagination
   int _rowsPerPage = PaginatedDataTable.defaultRowsPerPage;
 
@@ -91,8 +88,16 @@ class _AdminDataTableState extends State<AdminDataTable> {
     }
   }
 
+  //todo will use if have clear option
+  TextEditingController searchController = TextEditingController();
+  void clear() {
+    myData = filterData!.toList();
+    searchController.clear();
+  }
+
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     List<DataColumn> column = [
       DataColumn(
         label: const Text(
@@ -129,38 +134,43 @@ class _AdminDataTableState extends State<AdminDataTable> {
 
     return PaginatedDataTable(
       sortAscending: isAscending,
-      header: Padding(
-        padding: EdgeInsets.only(top: 0),
-        child: Row(
-          children: [
-            Expanded(
-              flex: 7,
-              child: TextField(
-                controller: searchController,
-                // style: TextStyle(),
-                onChanged: (value) {
-                  setState(() {
-                    //add more for more field
-                    myData = filterData!
-                        .where((element) => element.email!
-                            .toLowerCase()
-                            .contains(value.toLowerCase()))
-                        .toList();
-                    myData?.forEach((element) {
-                      log(element.email.toString());
-                    });
-                  });
-                },
+      header: Row(
+        children: [
+          Expanded(
+            flex: 7,
+            child: TextField(
+              controller: searchController,
+              decoration: InputDecoration(
+                prefixIcon: Icon(Icons.search),
+                hintText: l10n.searchByUserEmailOrUID,
+                //todo
+                // suffixIcon: IconButton(
+                //   icon: Icon(Icons.close),
+                //   onPressed: () => clear(),
+                // ),
               ),
+              onChanged: (value) {
+                setState(() {
+                  myData = filterData!
+                      .where((element) =>
+                          element.email!
+                              .toLowerCase()
+                              .contains(value.toLowerCase()) ||
+                          element.id.contains(value))
+                      .toList();
+                });
+              },
             ),
-            Expanded(
-                flex: 3,
-                child: ElevatedButton(
-                  onPressed: () => log('pressed'),
-                  child: Text('hi'),
-                )),
-          ],
-        ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: FilledButton(
+              //todo
+              onPressed: () => log('todo'),
+              child: Text(l10n.addAdmin),
+            ),
+          ),
+        ],
       ),
       sortColumnIndex: sortColumnIndex,
       rowsPerPage: _rowsPerPage,
@@ -203,9 +213,9 @@ class RowSource extends DataTableSource {
 DataRow recentFileDataRow(var data) {
   return DataRow(
     cells: [
-      DataCell(Text(data.email ?? "email")),
-      DataCell(Text(data.name ?? "email")),
-      DataCell(Text(data.id ?? "email")),
+      DataCell(Text(data.email ?? "")),
+      DataCell(Text(data.name ?? "")),
+      DataCell(Text(data.id ?? "")),
       //todo
       DataCell(ElevatedButton(
         child: Text('d'),
