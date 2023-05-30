@@ -26,11 +26,39 @@ class ManagementScereenContent extends StatelessWidget {
             ManagementBloc(managementRepository: managementRepository),
         child: ListView(
           children: [
-            AdminDataTable(),
+            DataLoader(),
           ],
         ),
       ),
     );
+  }
+}
+
+//list from firebase
+List<User>? filterData;
+List<User>? myData;
+
+class DataLoader extends StatefulWidget {
+  const DataLoader({super.key});
+
+  @override
+  State<DataLoader> createState() => _DataLoaderState();
+}
+
+class _DataLoaderState extends State<DataLoader> {
+  @override
+  void initState() {
+    super.initState();
+    //load data from firebase
+    context.read<ManagementBloc>().add(DisplayAllAdminRequested());
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    myData = context.select((ManagementBloc bloc) => bloc.state.adminUsersList);
+
+    filterData = myData!;
+    return  AdminDataTable();
   }
 }
 
@@ -42,19 +70,6 @@ class AdminDataTable extends StatefulWidget {
 }
 
 class _AdminDataTableState extends State<AdminDataTable> {
-  //list from firebase
-  List<User>? filterData;
-
-  @override
-  void initState() {
-    super.initState();
-    //load data from firebase
-    context.read<ManagementBloc>().add(DisplayAllAdminRequested());
-  }
-  @override
-  // TODO: implement context
-  BuildContext get context => super.context;
-
   //column sorting function
   int sortColumnIndex = 0;
   bool isAscending = true;
@@ -78,12 +93,6 @@ class _AdminDataTableState extends State<AdminDataTable> {
 
   @override
   Widget build(BuildContext context) {
-    List<User>? myData =
-        context.select((ManagementBloc bloc) => bloc.state.adminUsersList);
-
-    filterData = myData!;
-
-    //datatable column
     List<DataColumn> column = [
       DataColumn(
         label: const Text(
@@ -172,13 +181,10 @@ class RowSource extends DataTableSource {
   final List<User> adminData;
   RowSource(this.adminData);
 
-  //  adminData?.forEach((element) {
-  //               log(element.email.toString());
-  //             });
   @override
   DataRow? getRow(int index) {
     if (index < rowCount) {
-      log('table'+adminData[index].toString());
+      log('table    ' + adminData[index].toString());
       return recentFileDataRow(adminData![index]);
     } else
       return null;
