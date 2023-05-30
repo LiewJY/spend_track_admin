@@ -23,9 +23,6 @@ class ManagementBloc extends Bloc<ManagementEvent, ManagementState> {
     if (state.status == ManagementStatus.loading) return;
     emit(state.copyWith(status: ManagementStatus.loading));
     try {
-      //todo
-      // await
-
       List<Map<String, dynamic>> adminUsersList =
           await managementRepository.getAdminUsers();
       //convert to list
@@ -33,19 +30,9 @@ class ManagementBloc extends Bloc<ManagementEvent, ManagementState> {
         return User(
           id: data['uid'],
           email: data['email'],
+          name: data['displayName'],
         );
       }).toList();
-
-      // for (var element in mappedList) {
-      //   log(element.id);
-      // }
-
-      // aa.forEach((user) {
-      //   String uid = user['uid'];
-      //   String email = user['email'];
-      //   print('UID: $uid, Email: $email');
-      // });
-
       emit(state.copyWith(status: ManagementStatus.success, adminUsersList: mappedList));
     } catch (e) {
       emit(state.copyWith(

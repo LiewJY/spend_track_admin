@@ -18,13 +18,13 @@ class ManagementScereenContent extends StatelessWidget {
     final l10n = context.l10n;
     final managementRepository = ManagementRepository();
 
-//for datatable
-    final List<DataColumn> colHeader = [
-      DataColumn(label: Text('Header A')),
-      DataColumn(label: Text('Header B')),
-      DataColumn(label: Text('Header C')),
-      DataColumn(label: Text('Header D')),
-    ];
+// //for datatable
+//     final List<DataColumn> colHeader = [
+//       DataColumn(label: Text('Header A')),
+//       DataColumn(label: Text('Header B')),
+//       DataColumn(label: Text('Header C')),
+//       DataColumn(label: Text('Header D')),
+//     ];
 
     return RepositoryProvider.value(
       value: managementRepository,
@@ -33,11 +33,7 @@ class ManagementScereenContent extends StatelessWidget {
             ManagementBloc(managementRepository: managementRepository),
         child: ListView(
           children: [
-            PaginatedTable(
-              title: l10n.adminManagement,
-              headers: colHeader,
-              dataSource: _DataSource(context),
-            ),
+            AdminDataTable(),
           ],
         ),
       ),
@@ -45,126 +41,136 @@ class ManagementScereenContent extends StatelessWidget {
   }
 }
 
-class DataTableDemo extends StatelessWidget {
+class AdminDataTable extends StatefulWidget {
+  const AdminDataTable({super.key});
+
+  @override
+  State<AdminDataTable> createState() => _AdminDataTableState();
+}
+
+class _AdminDataTableState extends State<AdminDataTable> {
+  //list from firebase
+  List<User>? filterData;
+
+  @override
+  void initState() {
+    super.initState();
+    //load data from firebase
+    context.read<ManagementBloc>().add(DisplayAllAdminRequested());
+  }
+
+  //column sorting function
+  int sortColumnIndex = 0;
+  bool isAscending = true;
+
+  //for searching
+  TextEditingController controller = TextEditingController();
+
+  //for pagination
+  int _rowsPerPage = PaginatedDataTable.defaultRowsPerPage;
+
+  //sorting
+  onsortColum(int columnIndex, bool ascending) {
+    if (columnIndex == 0) {
+      if (ascending) {
+        filterData!.sort((a, b) => a.email!.compareTo(b.email!));
+      } else {
+        filterData!.sort((a, b) => b.email!.compareTo(a.email!));
+      }
+    }
+    // if (columnIndex == 2) {
+    //   if (ascending) {
+    //     filterData!.sort((a, b) => a.Age!.compareTo(b.Age!));
+    //   } else {
+    //     filterData!.sort((a, b) => b.Age!.compareTo(a.Age!));
+    //   }
+    // }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return ListView(
-      padding: const EdgeInsets.all(16),
-      children: [
-        PaginatedDataTable(
-          header: Text('Header Text'),
-          rowsPerPage: 2,
-          columns: [
-            DataColumn(label: Text('Header A')),
-            DataColumn(label: Text('Header B')),
-            DataColumn(label: Text('Header C')),
-            DataColumn(label: Text('Header D')),
-          ],
-          source: _DataSource(context),
+    var originalData =
+        context.select((ManagementBloc bloc) => bloc.state.adminUsersList);
+
+    filterData = originalData;
+
+    //datatable column
+    List<DataColumn> column = [
+      DataColumn(
+        label: const Text(
+          "Email",
+          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
         ),
-      ],
-    );
-  }
-}
-
-class _Row {
-  _Row(
-    this.valueA,
-    this.valueB,
-    this.valueC,
-    this.valueD,
-  );
-
-  final String valueA;
-  final String valueB;
-  final String valueC;
-  final int valueD;
-
-  //bool selected = false;
-}
-
-class _DataSource extends DataTableSource {
-  _DataSource(this.context) {
-    _rows = <_Row>[
-      _Row('Cell A1', 'CellB1', 'CellC1', 1),
-      _Row('Cell A2', 'CellB2', 'CellC2', 2),
-      _Row('Cell A3', 'CellB3', 'CellC3', 3),
+        onSort: ((columnIndex, ascending) {
+          setState(() {
+            sortColumnIndex = columnIndex;
+            isAscending = ascending;
+          });
+          onsortColum(columnIndex, ascending);
+        }),
+      ),
+      DataColumn(
+        label: const Text(
+          "Display name",
+          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+        ),
+      ),
+      DataColumn(
+        label: const Text(
+          "UID",
+          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+        ),
+      ),
+      const DataColumn(
+        label: Text(
+          "",
+          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+        ),
+      ),
     ];
-  }
 
-  final BuildContext context;
-  late List<_Row> _rows;
-
-  // int _selectedCount = 0;
-
-  @override
-  DataRow getRow(int index) {
-    assert(index >= 0);
-    // if (index >= _rows.length) return null;
-    final row = _rows[index];
-    return DataRow.byIndex(
-      index: index,
-      cells: [
-        DataCell(Text(row.valueA)),
-        DataCell(Text(row.valueB)),
-        DataCell(Text(row.valueC)),
-        DataCell(Text(row.valueD.toString())),
-      ],
+    return PaginatedDataTable(
+      columns: column,
+      source: RowSource(originalData!),
     );
   }
+}
+
+//data source
+class RowSource extends DataTableSource {
+  //extract the data param passed
+  final List<User> adminData;
+  RowSource(this.adminData);
 
   @override
-  int get rowCount => _rows.length;
+  DataRow? getRow(int index) {
+    if (index < rowCount) {
+      return recentFileDataRow(adminData![index]);
+    } else
+      return null;
+  }
 
   @override
   bool get isRowCountApproximate => false;
 
   @override
+  int get rowCount => adminData.length;
+
+  @override
   int get selectedRowCount => 0;
 }
 
- 
-
-// class _DataSource extends DataTableSource {
-//   _DataSource(this.context) {
-//     _rows = <User>[
-//       User(id: 'sss', email: '0000'),
-//       User(id: '22222', email: '0000'),
-//     ];
-//   }
-//   final BuildContext context;
-//   List<User> _rows;
-
-//   int _selectedCount = 0;
-
-//   @override
-//   DataRow? getRow(int index) {
-//     assert(index >= 0);
-//     if (index >= _rows.length) return null;
-//     final row = _rows[index];
-//     return DataRow.byIndex(
-//       index: index,
-//       //selected: row.selected,
-//       // onSelectChanged: (value) {
-//       //   if (row.selected != value) {
-//       //     _selectedCount += value ? 1 : -1;
-//       //     assert(_selectedCount >= 0);
-//       //     row.selected = value;
-//       //     notifyListeners();
-//       //   }
-//       // },
-//       cells: [
-//         DataCell(Text(row.id)),
-//         DataCell(Text(row.email.toString())),
-//       ],
-//     );
-//   }
-
-//   @override
-//   int get rowCount => _rows.length;
-
-//   @override
-//   bool get isRowCountApproximate => false;
-
-//   @override
-//   int get selectedRowCount => _selectedCount;
-// }
+DataRow recentFileDataRow(var data) {
+  return DataRow(
+    cells: [
+      DataCell(Text(data.email ?? "email")),
+      DataCell(Text(data.name ?? "email")),
+      DataCell(Text(data.id ?? "email")),
+      //todo
+      DataCell(ElevatedButton(
+        child: Text('d'),
+        onPressed: () => log('ff ' + data.email),
+      )),
+    ],
+  );
+}

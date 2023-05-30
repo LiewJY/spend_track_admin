@@ -11,42 +11,18 @@ class Test extends StatefulWidget {
 
 class _TestState extends State<Test> {
 //var
-  // bool sort = true;
   List<Data>? filterData;
 
   //column sorting function
-  // onsortColum(int columnIndex, bool ascending) {
-  //   // if (columnIndex == 0) {
-  //   //   if (ascending) {
-  //   //     filterData!.sort((a, b) => a.name!.compareTo(b.name!));
-  //   //   } else {
-  //   //     filterData!.sort((a, b) => b.name!.compareTo(a.name!));
-  //   //   }
-  //   // }
-  //   // if (columnIndex == 2) {
-  //   //   if (ascending) {
-  //   //     filterData!.sort((a, b) => a.Age!.compareTo(b.Age!));
-  //   //   } else {
-  //   //     filterData!.sort((a, b) => b.Age!.compareTo(a.Age!));
-  //   //   }
-  //   // }
-  // }
-  final RowSource _data = RowSource();
-
-  // int _sortColumnIndex = 0;
-  // bool _sortAscending = true;
-
   int sortColumnIndex = 0;
   bool isAscending = true;
 
   onsortColum(int columnIndex, bool ascending) {
-    // switch (columnIndex) {
-    //   case 1:
     if (columnIndex == 0) {
       if (ascending) {
-        filterData!.sort((a, b) => a.name!.compareTo(b.name!));
+        filterData!.sort((a, b) => a.name.compareTo(b.name));
       } else {
-        filterData!.sort((a, b) => b.name!.compareTo(a.name!));
+        filterData!.sort((a, b) => b.name.compareTo(a.name));
       }
     }
     if (columnIndex == 2) {
@@ -56,19 +32,8 @@ class _TestState extends State<Test> {
         filterData!.sort((a, b) => b.Age!.compareTo(a.Age!));
       }
     }
-    // }
   }
 
-  // final RestorableInt _rowsPerPage =
-  //     RestorableInt(PaginatedDataTable.defaultRowsPerPage);
-  // void _sort<T>(Comparable<T> Function(Data d) getField, int columnIndex,
-  //     bool ascending) {
-  //   _data._sort<T>(getField, ascending);
-  //   setState(() {
-  //     _sortColumnIndex = columnIndex;
-  //     _sortAscending = ascending;
-  //   });
-  // }
 
   //set the data when runned
   @override
@@ -102,7 +67,7 @@ class _TestState extends State<Test> {
                   myData = filterData!
                       .where(
                         (element) =>
-                            element.name!
+                            element.name
                                 .toLowerCase()
                                 .contains(value.toLowerCase()) ||
                             element.Age!.toString().contains(value),

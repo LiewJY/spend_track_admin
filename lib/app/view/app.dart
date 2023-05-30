@@ -87,8 +87,8 @@ class _AppViewState extends State<AppView> {
       darkTheme: AppTheme.darkThemeData,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
-      //ome: pageRoute(),
-      home: Test(),
+      home: pageRoute(),
+      //home: Test(),
     );
   }
 
