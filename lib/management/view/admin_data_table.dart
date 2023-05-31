@@ -39,6 +39,12 @@ class _AdminDataTableState extends State<AdminDataTable> {
     searchController.clear();
   }
 
+  //for dialog
+  bool isDialogOpen = false;
+  void toggleDialog() {
+    isDialogOpen = !isDialogOpen;
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -111,11 +117,18 @@ class _AdminDataTableState extends State<AdminDataTable> {
             padding: AppStyle.dtButonHorizontalPadding,
             child: FilledButton(
               //todo
-              onPressed: () => showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AddAdminDialog();
-                  }),
+              onPressed: () {
+                if (!isDialogOpen) {
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AddAdminDialog();
+                      }).then((value) {
+                    toggleDialog();
+                  });
+                  toggleDialog();
+                }
+              },
               child: Text(l10n.addAdmin),
             ),
           ),

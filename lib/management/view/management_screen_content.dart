@@ -46,6 +46,8 @@ class _DataLoaderState extends State<DataLoader> {
   void initState() {
     super.initState();
     //load data from firebase
+    //fixme remove log
+    log('load data');
     context.read<ManagementBloc>().add(DisplayAllAdminRequested());
   }
 
@@ -57,4 +59,3 @@ class _DataLoaderState extends State<DataLoader> {
     return AdminDataTable();
   }
 }
-

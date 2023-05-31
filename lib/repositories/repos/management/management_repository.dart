@@ -8,7 +8,7 @@ class ManagementRepository {
   final db = FirebaseFirestore.instance;
   //cloud function instance
   final cf = FirebaseFunctions.instance;
-
+  //for display all admin users
   _queryAdminUsers() async {
     List<Map<String, dynamic>> adminDataList = [];
     await FirebaseFirestore.instance.collection("admins").get().then(
@@ -41,4 +41,15 @@ class ManagementRepository {
       throw "unknown";
     }
   }
+
+  //todo add admin
+
+  //todo edit admin
+
+  //todo delete admin
+
+  //todo enable admin
+
+  //todo disable admin
+  
 }

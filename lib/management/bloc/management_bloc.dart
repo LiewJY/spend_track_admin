@@ -12,11 +12,11 @@ class ManagementBloc extends Bloc<ManagementEvent, ManagementState> {
   final ManagementRepository managementRepository;
   ManagementBloc({required this.managementRepository})
       : super(ManagementState.initial()) {
-    on<DisplayAllAdminRequested>(onDisplayAllAdminRequested);
+    on<DisplayAllAdminRequested>(_onDisplayAllAdminRequested);
   }
 
   //actions
-  onDisplayAllAdminRequested(
+  _onDisplayAllAdminRequested(
     DisplayAllAdminRequested event,
     Emitter emit,
   ) async {
@@ -34,7 +34,8 @@ class ManagementBloc extends Bloc<ManagementEvent, ManagementState> {
           disabled: data['disabled'],
         );
       }).toList();
-      emit(state.copyWith(status: ManagementStatus.success, adminUsersList: mappedList));
+      emit(state.copyWith(
+          status: ManagementStatus.success, adminUsersList: mappedList));
     } catch (e) {
       emit(state.copyWith(
         status: ManagementStatus.failure,
