@@ -63,22 +63,41 @@ exports.adminUsers = functions.https.onCall(async (data, context) => {
 
 //add admin user
 exports.addAdminUser = functions.https.onCall(async (data, context) => {
+  console.log('called addAdminUser');
   //todo
-  getAuth()
-  .createUser({
-    email: 'user@example.com',
-    password: 'secretPassword',
-    displayName: 'John Doe',
-    disabled: false,
-  })
-  .then((userRecord) => {
-    // See the UserRecord reference doc for the contents of userRecord.
-    //todo include add to firestore
-    console.log('Successfully created new user:', userRecord.uid);
-  })
-  .catch((error) => {
-    console.log('Error creating new user:', error);
-  });
+  return getAuth()
+    .createUser({
+      email: data.email,
+      password: data.password,
+      displayName: data.name,
+      disabled: false,
+    })
+    .then((userRecord) => {
+      // See the UserRecord reference doc for the contents of userRecord.
+      //todo include add to firestore
+      //   const writeResult = await admin
+      //     .firestore()
+      //     .collection("messages")
+
+      //     .add({ original: original });
+      admin.firestore().collection('admins').doc(userRecord.uid).set({'admin': true});
+
+      console.log('Successfully created new user:', userRecord.uid);
+      // return userRecord.uid;
+      //return 'success';
+    })
+    .catch((error) => {
+      console.log('Error creating new user:', error);
+      return error.code;
+
+    });
+});
+
+
+exports.test = functions.https.onCall(async (data, context) => {
+
+  admin.firestore().collection('admins').doc('fffffffffffff').set({'admin': true});
+
 });
 
 

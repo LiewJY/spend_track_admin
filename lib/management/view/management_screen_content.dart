@@ -7,6 +7,8 @@ import 'package:track_admin/management/management.dart';
 import 'package:track_admin/repositories/models/user.dart';
 import 'package:track_admin/repositories/repositories.dart';
 
+import '../../widgets/snackbar.dart';
+
 class ManagementScereenContent extends StatelessWidget {
   const ManagementScereenContent({super.key});
 
@@ -46,13 +48,12 @@ class _DataLoaderState extends State<DataLoader> {
   void initState() {
     super.initState();
     //load data from firebase
-    //fixme remove log
-    log('load data');
     context.read<ManagementBloc>().add(DisplayAllAdminRequested());
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     myData = context.select((ManagementBloc bloc) => bloc.state.adminUsersList);
 
     filterData = myData!;

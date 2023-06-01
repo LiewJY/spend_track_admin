@@ -1,9 +1,11 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:track_admin/l10n/l10n.dart';
 import 'package:track_admin/management/management.dart';
 import 'package:track_admin/repositories/models/user.dart';
+import 'package:track_admin/widgets/widgets.dart';
 import 'package:track_theme/track_theme.dart';
 
 class AdminDataTable extends StatefulWidget {
@@ -82,67 +84,103 @@ class _AdminDataTableState extends State<AdminDataTable> {
       ),
     ];
 
-    return PaginatedDataTable(
-      sortAscending: isAscending,
-      header: Row(
-        children: [
-          Expanded(
-            flex: 7,
-            child: TextField(
-              controller: searchController,
-              decoration: InputDecoration(
-                  prefixIcon: Icon(Icons.search),
-                  hintText: l10n.searchByUserEmailOrUID,
-                  border: InputBorder.none
-                  //todo
-                  // suffixIcon: IconButton(
-                  //   icon: Icon(Icons.close),
-                  //   onPressed: () => clear(),
-                  // ),
-                  ),
-              onChanged: (value) {
-                setState(() {
-                  myData = filterData!
-                      .where((element) =>
-                          element.email!
-                              .toLowerCase()
-                              .contains(value.toLowerCase()) ||
-                          element.id.contains(value))
-                      .toList();
-                });
-              },
-            ),
-          ),
-          Padding(
-            padding: AppStyle.dtButonHorizontalPadding,
-            child: FilledButton(
-              //todo
-              onPressed: () {
-                if (!isDialogOpen) {
-                  showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AddAdminDialog();
-                      }).then((value) {
-                    toggleDialog();
-                  });
-                  toggleDialog();
-                }
-              },
-              child: Text(l10n.addAdmin),
-            ),
-          ),
-        ],
-      ),
-      sortColumnIndex: sortColumnIndex,
-      rowsPerPage: _rowsPerPage,
-      onRowsPerPageChanged: (rowCount) {
-        setState(() {
-          _rowsPerPage = rowCount!;
-        });
+    return BlocListener<ManagementBloc, ManagementState>(
+      listener: (context, state) {
+        if (state.status == ManagementStatus.failure) {
+          log('error ' + state.error);
+
+          switch (state.error) {
+            case 'cannotRetrieveData':
+              AppSnackBar.error(context, l10n.cannotRetrieveData);
+              break;
+            case 'email-already-exists':
+              AppSnackBar.error(context, l10n.emailAlreadyInUse);
+              break;
+            default:
+              AppSnackBar.error(context, l10n.unknownError);
+          }
+        }
+        if (state.status == ManagementStatus.success) {
+          switch (state.success) {
+            case 'addedAdmin':
+              if (isDialogOpen) {
+                Navigator.of(context, rootNavigator: true).pop();
+              }
+              AppSnackBar.success(context, l10n.addedAdmin);
+              context.read<ManagementBloc>().add(DisplayAllAdminRequested());
+              break;
+          }
+        }
       },
-      columns: column,
-      source: RowSource(myData!),
+      child: PaginatedDataTable(
+        sortAscending: isAscending,
+        header: Row(
+          children: [
+            Expanded(
+              flex: 7,
+              child: TextField(
+                controller: searchController,
+                decoration: InputDecoration(
+                    prefixIcon: Icon(Icons.search),
+                    hintText: l10n.searchByUserEmailOrUID,
+                    border: InputBorder.none
+                    //todo
+                    // suffixIcon: IconButton(
+                    //   icon: Icon(Icons.close),
+                    //   onPressed: () => clear(),
+                    // ),
+                    ),
+                onChanged: (value) {
+                  setState(() {
+                    myData = filterData!
+                        .where((element) =>
+                            element.email!
+                                .toLowerCase()
+                                .contains(value.toLowerCase()) ||
+                            element.id.contains(value))
+                        .toList();
+                  });
+                },
+              ),
+            ),
+            Padding(
+              padding: AppStyle.dtButonHorizontalPadding,
+              child: FilledButton(
+                //todo
+                onPressed: () {
+                  if (!isDialogOpen) {
+                    showDialog(
+                        context: context,
+                        builder: (_) {
+                          return BlocProvider.value(
+                            value: BlocProvider.of<ManagementBloc>(context),
+                            child: UserManagementDialog(
+                              dialogTitle: l10n.addAdmin,
+                              actionName: l10n.add,
+                              action: 'addAdmin',
+                            ),
+                          );
+                        }).then((value) {
+                      toggleDialog();
+                    });
+                    toggleDialog();
+                  }
+                },
+                child: Text(l10n.addAdmin),
+              ),
+            ),
+          ],
+        ),
+        sortColumnIndex: sortColumnIndex,
+        rowsPerPage: _rowsPerPage,
+        onRowsPerPageChanged: (rowCount) {
+          setState(() {
+            _rowsPerPage = rowCount!;
+          });
+        },
+        columns: column,
+        source: RowSource(myData!),
+      ),
     );
   }
 }
@@ -203,28 +241,28 @@ DataRow recentFileDataRow(var data) {
               return [
                 PopupMenuItem(
                   value: 0,
-                  child: Text(l10n.editUser),
+                  child: Text(l10n.resetPassword),
                 ),
                 PopupMenuItem(
                   value: 1,
-                  child: Text(l10n.enableUser),
+                  child: Text(l10n.enableAccount),
                 ),
                 PopupMenuItem(
                   value: 2,
-                  child: Text(l10n.deleteUser),
+                  child: Text(l10n.deleteAccount),
                 ),
               ];
             },
             onSelected: (value) {
               switch (value) {
                 case 0:
-                  editUser(data);
+                  resetPassword(data);
                   break;
                 case 1:
-                  enableUser(data);
+                  enableAccount(data);
                   break;
                 case 2:
-                  deleteUser(data);
+                  deleteAccount(data);
               }
             },
           ),
@@ -246,28 +284,28 @@ DataRow recentFileDataRow(var data) {
               return [
                 PopupMenuItem(
                   value: 0,
-                  child: Text(l10n.editUser),
+                  child: Text(l10n.resetPassword),
                 ),
                 PopupMenuItem(
                   value: 1,
-                  child: Text(l10n.disableUser),
+                  child: Text(l10n.disableAccount),
                 ),
                 PopupMenuItem(
                   value: 2,
-                  child: Text(l10n.deleteUser),
+                  child: Text(l10n.deleteAccount),
                 ),
               ];
             },
             onSelected: (value) {
               switch (value) {
                 case 0:
-                  editUser(data);
+                  resetPassword(data);
                   break;
                 case 1:
-                  disableUser(data);
+                  disableAccount(data);
                   break;
                 case 2:
-                  deleteUser(data);
+                  deleteAccount(data);
               }
             },
           ),
@@ -277,18 +315,19 @@ DataRow recentFileDataRow(var data) {
   }
 }
 
-void editUser(User data) {
-  log('edit user');
+//todo
+void resetPassword(User data) {
+  log('reset password');
 }
 
-void deleteUser(User data) {
-  log('delete user');
+void disableAccount(User data) {
+  log('disable account');
 }
 
-void enableUser(User data) {
-  log('enable user');
+void enableAccount(User data) {
+  log('enable account');
 }
 
-void disableUser(User data) {
-  log('disable user');
+void deleteAccount(User data) {
+  log('enable account');
 }

@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
 
 class Test extends StatelessWidget {
@@ -5,8 +8,22 @@ class Test extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    
-    
-    return const Placeholder();
+    final cf = FirebaseFunctions.instance;
+    Future<void> test() async {
+      try {
+        //function
+        HttpsCallable callable =
+            FirebaseFunctions.instance.httpsCallable('test');
+        final result = await callable.call(
+             {
+            //   //"filter": adminDataList,
+             },
+            );
+      } catch (e) {
+        log(e.toString());
+      }
+    }
+
+    return ElevatedButton(onPressed: () => test(), child: Text('press me '));
   }
 }

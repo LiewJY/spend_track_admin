@@ -9,6 +9,5 @@ export 'text/page_title_text.dart';
 
 //others
 export 'snackbar.dart';
+export 'user_management_dialog.dart';
 
-//data table
-export 'paginated_table.dart';

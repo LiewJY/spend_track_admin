@@ -15,17 +15,14 @@ class DisplayAllAdminRequested extends ManagementEvent {
 }
 
 class AddAdminRequested extends ManagementEvent {
-  const AddAdminRequested();
+const AddAdminRequested({required this.email, required this.password, required this.name});
+
+  final String email;
+  final String password;
+  final String name;
 
   @override
-  List<Object> get props => [];
-}
-
-class EditAdminRequested extends ManagementEvent {
-  const EditAdminRequested();
-
-  @override
-  List<Object> get props => [];
+  List<Object> get props => [email, password, name];
 }
 
 class DisableAdminRequested extends ManagementEvent {
