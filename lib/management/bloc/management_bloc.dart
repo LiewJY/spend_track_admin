@@ -68,7 +68,6 @@ class ManagementBloc extends Bloc<ManagementEvent, ManagementState> {
         success: 'addedAdmin',
       ));
     } catch (e) {
-      log('bloc ' + e.toString());
       emit(state.copyWith(
         status: ManagementStatus.failure,
         error: e.toString(),

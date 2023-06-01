@@ -62,8 +62,7 @@ exports.adminUsers = functions.https.onCall(async (data, context) => {
 });
 
 //add admin user
-exports.addAdminUser = functions.https.onCall(async (data, context) => {
-  console.log('called addAdminUser');
+exports.addUser = functions.https.onCall(async (data, context) => {
   //todo
   return getAuth()
     .createUser({
@@ -73,18 +72,9 @@ exports.addAdminUser = functions.https.onCall(async (data, context) => {
       disabled: false,
     })
     .then((userRecord) => {
-      // See the UserRecord reference doc for the contents of userRecord.
-      //todo include add to firestore
-      //   const writeResult = await admin
-      //     .firestore()
-      //     .collection("messages")
-
-      //     .add({ original: original });
-      admin.firestore().collection('admins').doc(userRecord.uid).set({'admin': true});
-
-      console.log('Successfully created new user:', userRecord.uid);
-      // return userRecord.uid;
-      //return 'success';
+      if (data.isAdmin) {
+        admin.firestore().collection('admins').doc(userRecord.uid).set({ 'admin': true });
+      }
     })
     .catch((error) => {
       console.log('Error creating new user:', error);
@@ -93,16 +83,8 @@ exports.addAdminUser = functions.https.onCall(async (data, context) => {
     });
 });
 
-
-exports.test = functions.https.onCall(async (data, context) => {
-
-  admin.firestore().collection('admins').doc('fffffffffffff').set({'admin': true});
-
-});
-
-
-//todo edit admin user
-exports.editAdminUser = functions.https.onCall(async (data, context) => {
+//todo reset user password (admin & user)
+exports.resetUserPassword = functions.https.onCall(async (data, context) => {
   //todo
 
 });
@@ -114,14 +96,14 @@ exports.deleteAdminUser = functions.https.onCall(async (data, context) => {
 
 });
 
-//todo enable admin user
-exports.enableAdminUser = functions.https.onCall(async (data, context) => {
+//todo enable user (admin & user)
+exports.enableUser = functions.https.onCall(async (data, context) => {
   //todo
 
 });
 
-//todo disable admin user
-exports.disableAdminUser = functions.https.onCall(async (data, context) => {
+//todo disable user (admin & user)
+exports.disableUser = functions.https.onCall(async (data, context) => {
   //todo
 
 });

@@ -49,18 +49,18 @@ class ManagementRepository {
       required String name}) async {
     try {
       HttpsCallable callable =
-          FirebaseFunctions.instance.httpsCallable('addAdminUser');
+          FirebaseFunctions.instance.httpsCallable('addUser');
       final result = await callable.call({
         'email': email,
         'password': password,
         'name': name,
+        'isAdmin': true,
       });
 
       if (result.data.toString() == 'auth/email-already-exists') {
         throw 'email-already-exists';
       }
     } catch (e) {
-      log(e.toString());
       throw e.toString();
     }
   }
