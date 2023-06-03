@@ -1,5 +1,7 @@
 import 'dart:developer';
+import 'dart:js';
 
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:track_admin/l10n/l10n.dart';
@@ -50,6 +52,12 @@ class _AdminDataTableState extends State<AdminDataTable> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+
+    refresh() {
+      //call load data function
+      context.read<ManagementBloc>().add(DisplayAllAdminRequested());
+    }
+
     List<DataColumn> column = [
       DataColumn(
         label: Text(
@@ -83,16 +91,10 @@ class _AdminDataTableState extends State<AdminDataTable> {
         ),
       ),
     ];
-
     return BlocListener<ManagementBloc, ManagementState>(
       listener: (context, state) {
         if (state.status == ManagementStatus.failure) {
-          log('error ' + state.error);
-
           switch (state.error) {
-            case 'cannotRetrieveData':
-              AppSnackBar.error(context, l10n.cannotRetrieveData);
-              break;
             case 'email-already-exists':
               AppSnackBar.error(context, l10n.emailAlreadyInUse);
               break;
@@ -102,12 +104,24 @@ class _AdminDataTableState extends State<AdminDataTable> {
         }
         if (state.status == ManagementStatus.success) {
           switch (state.success) {
-            case 'addedAdmin':
+            case 'added':
               if (isDialogOpen) {
                 Navigator.of(context, rootNavigator: true).pop();
               }
               AppSnackBar.success(context, l10n.addedAdmin);
-              context.read<ManagementBloc>().add(DisplayAllAdminRequested());
+              refresh();
+              break;
+            case 'disabled':
+              AppSnackBar.success(context, l10n.userDisabledSuccess);
+              refresh();
+              break;
+            case 'enabled':
+              AppSnackBar.success(context, l10n.userDisabledSuccess);
+              refresh();
+              break;
+            case 'deleted':
+              AppSnackBar.success(context, l10n.userDisabledSuccess);
+              refresh();
               break;
           }
         }
@@ -146,7 +160,6 @@ class _AdminDataTableState extends State<AdminDataTable> {
             Padding(
               padding: AppStyle.dtButonHorizontalPadding,
               child: FilledButton(
-                //todo
                 onPressed: () {
                   if (!isDialogOpen) {
                     showDialog(
@@ -179,7 +192,7 @@ class _AdminDataTableState extends State<AdminDataTable> {
           });
         },
         columns: column,
-        source: RowSource(myData!),
+        source: RowSource(myData!, context),
       ),
     );
   }
@@ -189,8 +202,9 @@ class _AdminDataTableState extends State<AdminDataTable> {
 class RowSource extends DataTableSource {
   //extract the data param passed
   final List<User> adminData;
+  final BuildContext context;
 
-  RowSource(this.adminData);
+  RowSource(this.adminData, this.context);
 
   @override
   DataRow? getRow(int index) {
@@ -232,40 +246,41 @@ DataRow recentFileDataRow(var data) {
             foreground: Paint()..color = Colors.black.withOpacity(0.5),
           ),
         )),
-        //todo
         DataCell(
-          PopupMenuButton(
-            icon: Icon(Icons.more_vert_rounded),
-            itemBuilder: (context) {
-              final l10n = context.l10n;
-              return [
-                PopupMenuItem(
-                  value: 0,
-                  child: Text(l10n.resetPassword),
-                ),
-                PopupMenuItem(
-                  value: 1,
-                  child: Text(l10n.enableAccount),
-                ),
-                PopupMenuItem(
-                  value: 2,
-                  child: Text(l10n.deleteAccount),
-                ),
-              ];
-            },
-            onSelected: (value) {
-              switch (value) {
-                case 0:
-                  resetPassword(data);
-                  break;
-                case 1:
-                  enableAccount(data);
-                  break;
-                case 2:
-                  deleteAccount(data);
-              }
-            },
-          ),
+          Builder(builder: (context) {
+            return PopupMenuButton(
+              icon: Icon(Icons.more_vert_rounded),
+              itemBuilder: (context) {
+                final l10n = context.l10n;
+                return [
+                  PopupMenuItem(
+                    value: 0,
+                    child: Text(l10n.resetPassword),
+                  ),
+                  PopupMenuItem(
+                    value: 1,
+                    child: Text(l10n.enableAccount),
+                  ),
+                  PopupMenuItem(
+                    value: 2,
+                    child: Text(l10n.deleteAccount),
+                  ),
+                ];
+              },
+              onSelected: (value) {
+                switch (value) {
+                  case 0:
+                    resetPassword(data, context);
+                    break;
+                  case 1:
+                    enableAccount(data, context);
+                    break;
+                  case 2:
+                    deleteAccount(data, context);
+                }
+              },
+            );
+          }),
         ),
       ],
     );
@@ -277,38 +292,40 @@ DataRow recentFileDataRow(var data) {
         DataCell(Text(data.name ?? "")),
         DataCell(Text(data.id ?? "")),
         DataCell(
-          PopupMenuButton(
-            icon: Icon(Icons.more_vert_rounded),
-            itemBuilder: (context) {
-              final l10n = context.l10n;
-              return [
-                PopupMenuItem(
-                  value: 0,
-                  child: Text(l10n.resetPassword),
-                ),
-                PopupMenuItem(
-                  value: 1,
-                  child: Text(l10n.disableAccount),
-                ),
-                PopupMenuItem(
-                  value: 2,
-                  child: Text(l10n.deleteAccount),
-                ),
-              ];
-            },
-            onSelected: (value) {
-              switch (value) {
-                case 0:
-                  resetPassword(data);
-                  break;
-                case 1:
-                  disableAccount(data);
-                  break;
-                case 2:
-                  deleteAccount(data);
-              }
-            },
-          ),
+          Builder(builder: (context) {
+            return PopupMenuButton(
+              icon: Icon(Icons.more_vert_rounded),
+              itemBuilder: (context) {
+                final l10n = context.l10n;
+                return [
+                  PopupMenuItem(
+                    value: 0,
+                    child: Text(l10n.resetPassword),
+                  ),
+                  PopupMenuItem(
+                    value: 1,
+                    child: Text(l10n.disableAccount),
+                  ),
+                  PopupMenuItem(
+                    value: 2,
+                    child: Text(l10n.deleteAccount),
+                  ),
+                ];
+              },
+              onSelected: (value) {
+                switch (value) {
+                  case 0:
+                    resetPassword(data, context);
+                    break;
+                  case 1:
+                    disableAccount(data, context);
+                    break;
+                  case 2:
+                    deleteAccount(data, context);
+                }
+              },
+            );
+          }),
         ),
       ],
     );
@@ -316,18 +333,18 @@ DataRow recentFileDataRow(var data) {
 }
 
 //todo
-void resetPassword(User data) {
+void resetPassword(User data, BuildContext context) {
   log('reset password');
 }
 
-void disableAccount(User data) {
-  log('disable account');
+disableAccount(User data, BuildContext context) {
+  context.read<ManagementBloc>().add(DisableAdminRequested(uid: data.id));
 }
 
-void enableAccount(User data) {
-  log('enable account');
+void enableAccount(User data, BuildContext context) {
+  context.read<ManagementBloc>().add(EnableAdminRequested(uid: data.id));
 }
 
-void deleteAccount(User data) {
-  log('enable account');
+void deleteAccount(User data, BuildContext context) {
+  context.read<ManagementBloc>().add(DeleteAdminRequested(uid: data.id));
 }

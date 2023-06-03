@@ -63,7 +63,6 @@ exports.adminUsers = functions.https.onCall(async (data, context) => {
 
 //add admin user
 exports.addUser = functions.https.onCall(async (data, context) => {
-  //todo
   return getAuth()
     .createUser({
       email: data.email,
@@ -79,34 +78,58 @@ exports.addUser = functions.https.onCall(async (data, context) => {
     .catch((error) => {
       console.log('Error creating new user:', error);
       return error.code;
-
     });
 });
 
+//enable / disable user (admin & user)
+exports.toggleEnableUser = functions.https.onCall(async (data, context) => {
+  return getAuth()
+    .updateUser(data.uid, {
+      disabled: !data.isEnabled,
+    })
+    .catch((error) => {
+      console.log('Error updating user:', error);
+      return error;
+    });
+
+});
+
+
 //todo reset user password (admin & user)
+//fixme at production
 exports.resetUserPassword = functions.https.onCall(async (data, context) => {
   //todo
+  //fixme at production
 
+  const userEmail = 'liewjunyoung01@gmail.com';
+  getAuth()
+    .generatePasswordResetLink(userEmail, actionCodeSettings)
+    .then((link) => {
+      // Construct password reset email template, embed the link and send
+      // using custom SMTP server.
+      return sendCustomPasswordResetEmail(userEmail, displayName, link);
+    })
+    .catch((error) => {
+      // Some error occurred.
+    });
 });
 
 
-//todo delete admin user
+//delete admin user
 exports.deleteAdminUser = functions.https.onCall(async (data, context) => {
-  //todo
+  return getAuth()
+  .deleteUser(data.uid)
+  .then(() => {
+    console.log('Successfully deleted user');
+    admin.firestore().collection('admins').doc(data.uid).delete();
+  })
+  .catch((error) => {
+    console.log('Error deleting user:', error);
+    return error;
+  });
 
 });
 
-//todo enable user (admin & user)
-exports.enableUser = functions.https.onCall(async (data, context) => {
-  //todo
-
-});
-
-//todo disable user (admin & user)
-exports.disableUser = functions.https.onCall(async (data, context) => {
-  //todo
-
-});
 
 
 // exports.user = functions.https.onCall(async (data, context) => {

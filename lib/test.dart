@@ -13,7 +13,7 @@ class Test extends StatelessWidget {
       try {
         //function
         HttpsCallable callable =
-            FirebaseFunctions.instance.httpsCallable('test');
+            FirebaseFunctions.instance.httpsCallable('resetUserPassword');
         final result = await callable.call(
              {
             //   //"filter": adminDataList,

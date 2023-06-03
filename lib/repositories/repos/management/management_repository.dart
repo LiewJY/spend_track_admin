@@ -65,12 +65,41 @@ class ManagementRepository {
     }
   }
 
-  //todo delete admin
-  deleteAdmin() {}
+  //todo toggle enable admin
+  toggleEnableUser({required String uid, required bool isEnabled}) async {
+    try {
+      HttpsCallable callable =
+          FirebaseFunctions.instance.httpsCallable('toggleEnableUser');
+      final result = await callable.call(
+        {
+          'uid': uid,
+          'isEnabled': isEnabled,
+        },
+      );
+      if (result.data.toString() == 'null') {
+        throw 'unknown';
+      }
+    } catch (e) {
+      throw e.toString();
+    }
+  }
 
-  //todo enable admin
-  enableAdmin() {}
-
-  //todo disable admin
-  disableAdmin() {}
+//todo delete admin
+  deleteAdmin({required String uid}) async {
+    try {
+      HttpsCallable callable =
+          FirebaseFunctions.instance.httpsCallable('deleteAdminUser');
+      final result = await callable.call(
+        {
+          'uid': uid,
+        },
+      );
+      log(result.data.toString());
+      if (result.data.toString() != 'null') {
+        throw 'unknown';
+      }
+    } catch (e) {
+      throw e.toString();
+    }
+  }
 }

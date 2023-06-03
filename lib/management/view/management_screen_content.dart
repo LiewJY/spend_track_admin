@@ -57,6 +57,25 @@ class _DataLoaderState extends State<DataLoader> {
     myData = context.select((ManagementBloc bloc) => bloc.state.adminUsersList);
 
     filterData = myData!;
-    return AdminDataTable();
+    return BlocListener<ManagementBloc, ManagementState>(
+      listener: (context, state) {
+        if (state.status == ManagementStatus.failure) {
+          switch (state.error) {
+            case 'cannotRetrieveData':
+              AppSnackBar.error(context, l10n.cannotRetrieveData);
+              break;
+          }
+        }
+        if (state.status == ManagementStatus.success) {
+          switch (state.success) {
+            case 'loadedData':
+              //reload the data table when data is loaded
+              setState(() {});
+              break;
+          }
+        }
+      },
+      child: AdminDataTable(),
+    );
   }
 }

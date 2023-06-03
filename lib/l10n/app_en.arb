@@ -43,6 +43,8 @@
   "emailChanged": "Email successfully changed",
   "resetPasswordEmailSent": "Reset your password with the link sent to your email",
   "addedAdmin": "Admin user successfully added",
+  "userEnabledSuccess": "User successfully enabled",
+  "userDisabledSuccess": "User successfully disabled",
 
 
 "@navigation": {},

@@ -15,7 +15,8 @@ class DisplayAllAdminRequested extends ManagementEvent {
 }
 
 class AddAdminRequested extends ManagementEvent {
-const AddAdminRequested({required this.email, required this.password, required this.name});
+  const AddAdminRequested(
+      {required this.email, required this.password, required this.name});
 
   final String email;
   final String password;
@@ -26,22 +27,28 @@ const AddAdminRequested({required this.email, required this.password, required t
 }
 
 class DisableAdminRequested extends ManagementEvent {
-  const DisableAdminRequested();
+  const DisableAdminRequested({required this.uid});
+
+  final String uid;
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => [uid];
 }
 
 class EnableAdminRequested extends ManagementEvent {
-  const EnableAdminRequested();
+  const EnableAdminRequested({required this.uid});
+
+  final String uid;
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => [uid];
 }
 
 class DeleteAdminRequested extends ManagementEvent {
-  const DeleteAdminRequested();
+  const DeleteAdminRequested({required this.uid});
+
+  final String uid;
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => [uid];
 }

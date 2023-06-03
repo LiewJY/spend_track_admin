@@ -13,7 +13,6 @@ class ManagementBloc extends Bloc<ManagementEvent, ManagementState> {
   ManagementBloc({required this.managementRepository})
       : super(ManagementState.initial()) {
     on<DisplayAllAdminRequested>(_onDisplayAllAdminRequested);
-    //todo
     on<AddAdminRequested>(_onAddAdminRequested);
     on<DisableAdminRequested>(_onDisableAdminRequested);
     on<EnableAdminRequested>(_onEnableAdminRequested);
@@ -32,6 +31,7 @@ class ManagementBloc extends Bloc<ManagementEvent, ManagementState> {
           await managementRepository.getAdminUsers();
       //convert to list
       List<User> mappedList = adminUsersList.map((data) {
+        //print('log aa ' + data.toString());
         return User(
           id: data['uid'],
           email: data['email'],
@@ -39,8 +39,10 @@ class ManagementBloc extends Bloc<ManagementEvent, ManagementState> {
           disabled: data['disabled'],
         );
       }).toList();
+
       emit(state.copyWith(
         status: ManagementStatus.success,
+        success: 'loadedData',
         adminUsersList: mappedList,
       ));
     } catch (e) {
@@ -65,7 +67,7 @@ class ManagementBloc extends Bloc<ManagementEvent, ManagementState> {
       );
       emit(state.copyWith(
         status: ManagementStatus.success,
-        success: 'addedAdmin',
+        success: 'added',
       ));
     } catch (e) {
       emit(state.copyWith(
@@ -82,7 +84,14 @@ class ManagementBloc extends Bloc<ManagementEvent, ManagementState> {
     if (state.status == ManagementStatus.loading) return;
     emit(state.copyWith(status: ManagementStatus.loading));
     try {
-      //todo
+      await managementRepository.toggleEnableUser(
+        uid: event.uid,
+        isEnabled: false,
+      );
+      emit(state.copyWith(
+        status: ManagementStatus.success,
+        success: 'disabled',
+      ));
     } catch (e) {
       emit(state.copyWith(
         status: ManagementStatus.failure,
@@ -98,7 +107,14 @@ class ManagementBloc extends Bloc<ManagementEvent, ManagementState> {
     if (state.status == ManagementStatus.loading) return;
     emit(state.copyWith(status: ManagementStatus.loading));
     try {
-      //todo
+      await managementRepository.toggleEnableUser(
+        uid: event.uid,
+        isEnabled: true,
+      );
+      emit(state.copyWith(
+        status: ManagementStatus.success,
+        success: 'enabled',
+      ));
     } catch (e) {
       emit(state.copyWith(
         status: ManagementStatus.failure,
@@ -114,7 +130,13 @@ class ManagementBloc extends Bloc<ManagementEvent, ManagementState> {
     if (state.status == ManagementStatus.loading) return;
     emit(state.copyWith(status: ManagementStatus.loading));
     try {
-      //todo
+      await managementRepository.deleteAdmin(
+        uid: event.uid,
+      );
+      emit(state.copyWith(
+        status: ManagementStatus.success,
+        success: 'deleted',
+      ));
     } catch (e) {
       emit(state.copyWith(
         status: ManagementStatus.failure,
