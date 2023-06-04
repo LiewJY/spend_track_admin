@@ -1,1 +1,1 @@
-export 'view/setting_screen.dart';
+export 'view/setting_screen_content.dart';

@@ -1,6 +1,10 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:track_admin/card/view/card_screen_content.dart';
+import 'package:track_admin/category/category.dart';
 import 'package:track_admin/l10n/l10n.dart';
+import 'package:track_admin/management/management.dart';
 import 'package:track_admin/repositories/repositories.dart';
 import 'package:track_admin/home/home.dart';
 import 'package:track_admin/setting/setting.dart';
@@ -17,7 +21,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   //fixme
-  int currentPageIndex = 0;
+  int currentPageIndex = 3;
   //repos
   final authRepository = AuthRepository();
 
@@ -39,23 +43,28 @@ class _HomeScreenState extends State<HomeScreen> {
             labelType: NavigationRailLabelType.all,
             destinations: [
               NavigationRailDestination(
-                  icon: Icon(Icons.home),
-                  label: Text(l10n.home)),
+                  icon: Icon(Icons.home), label: Text(l10n.home)),
               NavigationRailDestination(
-                  icon: Icon(Icons.settings),
-                  label: Text(l10n.setting)),
+                  icon: Icon(Icons.category), label: Text(l10n.category)),
+              NavigationRailDestination(
+                  icon: Icon(Icons.credit_card), label: Text(l10n.card)),
+              NavigationRailDestination(
+                  icon: Icon(Icons.person), label: Text(l10n.management)),
+              NavigationRailDestination(
+                  icon: Icon(Icons.settings), label: Text(l10n.setting)),
             ],
           ),
-         
           Expanded(
-            child:
-              Padding(
-                padding: AppStyle.paddingWebBody,
-                child: <Widget>[
-                  HomeScreenContent(),
-                  SettingScreen(),
-                ][currentPageIndex],
-              ),
+            child: Padding(
+              padding: AppStyle.paddingWebBody,
+              child: <Widget>[
+                HomeScreenContent(),
+                CategoryScereenContent(),
+                CardScreenContent(),
+                ManagementScereenContent(),
+                SettingScreenContent(),
+              ][currentPageIndex],
+            ),
           ),
         ],
       )),

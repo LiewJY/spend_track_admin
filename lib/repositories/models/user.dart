@@ -1,3 +1,6 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:convert';
+
 import 'package:equatable/equatable.dart';
 
 class User extends Equatable {
@@ -5,11 +8,13 @@ class User extends Equatable {
     required this.id,
     this.email,
     this.name,
+    this.disabled,
   });
 
   final String? email;
   final String id;
   final String? name;
+  final bool? disabled;
 
   //represent unauthenticated
   static const empty = User(id: '');
@@ -22,4 +27,25 @@ class User extends Equatable {
 
   @override
   List<Object?> get props => [email, id, name];
+
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'email': email,
+      'id': id,
+      'name': name,
+    };
+  }
+
+  factory User.fromMap(Map<String, dynamic> map) {
+    return User(
+      email: map['email'] != null ? map['email'] as String : null,
+      id: map['id'] as String,
+      name: map['name'] != null ? map['name'] as String : null,
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory User.fromJson(String source) =>
+      User.fromMap(json.decode(source) as Map<String, dynamic>);
 }

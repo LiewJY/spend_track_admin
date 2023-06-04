@@ -6,7 +6,7 @@ import 'package:track_admin/home/home.dart';
 import 'package:track_admin/l10n/l10n.dart';
 import 'package:track_admin/unauthorized/unauthorized.dart';
 
-//NOTE: THIS SCREN IS BLANK AND INTEND TO ACT AS A PLACEHOLDER ONLY
+//THIS SCREEN IS BLANK AND INTEND TO ACT AS A PLACEHOLDER ONLY
 class LoadingScreen extends StatelessWidget {
   const LoadingScreen({super.key});
   //for routing
@@ -17,7 +17,6 @@ class LoadingScreen extends StatelessWidget {
       state: context.select((IsAdminCubit cubit) => cubit.state.status),
       onGeneratePages: routes,
     );
-    ;
   }
 
   List<Page> routes(
@@ -29,7 +28,6 @@ class LoadingScreen extends StatelessWidget {
         return [HomeScreen.page()];
 
       case IsAdminStatus.invalid:
-        //return [UnauthorizedScreen.page()];
         return [UnauthorizedScreen.page()];
     }
     return [Loading.page()];
@@ -50,11 +48,13 @@ class Loading extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              l10n.youDoNotHavePermissionToAccess,
+              l10n.verifying,
               style: Theme.of(context).textTheme.headlineMedium,
               textAlign: TextAlign.center,
             ),
-            CircularProgressIndicator(),
+            CircularProgressIndicator(
+              value: 5,
+            ),
           ],
         ),
       ),

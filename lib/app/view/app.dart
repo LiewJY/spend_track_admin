@@ -8,11 +8,10 @@ import 'package:track_admin/app/app.dart';
 import 'package:track_admin/app/bloc/app_bloc.dart';
 import 'package:track_admin/app/view/loading_screen.dart';
 import 'package:track_admin/bloc_observer.dart';
-import 'package:track_admin/home/home.dart';
 import 'package:track_admin/l10n/l10n.dart';
 import 'package:track_admin/login/view/login_screen.dart';
 import 'package:track_admin/repositories/repos/auth/auth_repository.dart';
-import 'package:track_admin/unauthorized/unauthorized.dart';
+import 'package:track_admin/test.dart';
 import 'package:track_theme/track_theme.dart';
 
 class App extends StatelessWidget {
@@ -86,7 +85,9 @@ class _AppViewState extends State<AppView> {
       darkTheme: AppTheme.darkThemeData,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
+      //fixme remove
       home: pageRoute(),
+      //  home: Test(),
     );
   }
 
@@ -103,7 +104,7 @@ class _AppViewState extends State<AppView> {
   ) {
     switch (state) {
       case AppStatus.authenticated:
-      //check if the user is admin
+        //check if the user is admin
         context.read<IsAdminCubit>().isAdmin();
         return [LoadingScreen.page()];
       case AppStatus.unauthenticated:

@@ -22,26 +22,29 @@
   "edit": "Edit",
   "update": "Update",
   "next": "Next",
+  "add": "Add",
+  "addAdmin": "Add admin",
+
 
 "@loginPage": {},
   "forgetPassword": "Forget Password",
 
-
-"@profilePage": {},
-  "myAccount": "My Account",
-  "editName": "Edit Name",
-  "changeEmail": "Change Email",
+"@managementPage": {},
+  "searchByUserEmailOrUID": "Search by user email, or UID",
+  "displayName" : "Display Name",
+  "uid": "UID",
+  "enableAccount": "Enable Account",
+  "disableAccount": "Disable Account",
   "resetPassword": "Reset Password",
-  "myWallet": "My Wallet",
-  "manageWallet": "Manage Wallet",
-  "manageCard": "Manage Card",
-  "manageCategory": "Manage Category",
-  "reAuth": "Re Authenticate",
+  "deleteAccount": "Delete Account",
 
 "@SuccessMessage": {},
   "nameChanged": "Name successfully changed",
   "emailChanged": "Email successfully changed",
   "resetPasswordEmailSent": "Reset your password with the link sent to your email",
+  "addedAdmin": "Admin user successfully added",
+  "userEnabledSuccess": "User successfully enabled",
+  "userDisabledSuccess": "User successfully disabled",
 
 
 "@navigation": {},
@@ -49,6 +52,17 @@
   "setting": "Setting",
   "youDoNotHavePermissionToAccess": "You do not have permission to access this site",
   "verifying": "Verifying",
+  "card" : "Card",
+  "category": "Category",
+  "management": "Management",
+  "adminManagement": "Admin Management",
+
+"@home": {},
+  "hi": "Hi {name},",
+
+"@firebaseErrors": {},
+  "cannotRetrieveData": "Cannot retrieve data. Unknown error occurred.",
+    "unknownError": "An unknown error occurred. Please try again.",
 
 
 "@firebaseAuthErrors": {},
@@ -56,7 +70,7 @@
   "userNotFound": "Email is not found, please create an account.",
   "wrongPassword": "Incorrect password, please try again.",
   "firebaseAuthDefault": "An unknown exception occurred.",
-  "invalidEmail": "This user has been disabled. Please contact support for help.",
+  "invalidEmail": "Invalid email address.",
   "emailAlreadyInUse": "An account already exists with that email.",
   "operationNotAllowed": "Operation is not allowed.  Please contact support.",
   "weakPassword": "Please enter a stronger password."
