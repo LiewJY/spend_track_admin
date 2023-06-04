@@ -120,7 +120,7 @@ class _AdminDataTableState extends State<AdminDataTable> {
               refresh();
               break;
             case 'deleted':
-              AppSnackBar.success(context, l10n.userDisabledSuccess);
+              AppSnackBar.success(context, l10n.userDeleteSuccessful);
               refresh();
               break;
           }
