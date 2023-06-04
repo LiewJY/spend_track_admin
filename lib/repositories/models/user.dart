@@ -28,24 +28,28 @@ class User extends Equatable {
   @override
   List<Object?> get props => [email, id, name];
 
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'email': email,
-      'id': id,
-      'name': name,
-    };
-  }
+//todo
+//fixme remove????
+  // Map<String, dynamic> toMap() {
+  //   return <String, dynamic>{
+  //     'email': email,
+  //     'id': id,
+  //     'name': name,
+  //     'disabled': disabled,
+  //   };
+  // }
 
-  factory User.fromMap(Map<String, dynamic> map) {
-    return User(
-      email: map['email'] != null ? map['email'] as String : null,
-      id: map['id'] as String,
-      name: map['name'] != null ? map['name'] as String : null,
-    );
-  }
+  // factory User.fromMap(Map<String, dynamic> map) {
+  //   return User(
+  //     email: map['email'] != null ? map['email'] as String : null,
+  //     id: map['id'] as String,
+  //     name: map['name'] != null ? map['name'] as String : null,
+  //     disabled: map['disabled'] != null ? map['disabled'] as bool : null,
+  //   );
+  // }
 
-  String toJson() => json.encode(toMap());
+  // String toJson() => json.encode(toMap());
 
-  factory User.fromJson(String source) =>
-      User.fromMap(json.decode(source) as Map<String, dynamic>);
+  // factory User.fromJson(String source) =>
+  //     User.fromMap(json.decode(source) as Map<String, dynamic>);
 }
