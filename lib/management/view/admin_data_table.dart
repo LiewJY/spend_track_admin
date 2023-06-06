@@ -120,7 +120,7 @@ class _AdminDataTableState extends State<AdminDataTable> {
               refresh();
               break;
             case 'deleted':
-              AppSnackBar.success(context, l10n.userDeleteSuccessful);
+              AppSnackBar.success(context, l10n.userDeleteSuccess);
               refresh();
               break;
           }
@@ -283,37 +283,42 @@ DataRow recentFileDataRow(var data) {
         DataCell(Text(data.id ?? "")),
         DataCell(
           Builder(builder: (context) {
-            return PopupMenuButton(
-              icon: Icon(Icons.more_vert_rounded),
-              itemBuilder: (context) {
-                final l10n = context.l10n;
-                return [
-                  PopupMenuItem(
-                    value: 0,
-                    child: Text(l10n.resetPassword),
-                  ),
-                  PopupMenuItem(
-                    value: 1,
-                    child: Text(l10n.disableAccount),
-                  ),
-                  PopupMenuItem(
-                    value: 2,
-                    child: Text(l10n.deleteAccount),
-                  ),
-                ];
-              },
-              onSelected: (value) {
-                switch (value) {
-                  case 0:
-                    resetPassword(data, context);
-                    break;
-                  case 1:
-                    disableAccount(data, context);
-                    break;
-                  case 2:
-                    deleteAccount(data, context);
-                }
-              },
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                PopupMenuButton(
+                  icon: Icon(Icons.more_vert_rounded),
+                  itemBuilder: (context) {
+                    final l10n = context.l10n;
+                    return [
+                      PopupMenuItem(
+                        value: 0,
+                        child: Text(l10n.resetPassword),
+                      ),
+                      PopupMenuItem(
+                        value: 1,
+                        child: Text(l10n.disableAccount),
+                      ),
+                      PopupMenuItem(
+                        value: 2,
+                        child: Text(l10n.deleteAccount),
+                      ),
+                    ];
+                  },
+                  onSelected: (value) {
+                    switch (value) {
+                      case 0:
+                        resetPassword(data, context);
+                        break;
+                      case 1:
+                        disableAccount(data, context);
+                        break;
+                      case 2:
+                        deleteAccount(data, context);
+                    }
+                  },
+                ),
+              ],
             );
           }),
         ),

@@ -25,12 +25,15 @@ class AddCategoryRequested extends CategoryEvent {
 }
 
 class UpdateCategoryRequested extends CategoryEvent {
-  const UpdateCategoryRequested({required this.uid});
+  const UpdateCategoryRequested(
+      {required this.uid, required this.name, required this.description});
 
   final String uid;
+  final String name;
+  final String description;
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => [name, description];
 }
 
 class DeleteCategoryRequested extends CategoryEvent {
@@ -39,5 +42,5 @@ class DeleteCategoryRequested extends CategoryEvent {
   final String uid;
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => [uid];
 }

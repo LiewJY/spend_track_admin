@@ -56,7 +56,10 @@
   "addedAdmin": "Admin user successfully added",
   "userEnabledSuccess": "User successfully enabled",
   "userDisabledSuccess": "User successfully disabled",
-  "userDeleteSuccessful": "User successfully deleted",
+  "userDeleteSuccess": "User successfully deleted",
+  "categoryUpdatedSuccess": "Category successfully updated",
+  "categoryDeleteSuccess": "Category successfully deleted",
+
 
 
 "@navigation": {},

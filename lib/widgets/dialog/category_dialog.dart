@@ -30,13 +30,18 @@ class CategoryDialog extends StatefulWidget {
 
 class _CategoryDialogState extends State<CategoryDialog> {
   final categoryForm = GlobalKey<FormState>();
-
+  late final String uid;
   final _nameController = TextEditingController();
   final _descriptionController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    //set data for edit / update option
+    if (widget.action == 'editCategory') {
+      _nameController.text = widget.data!.name!;
+      _descriptionController.text = widget.data!.description!;
+    }
 
     return Dialog(
       child: SingleChildScrollView(
@@ -92,7 +97,11 @@ class _CategoryDialogState extends State<CategoryDialog> {
               ));
           break;
         case 'editCategory':
-          log('editCategory');
+          context.read<CategoryBloc>().add(UpdateCategoryRequested(
+                uid: widget.data!.uid!,
+                name: _nameController.text,
+                description: _descriptionController.text,
+              ));
           break;
       }
     }

@@ -27,7 +27,7 @@ class CategoryScereenContent extends StatelessWidget {
     return RepositoryProvider.value(
       value: categoryRepository,
       child: BlocProvider(
-        create: (context) => CategoryBloc(),
+        create: (context) => CategoryBloc(categoryRepository: categoryRepository),
         child: ListView(
           children: [
             PageTitleText(title: l10n.category),

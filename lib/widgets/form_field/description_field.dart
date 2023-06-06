@@ -30,7 +30,6 @@ class _DescriptionFieldState extends State<DescriptionField> {
         labelText: "${l10n.description}*",
       ),
       controller: widget.controller,
-      autovalidateMode: AutovalidateMode.onUserInteraction,
       keyboardType: TextInputType.text,
       validator: descriptionValidator,
     );

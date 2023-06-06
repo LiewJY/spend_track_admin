@@ -17,6 +17,12 @@ class CategoryDataTable extends StatefulWidget {
   State<CategoryDataTable> createState() => _CategoryDataTableState();
 }
 
+//for dialog
+bool isDialogOpen = false;
+void toggleDialog() {
+  isDialogOpen = !isDialogOpen;
+}
+
 class _CategoryDataTableState extends State<CategoryDataTable> {
   //column sorting function
   int sortColumnIndex = 0;
@@ -29,26 +35,18 @@ class _CategoryDataTableState extends State<CategoryDataTable> {
   onsortColum(int columnIndex, bool ascending) {
     if (columnIndex == 0) {
       if (ascending) {
-        //fixme
-        //todo
-        //filterData!.sort((a, b) => a.name!.compareTo(b.name!));
-      } else {}
+        filterData!.sort((a, b) => a.name!.compareTo(b.name!));
+      } else {
+        filterData!.sort((a, b) => b.name!.compareTo(a.name!));
+      }
     }
   }
 
   //todo will use if have clear option
   TextEditingController searchController = TextEditingController();
   void clear() {
-    //fixme
-    //todo
-    //myData = filterData!.toList();
+    myData = filterData!.toList();
     searchController.clear();
-  }
-
-  //for dialog
-  bool isDialogOpen = false;
-  void toggleDialog() {
-    isDialogOpen = !isDialogOpen;
   }
 
   @override
@@ -91,7 +89,37 @@ class _CategoryDataTableState extends State<CategoryDataTable> {
 // return Placeholder();
     return BlocListener<CategoryBloc, CategoryState>(
       listener: (context, state) {
-        // TODO: implement listener
+        if (state.status == CategoryStatus.failure) {
+          switch (state.error) {
+            // case 'email-already-exists':
+            //   AppSnackBar.error(context, l10n.emailAlreadyInUse);
+            //   break;
+            default:
+              AppSnackBar.error(context, l10n.unknownError);
+          }
+        }
+        if (state.status == CategoryStatus.success) {
+          switch (state.success) {
+            case 'added':
+              if (isDialogOpen) {
+                Navigator.of(context, rootNavigator: true).pop();
+              }
+              AppSnackBar.success(context, l10n.addedAdmin);
+              refresh();
+              break;
+            case 'updated':
+              if (isDialogOpen) {
+                Navigator.of(context, rootNavigator: true).pop();
+              }
+              AppSnackBar.success(context, l10n.categoryUpdatedSuccess);
+              refresh();
+              break;
+            case 'deleted':
+              AppSnackBar.success(context, l10n.categoryDeleteSuccess);
+              refresh();
+              break;
+          }
+        }
       },
       child: PaginatedDataTable(
         sortAscending: isAscending,
@@ -190,31 +218,36 @@ DataRow recentFileDataRow(SpendingCategory data) {
       )),
       DataCell(
         Builder(builder: (context) {
-          return PopupMenuButton(
-            icon: Icon(Icons.more_vert_rounded),
-            itemBuilder: (context) {
-              final l10n = context.l10n;
-              return [
-                PopupMenuItem(
-                  value: 0,
-                  child: Text(l10n.editCategory),
-                ),
-                PopupMenuItem(
-                  value: 1,
-                  child: Text(l10n.deleteCategory),
-                ),
-              ];
-            },
-            onSelected: (value) {
-              switch (value) {
-                case 0:
-                  editCategory(data, context);
-                  break;
-                case 1:
-                  deleteCategory(data, context);
-                  break;
-              }
-            },
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              PopupMenuButton(
+                icon: Icon(Icons.more_vert_rounded),
+                itemBuilder: (context) {
+                  final l10n = context.l10n;
+                  return [
+                    PopupMenuItem(
+                      value: 0,
+                      child: Text(l10n.editCategory),
+                    ),
+                    PopupMenuItem(
+                      value: 1,
+                      child: Text(l10n.deleteCategory),
+                    ),
+                  ];
+                },
+                onSelected: (value) {
+                  switch (value) {
+                    case 0:
+                      editCategory(data, context);
+                      break;
+                    case 1:
+                      deleteCategory(data, context);
+                      break;
+                  }
+                },
+              ),
+            ],
           );
         }),
       ),
@@ -224,9 +257,27 @@ DataRow recentFileDataRow(SpendingCategory data) {
 
 //todo
 void editCategory(SpendingCategory data, BuildContext context) {
-  context.read<CategoryBloc>().add(UpdateCategoryRequested(uid: data.uid));
+  final l10n = context.l10n;
+  if (!isDialogOpen) {
+    showDialog(
+        context: context,
+        builder: (_) {
+          return BlocProvider.value(
+            value: BlocProvider.of<CategoryBloc>(context),
+            child: CategoryDialog(
+              dialogTitle: l10n.editCategory,
+              actionName: l10n.update,
+              action: 'editCategory',
+              data: data,
+            ),
+          );
+        }).then((value) {
+      toggleDialog();
+    });
+    toggleDialog();
+  }
 }
 
 void deleteCategory(SpendingCategory data, BuildContext context) {
-  context.read<CategoryBloc>().add(DeleteCategoryRequested(uid: data.uid));
+  context.read<CategoryBloc>().add(DeleteCategoryRequested(uid: data.uid!));
 }
