@@ -96,7 +96,7 @@ class _UserManagementDialogState extends State<UserManagementDialog> {
   }
 
   action(type) {
-    // if (userManagementForm.currentState!.validate()) {
+    if (userManagementForm.currentState!.validate()) {
       switch (type) {
         //todo
         case 'addAdmin':
@@ -112,6 +112,6 @@ class _UserManagementDialogState extends State<UserManagementDialog> {
           break;
         // default:
       }
-    // }
+    }
   }
 }
