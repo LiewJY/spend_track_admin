@@ -9,7 +9,10 @@ export 'text/page_title_text.dart';
 
 //others
 export 'snackbar.dart';
-export 'user_management_dialog.dart';
+
+//dialog
+export 'dialog/user_management_dialog.dart';
+export 'dialog/category_dialog.dart';
 
 //data table 
 export 'data_table_search_field.dart';
