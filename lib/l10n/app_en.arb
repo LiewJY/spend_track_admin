@@ -38,6 +38,13 @@
   "resetPassword": "Reset Password",
   "deleteAccount": "Delete Account",
 
+"@categoryPage": {},
+  "searchByCategoryName": "Search by category name",
+  "categoryName": "Category Name",
+  "description" : "Description",
+
+
+
 "@SuccessMessage": {},
   "nameChanged": "Name successfully changed",
   "emailChanged": "Email successfully changed",
@@ -45,6 +52,7 @@
   "addedAdmin": "Admin user successfully added",
   "userEnabledSuccess": "User successfully enabled",
   "userDisabledSuccess": "User successfully disabled",
+  "userDeleteSuccessful": "User successfully deleted",
 
 
 "@navigation": {},

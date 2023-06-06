@@ -132,30 +132,20 @@ class _AdminDataTableState extends State<AdminDataTable> {
           children: [
             Expanded(
               flex: 7,
-              child: TextField(
-                controller: searchController,
-                decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.search),
-                    hintText: l10n.searchByUserEmailOrUID,
-                    border: InputBorder.none
-                    //todo
-                    // suffixIcon: IconButton(
-                    //   icon: Icon(Icons.close),
-                    //   onPressed: () => clear(),
-                    // ),
-                    ),
-                onChanged: (value) {
-                  setState(() {
-                    myData = filterData!
-                        .where((element) =>
-                            element.email!
-                                .toLowerCase()
-                                .contains(value.toLowerCase()) ||
-                            element.id.contains(value))
-                        .toList();
-                  });
-                },
-              ),
+              child: DataTableSearchField(
+                  hintText: l10n.searchByUserEmailOrUID,
+                  controller: searchController,
+                  action: (value) {
+                    setState(() {
+                      myData = filterData!
+                          .where((element) =>
+                              element.email!
+                                  .toLowerCase()
+                                  .contains(value.toLowerCase()) ||
+                              element.id.contains(value))
+                          .toList();
+                    });
+                  }),
             ),
             Padding(
               padding: AppStyle.dtButonHorizontalPadding,
