@@ -9,23 +9,6 @@ const { getAuth } = require("firebase-admin/auth");
 //firebase function logging
 require("firebase-functions/logger/compat");
 
-//todo remove
-// // Take the text parameter passed to this HTTP endpoint and insert it into
-// // Firestore under the path /messages/:documentId/original
-// exports.addMessage = functions.https.onCall(async (data, context) => {
-//   // Grab the text parameter.
-//   const original = data.text;
-//   // console.log('log ', original);
-//   // Push the new message into Firestore using the Firebase Admin SDK.
-//   const writeResult = await admin
-//     .firestore()
-//     .collection("messages")
-//     .add({ original: original });
-//   return {
-//     result: writeResult.id,
-
-//   }
-// });
 
 //list all admin users
 const listAllUsers = (nextPageToken, accumulatorUsers = []) => {
