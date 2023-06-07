@@ -6,6 +6,7 @@ import 'package:track_admin/l10n/l10n.dart';
 import 'package:track_admin/management/management.dart';
 import 'package:track_admin/repositories/models/user.dart';
 import 'package:track_admin/repositories/repositories.dart';
+import 'package:track_admin/widgets/widgets.dart';
 
 import '../../widgets/snackbar.dart';
 
@@ -24,6 +25,7 @@ class ManagementScereenContent extends StatelessWidget {
             ManagementBloc(managementRepository: managementRepository),
         child: ListView(
           children: [
+            PageTitleText(title: l10n.adminManagement),
             DataLoader(),
           ],
         ),

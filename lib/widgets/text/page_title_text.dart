@@ -10,10 +10,17 @@ class PageTitleText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      title,
-      style: Theme.of(context).textTheme.titleLarge,
-      textAlign: TextAlign.center,
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        //fixme better options
+        Padding(padding: EdgeInsets.only(left: 2)),
+        Text(
+          title,
+          style: Theme.of(context).textTheme.titleLarge,
+          //textAlign: TextAlign.center,
+        ),
+      ],
     );
   }
 }

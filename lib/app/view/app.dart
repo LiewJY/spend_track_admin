@@ -87,7 +87,7 @@ class _AppViewState extends State<AppView> {
       supportedLocales: AppLocalizations.supportedLocales,
       //fixme remove
       home: pageRoute(),
-      //  home: Test(),
+       // home: Test(),
     );
   }
 

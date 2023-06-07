@@ -13,6 +13,7 @@
   "passwordAtLeast6": "Password must be at least 6 characters",
   "nameEmpty": "Name cannot be empty",
   "passwordDoesNotMatch": "Password does not match",
+  "descriptionEmpty": "Description cannot be empty",
 
 "@button": {},
   "login": "Login",
@@ -38,6 +39,16 @@
   "resetPassword": "Reset Password",
   "deleteAccount": "Delete Account",
 
+"@categoryPage": {},
+  "searchByCategoryName": "Search by category name",
+  "categoryName": "Category Name",
+  "description" : "Description",
+  "addCategory": "Add Category",
+  "editCategory": "Edit Category",
+  "deleteCategory": "Delete Category",
+
+
+
 "@SuccessMessage": {},
   "nameChanged": "Name successfully changed",
   "emailChanged": "Email successfully changed",
@@ -45,6 +56,10 @@
   "addedAdmin": "Admin user successfully added",
   "userEnabledSuccess": "User successfully enabled",
   "userDisabledSuccess": "User successfully disabled",
+  "userDeleteSuccess": "User successfully deleted",
+  "categoryUpdatedSuccess": "Category successfully updated",
+  "categoryDeleteSuccess": "Category successfully deleted",
+
 
 
 "@navigation": {},
