@@ -25,6 +25,7 @@
   "next": "Next",
   "add": "Add",
   "addAdmin": "Add admin",
+  "addUser": "Add user",
 
 
 "@loginPage": {},
@@ -70,7 +71,9 @@
   "card" : "Card",
   "category": "Category",
   "management": "Management",
+  "users": "Users",
   "adminManagement": "Admin Management",
+  "userManagement": "User Management",
 
 "@home": {},
   "hi": "Hi {name},",

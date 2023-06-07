@@ -132,6 +132,6 @@ class AuthRepository {
 extension on firebase_auth.User {
   //map firebase user to user model
   User get toUser {
-    return User(id: uid, email: email, name: displayName);
+    return User(uid: uid, email: email, name: displayName);
   }
 }

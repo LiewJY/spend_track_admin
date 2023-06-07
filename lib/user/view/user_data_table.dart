@@ -1,23 +1,22 @@
 import 'dart:developer';
-import 'dart:js';
 
-import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:track_admin/l10n/l10n.dart';
-import 'package:track_admin/management/management.dart';
 import 'package:track_admin/repositories/models/user.dart';
+import 'package:track_admin/user/bloc/user_bloc.dart';
+import 'package:track_admin/user/user.dart';
 import 'package:track_admin/widgets/widgets.dart';
 import 'package:track_theme/track_theme.dart';
 
-class AdminDataTable extends StatefulWidget {
-  const AdminDataTable({super.key});
+class UserDataTable extends StatefulWidget {
+  const UserDataTable({super.key});
 
   @override
-  State<AdminDataTable> createState() => _AdminDataTableState();
+  State<UserDataTable> createState() => _UserDataTableState();
 }
 
-class _AdminDataTableState extends State<AdminDataTable> {
+class _UserDataTableState extends State<UserDataTable> {
   //column sorting function
   int sortColumnIndex = 0;
   bool isAscending = true;
@@ -55,7 +54,7 @@ class _AdminDataTableState extends State<AdminDataTable> {
 
     refresh() {
       //call load data function
-      context.read<ManagementBloc>().add(DisplayAllAdminRequested());
+      context.read<UserBloc>().add(DisplayAllUserRequested());
     }
 
     List<DataColumn> column = [
@@ -91,10 +90,10 @@ class _AdminDataTableState extends State<AdminDataTable> {
         ),
       ),
     ];
-    
-    return BlocListener<ManagementBloc, ManagementState>(
+
+    return BlocListener<UserBloc, UserState>(
       listener: (context, state) {
-        if (state.status == ManagementStatus.failure) {
+        if (state.status == UserStatus.failure) {
           switch (state.error) {
             case 'email-already-exists':
               AppSnackBar.error(context, l10n.emailAlreadyInUse);
@@ -103,7 +102,7 @@ class _AdminDataTableState extends State<AdminDataTable> {
               AppSnackBar.error(context, l10n.unknownError);
           }
         }
-        if (state.status == ManagementStatus.success) {
+        if (state.status == UserStatus.success) {
           switch (state.success) {
             case 'added':
               if (isDialogOpen) {
@@ -157,11 +156,11 @@ class _AdminDataTableState extends State<AdminDataTable> {
                         context: context,
                         builder: (_) {
                           return BlocProvider.value(
-                            value: BlocProvider.of<ManagementBloc>(context),
+                            value: BlocProvider.of<UserBloc>(context),
                             child: UserManagementDialog(
-                              dialogTitle: l10n.addAdmin,
+                              dialogTitle: l10n.addUser,
                               actionName: l10n.add,
-                              action: 'addAdmin',
+                              action: 'addUser',
                             ),
                           );
                         }).then((value) {
@@ -170,7 +169,7 @@ class _AdminDataTableState extends State<AdminDataTable> {
                     toggleDialog();
                   }
                 },
-                child: Text(l10n.addAdmin),
+                child: Text(l10n.addUser),
               ),
             ),
           ],
@@ -334,13 +333,13 @@ void resetPassword(User data, BuildContext context) {
 }
 
 disableAccount(User data, BuildContext context) {
-  context.read<ManagementBloc>().add(DisableAdminRequested(uid: data.uid));
+  context.read<UserBloc>().add(DisableUserRequested(uid: data.uid));
 }
 
 void enableAccount(User data, BuildContext context) {
-  context.read<ManagementBloc>().add(EnableAdminRequested(uid: data.uid));
+  context.read<UserBloc>().add(EnableUserRequested(uid: data.uid));
 }
 
 void deleteAccount(User data, BuildContext context) {
-  context.read<ManagementBloc>().add(DeleteAdminRequested(uid: data.uid));
+  context.read<UserBloc>().add(DeleteUserRequested(uid: data.uid));
 }

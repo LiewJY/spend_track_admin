@@ -15,8 +15,11 @@ class DisplayAllAdminRequested extends ManagementEvent {
 }
 
 class AddAdminRequested extends ManagementEvent {
-  const AddAdminRequested(
-      {required this.email, required this.password, required this.name});
+  const AddAdminRequested({
+    required this.email,
+    required this.password,
+    required this.name,
+  });
 
   final String email;
   final String password;

@@ -2,8 +2,9 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
+import 'package:track_admin/repositories/repositories.dart';
 
-class ManagementRepository {
+class UserRepository {
   //firestore instance
   final db = FirebaseFirestore.instance;
   //cloud function instance
@@ -22,12 +23,12 @@ class ManagementRepository {
     return adminDataList;
   }
 
-  Future<List<Map<String, dynamic>>> getAdminUsers() async {
+  Future<List<Map<String, dynamic>>> getUsers() async {
     List<Map<String, dynamic>> adminDataList = await _queryAdminUsers();
     try {
       //call cloud function with admin sdk
       HttpsCallable callable =
-          FirebaseFunctions.instance.httpsCallable('adminUsers');
+          FirebaseFunctions.instance.httpsCallable('users');
       //query param
       final result = await callable.call(
         {
@@ -42,8 +43,8 @@ class ManagementRepository {
     }
   }
 
-  //add admin
-  addAdmin(
+  //add user
+  addUser(
       {required String email,
       required String password,
       required String name}) async {
@@ -54,7 +55,7 @@ class ManagementRepository {
         'email': email,
         'password': password,
         'name': name,
-        'isAdmin': true,
+        'isAdmin': false,
       });
 
       if (result.data.toString() == 'auth/email-already-exists') {
@@ -65,7 +66,7 @@ class ManagementRepository {
     }
   }
 
-  //toggle enable admin
+  //toggle enable user
   toggleEnableUser({required String uid, required bool isEnabled}) async {
     try {
       HttpsCallable callable =
@@ -84,15 +85,15 @@ class ManagementRepository {
     }
   }
 
-  //delete admin
-  deleteAdmin({required String uid}) async {
+   //delete user
+  deleteUser({required String uid}) async {
     try {
       HttpsCallable callable =
           FirebaseFunctions.instance.httpsCallable('deleteAdminUser');
       final result = await callable.call(
         {
           'uid': uid,
-          'isAdmin': true,
+          'isAdmin': false,
         },
       );
       log(result.data.toString());
@@ -103,4 +104,5 @@ class ManagementRepository {
       throw e.toString();
     }
   }
+
 }

@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:track_admin/l10n/l10n.dart';
 import 'package:track_admin/management/management.dart';
 import 'package:track_admin/repositories/models/user.dart';
+import 'package:track_admin/user/bloc/user_bloc.dart';
 import 'package:track_admin/widgets/widgets.dart';
 import 'package:track_theme/track_theme.dart';
 
@@ -98,7 +99,6 @@ class _UserManagementDialogState extends State<UserManagementDialog> {
   action(type) {
     if (userManagementForm.currentState!.validate()) {
       switch (type) {
-        //todo
         case 'addAdmin':
           context.read<ManagementBloc>().add(AddAdminRequested(
                 email: _emailController.text,
@@ -107,10 +107,12 @@ class _UserManagementDialogState extends State<UserManagementDialog> {
               ));
           break;
         case 'addUser':
-          log('addUser');
-
+          context.read<UserBloc>().add(AddUserRequested(
+                email: _emailController.text,
+                password: _passwordController.text,
+                name: _nameController.text,
+              ));
           break;
-        // default:
       }
     }
   }

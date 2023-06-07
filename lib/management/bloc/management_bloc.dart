@@ -33,7 +33,7 @@ class ManagementBloc extends Bloc<ManagementEvent, ManagementState> {
       List<User> mappedList = adminUsersList.map((data) {
         //print('log aa ' + data.toString());
         return User(
-          id: data['uid'],
+          uid: data['uid'],
           email: data['email'],
           name: data['displayName'],
           disabled: data['disabled'],
