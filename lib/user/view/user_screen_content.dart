@@ -1,32 +1,27 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:track_admin/l10n/l10n.dart';
-import 'package:track_admin/management/management.dart';
 import 'package:track_admin/repositories/models/user.dart';
 import 'package:track_admin/repositories/repositories.dart';
+import 'package:track_admin/user/bloc/user_bloc.dart';
+import 'package:track_admin/user/user.dart';
 import 'package:track_admin/widgets/widgets.dart';
 
-import '../../widgets/snackbar.dart';
-
-class ManagementScreenContent extends StatelessWidget {
-  const ManagementScreenContent({super.key});
+class UserScreen extends StatelessWidget {
+  const UserScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final managementRepository = ManagementRepository();
-
+    final userRepository = UserRepository();
     return RepositoryProvider.value(
-      value: managementRepository,
+      value: userRepository,
       child: BlocProvider(
-        create: (context) =>
-            ManagementBloc(managementRepository: managementRepository),
+        create: (context) => UserBloc(userRepository: userRepository),
         child: ListView(
           children: [
-            PageTitleText(title: l10n.adminManagement),
-            DataLoader(),
+            PageTitleText(title: l10n.userManagement),
+            UserDataLoader(),
           ],
         ),
       ),
@@ -38,37 +33,35 @@ class ManagementScreenContent extends StatelessWidget {
 List<User>? filterData;
 List<User>? myData;
 
-class DataLoader extends StatefulWidget {
-  const DataLoader({super.key});
+class UserDataLoader extends StatefulWidget {
+  const UserDataLoader({super.key});
 
   @override
-  State<DataLoader> createState() => _DataLoaderState();
+  State<UserDataLoader> createState() => _UserDataLoaderState();
 }
 
-class _DataLoaderState extends State<DataLoader> {
+class _UserDataLoaderState extends State<UserDataLoader> {
   @override
   void initState() {
     super.initState();
     //load data from firebase
-    context.read<ManagementBloc>().add(DisplayAllAdminRequested());
+    context.read<UserBloc>().add(DisplayAllUserRequested());
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    myData = context.select((ManagementBloc bloc) => bloc.state.adminUsersList);
-
-    filterData = myData!;
-    return BlocListener<ManagementBloc, ManagementState>(
+    myData = context.select((UserBloc bloc) => bloc.state.usersList);
+    return BlocListener<UserBloc, UserState>(
       listener: (context, state) {
-        if (state.status == ManagementStatus.failure) {
+        if (state.status == UserStatus.failure) {
           switch (state.error) {
             case 'cannotRetrieveData':
               AppSnackBar.error(context, l10n.cannotRetrieveData);
               break;
           }
         }
-        if (state.status == ManagementStatus.success) {
+        if (state.status == UserStatus.success) {
           switch (state.success) {
             case 'loadedData':
               //reload the data table when data is loaded
@@ -77,7 +70,7 @@ class _DataLoaderState extends State<DataLoader> {
           }
         }
       },
-      child: AdminDataTable(),
+      child: UserDataTable(),
     );
   }
 }

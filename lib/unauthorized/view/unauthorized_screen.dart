@@ -21,7 +21,7 @@ class UnauthorizedScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              l10n.verifying,
+              l10n.youDoNotHavePermissionToAccess,
               style: Theme.of(context).textTheme.headlineMedium,
               textAlign: TextAlign.center,
             ),

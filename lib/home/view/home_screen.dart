@@ -8,6 +8,7 @@ import 'package:track_admin/management/management.dart';
 import 'package:track_admin/repositories/repositories.dart';
 import 'package:track_admin/home/home.dart';
 import 'package:track_admin/setting/setting.dart';
+import 'package:track_admin/user/user.dart';
 import 'package:track_theme/track_theme.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -21,7 +22,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   //fixme
-  int currentPageIndex = 1;
+  int currentPageIndex = 4;
   //repos
   final authRepository = AuthRepository();
 
@@ -51,6 +52,8 @@ class _HomeScreenState extends State<HomeScreen> {
               NavigationRailDestination(
                   icon: Icon(Icons.person), label: Text(l10n.management)),
               NavigationRailDestination(
+                  icon: Icon(Icons.group), label: Text(l10n.users)),
+              NavigationRailDestination(
                   icon: Icon(Icons.settings), label: Text(l10n.setting)),
             ],
           ),
@@ -61,7 +64,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 HomeScreenContent(),
                 CategoryScereenContent(),
                 CardScreenContent(),
-                ManagementScereenContent(),
+                ManagementScreenContent(),
+                UserScreen(),
                 SettingScreenContent(),
               ][currentPageIndex],
             ),

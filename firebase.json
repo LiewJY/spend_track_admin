@@ -38,7 +38,7 @@
     "ui": {
       "enabled": true
     },
-    "singleProjectMode": true,
+    "singleProjectMode": false,
     "auth": {
       "port": 9099
     },
