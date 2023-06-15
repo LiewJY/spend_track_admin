@@ -6,6 +6,7 @@
   "password": "Password",
   "name": "Name",
   "confirmPassword": "Confirm Password",
+  "bank": "Bank",
 
 "@textfield validation": {},
   "invalidEmail": "Invalid email address",
@@ -14,6 +15,7 @@
   "nameEmpty": "Name cannot be empty",
   "passwordDoesNotMatch": "Password does not match",
   "descriptionEmpty": "Description cannot be empty",
+  "bankEmpty": "Bank cannot be empty",
 
 "@button": {},
   "login": "Login",
@@ -26,6 +28,8 @@
   "add": "Add",
   "addAdmin": "Add admin",
   "addUser": "Add user",
+  "back": "Back",
+  "complete": "Complete",
 
 
 "@loginPage": {},
@@ -48,6 +52,8 @@
   "editCategory": "Edit Category",
   "deleteCategory": "Delete Category",
 
+"@managementPage": {},
+  "basicInformation": "Basic Information",
 
 
 "@SuccessMessage": {},

@@ -8,7 +8,7 @@ class CategoryRepository {
   //firestore instance
   final ref = FirebaseFirestore.instance.collection('categories').withConverter(
       fromFirestore: SpendingCategory.fromFirestore,
-      toFirestore: (SpendingCategory city, _) => city.toFirestore());
+      toFirestore: (SpendingCategory cat, _) => cat.toFirestore());
 
   List<SpendingCategory> categories = [];
 
