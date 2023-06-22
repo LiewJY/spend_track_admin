@@ -8,6 +8,10 @@
   "confirmPassword": "Confirm Password",
   "bank": "Bank",
 
+"@otherField": {},
+  "selectCardType": "Select Card Type",
+  "doesCardHaveCashback": "Does card have cashback?",
+
 "@textfield validation": {},
   "invalidEmail": "Invalid email address",
   "pleaseEnterEmail": "Please enter a valid email address",
@@ -16,6 +20,10 @@
   "passwordDoesNotMatch": "Password does not match",
   "descriptionEmpty": "Description cannot be empty",
   "bankEmpty": "Bank cannot be empty",
+
+"@otherField validation": {},
+  "pleaseSelectCardType": "Please select card type",
+
 
 "@button": {},
   "login": "Login",
@@ -54,7 +62,7 @@
 
 "@managementPage": {},
   "basicInformation": "Basic Information",
-
+  "cashbackInformation": "Cashback Information",
 
 "@SuccessMessage": {},
   "nameChanged": "Name successfully changed",

@@ -16,6 +16,11 @@ export 'dialog/user_management_dialog.dart';
 export 'dialog/category_dialog.dart';
 
 //data table 
+//fixme not in use now
 export 'data_table_search_field.dart';
 
+//dropdown
+export 'dropdown/card_dropdown_field.dart';
 
+//toggles
+export 'toggle/switch_field.dart';
