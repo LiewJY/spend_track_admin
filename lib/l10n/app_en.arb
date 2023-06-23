@@ -10,7 +10,11 @@
 
 "@otherField": {},
   "selectCardType": "Select Card Type",
+  "selectCategory": "Select Category",
+  "selectSpendingDay": "Select Spending Day",
   "doesCardHaveCashback": "Does card have cashback?",
+  "differentCashbackRate": "Is cashback rate different based on spending?",
+
 
 "@textfield validation": {},
   "invalidEmail": "Invalid email address",
@@ -23,6 +27,8 @@
 
 "@otherField validation": {},
   "pleaseSelectCardType": "Please select card type",
+  "pleaseSelectCategory": "Please select category",
+  "pleaseSelectSpendingDay": "Please select spending day",
 
 
 "@button": {},
@@ -105,9 +111,12 @@
   "invalidEmail": "Invalid email address.",
   "emailAlreadyInUse": "An account already exists with that email.",
   "operationNotAllowed": "Operation is not allowed.  Please contact support.",
-  "weakPassword": "Please enter a stronger password."
+  "weakPassword": "Please enter a stronger password.",
 
-
+"@day": {},
+  "weekdays": "Weekdays",
+  "weekends": "Weekends",
+  "everyday": "Everyday"
 
 
 

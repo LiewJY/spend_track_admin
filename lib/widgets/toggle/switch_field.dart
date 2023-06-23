@@ -24,7 +24,7 @@ class _SwitchFieldState extends State<SwitchField> {
     return Row(
       children: [
         Text(
-          l10n.doesCardHaveCashback,
+          widget.label,
           style: Theme.of(context).textTheme.bodyLarge,
         ),
         //todo place into style file

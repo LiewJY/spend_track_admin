@@ -1,9 +1,14 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:track_admin/card/bloc/card_bloc.dart';
 import 'package:track_admin/card/card.dart';
+import 'package:track_admin/category/category.dart';
 import 'package:track_admin/l10n/l10n.dart';
 import 'package:track_admin/repositories/models/cashback.dart';
+import 'package:track_admin/repositories/repos/card/card_repository.dart';
+import 'package:track_admin/repositories/repos/category/category_repository.dart';
 import 'package:track_admin/widgets/widgets.dart';
 import 'package:track_theme/track_theme.dart';
 
@@ -26,7 +31,31 @@ class StepperFormLoader extends StatefulWidget {
 class _StepperFormLoaderState extends State<StepperFormLoader> {
   @override
   Widget build(BuildContext context) {
-    return TestStepper();
+    //create single instance of card repo
+    final cardRepository = CardRepository();
+    final categoryRepository = CategoryRepository();
+    return MultiRepositoryProvider(
+      providers: [
+        RepositoryProvider.value(
+          value: cardRepository,
+        ),
+        RepositoryProvider(
+          create: (context) => categoryRepository,
+        ),
+      ],
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (context) => CardBloc(cardRepository: cardRepository),
+          ),
+          BlocProvider(
+            create: (context) =>
+                CategoryBloc(categoryRepository: categoryRepository),
+          ),
+        ],
+        child: TestStepper(),
+      ),
+    );
   }
 }
 
@@ -52,6 +81,7 @@ class _TestStepperState extends State<TestStepper> {
   void initState() {
     super.initState();
     // Create a new GlobalKey and assign to a variable for each form.
+
     formKeys.add(GlobalKey<FormState>());
     formKeys.add(GlobalKey<FormState>());
     basicInformationForm = formKeys[0];
@@ -72,10 +102,20 @@ class _TestStepperState extends State<TestStepper> {
   Widget build(BuildContext context) {
     bool validate() {
       if (currentStep == 0) {
+        //fixme remove later
+        // context.read<CardBloc>().add(AddCardRequested(
+        //       name: _nameController.text,
+        //       bank: _bankController.text,
+        //       cardType: _cardType.toString(),
+        //       isCashback: _isCashback,
+        //     ));
         return basicInformationForm.currentState!.validate();
       } else if (currentStep == 1) {
-        //todo
-        //return cashbackInformationForm.currentState!.validate();
+        bool allValid = true;
+        cashbackForms.forEach(
+          (element) => allValid = (allValid && element.isValidated()),
+        );
+        return allValid;
       }
       return basicInformationForm.currentState!.validate();
     }
@@ -144,36 +184,15 @@ class _TestStepperState extends State<TestStepper> {
     );
   }
 
-  //dropdown
-  //todo make it dynamic
-  List<DropdownMenuItem> get dropdownItems {
-    List<DropdownMenuItem> menuItems = [
-      DropdownMenuItem(child: Text('visa'), value: 'visa'),
-      DropdownMenuItem(child: Text('master'), value: 'master'),
-      DropdownMenuItem(child: Text('amex'), value: 'amex'),
-      DropdownMenuItem(child: Text('union pay'), value: 'union-pay'),
-    ];
-    return menuItems;
-  }
-
   List<Step> steps(l10n) => [
         Step(
           title: Text(l10n.basicInformation),
-          content: Container(
-            alignment: Alignment.bottomLeft,
-            child: ConstrainedBox(
-              constraints: AppStyle.dialogMaxWidth,
-              child: basicForm(l10n),
-            ),
-          ),
+          content: StepperContainer(child: basicForm(l10n)),
         ),
         Step(
           state: _isCashback ? StepState.indexed : StepState.disabled,
           title: Text(l10n.cashbackInformation),
-          content: Container(
-            alignment: Alignment.topLeft,
-            child: cashbackForm(l10n),
-          ),
+          content: StepperContainer(child: cashbackForm(l10n)),
         ),
         Step(
           title: Text('Step 3 title'),
@@ -183,7 +202,6 @@ class _TestStepperState extends State<TestStepper> {
           ),
         ),
       ];
-  final List<String> items = ['Item 1', 'Item 2', 'Item 3', 'Item 4', 'Item 5'];
 
   Form cashbackForm(l10n) {
     return Form(
@@ -192,17 +210,6 @@ class _TestStepperState extends State<TestStepper> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             AppStyle.sizedBoxSpace,
-            // SizedBox(
-            //   // height: 200,
-
-            //   child: ListView.builder(
-            //     shrinkWrap: true,
-            //     itemCount: items.length,
-            //     itemBuilder: (context, index) {
-            //       return Text(items[index]);
-            //     },
-            //   ),
-            // ),
             cashbackForms.isNotEmpty
                 ? ListView.builder(
                     shrinkWrap: true,
@@ -236,7 +243,6 @@ class _TestStepperState extends State<TestStepper> {
   }
 
   onAddCashbackForm() {
-    log('add');
     setState(() {
       Cashback _cashback = Cashback(formId: cashbackForms.length);
       cashbackForms.add(DynamicCashbackForm(
@@ -257,11 +263,9 @@ class _TestStepperState extends State<TestStepper> {
             AppStyle.sizedBoxSpace,
             BankField(controller: _bankController),
             AppStyle.sizedBoxSpace,
-            DropDownField(
-                items: dropdownItems,
-                onChanged: (value) {
-                  _cardType = value;
-                }),
+            CardTypeDropDownField(onChanged: (value) {
+              _cardType = value;
+            }),
             AppStyle.sizedBoxSpace,
             SwitchField(
                 label: l10n.doesCardHaveCashback,
