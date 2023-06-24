@@ -28,7 +28,7 @@ class CategoryScereenContent extends StatelessWidget {
       value: categoryRepository,
       child: BlocProvider(
         create: (context) => CategoryBloc(categoryRepository: categoryRepository),
-        child: ListView(
+        child: ListView( 
           children: [
             PageTitleText(title: l10n.category),
             CategoryDataLoader(),
@@ -55,7 +55,6 @@ class _CategoryDataLoaderState extends State<CategoryDataLoader> {
   void initState() {
     super.initState();
     //load data from firebase
-    //todo
     context.read<CategoryBloc>().add(DisplayAllCategoryRequested());
   }
 
