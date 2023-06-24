@@ -23,7 +23,7 @@ List<DropdownMenuItem> get categoryDropdownItems {
   List<DropdownMenuItem> menuItems = [];
   for (SpendingCategory element in myCategory!) {
     menuItems.add(DropdownMenuItem(
-      value: element.uid,
+      value: element.toFirestore().toString(),
       child: Text(element.name.toString()),
     ));
   }

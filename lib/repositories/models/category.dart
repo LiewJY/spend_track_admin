@@ -28,7 +28,7 @@ class SpendingCategory extends Equatable {
   //convert object into firestore format
   Map<String, dynamic> toFirestore() {
     return {
-      //if (uid != null) "uid": uid,
+      if (uid != null) "uid": uid,
       if (name != null) "name": name,
       if (description != null) "description": description,
     };

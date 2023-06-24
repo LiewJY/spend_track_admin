@@ -115,6 +115,11 @@ class _TestStepperState extends State<TestStepper> {
         cashbackForms.forEach(
           (element) => allValid = (allValid && element.isValidated()),
         );
+        if (allValid) {
+          cashbackForms.forEach((element) {
+            print('ss' + element.cashbackModel.toString());
+          });
+        }
         return allValid;
       }
       return basicInformationForm.currentState!.validate();

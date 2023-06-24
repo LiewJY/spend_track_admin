@@ -7,6 +7,11 @@
   "name": "Name",
   "confirmPassword": "Confirm Password",
   "bank": "Bank",
+  "cashback": "Cashback",
+  "amount": "Amount",
+  "amountCappedAt": "Amount capped at",
+  "minSpendAmount": "Min spend amount",
+  
 
 "@otherField": {},
   "selectCardType": "Select Card Type",
@@ -14,6 +19,10 @@
   "selectSpendingDay": "Select Spending Day",
   "doesCardHaveCashback": "Does card have cashback?",
   "differentCashbackRate": "Is cashback rate different based on spending?",
+  "minSpendAchieved": "Min spend achieved", 
+  "minSpendNotAchieved": "Min spend not achieved",
+  "cashbackCapped": "Is cashback amount capped at?",
+
 
 
 "@textfield validation": {},
@@ -24,6 +33,9 @@
   "passwordDoesNotMatch": "Password does not match",
   "descriptionEmpty": "Description cannot be empty",
   "bankEmpty": "Bank cannot be empty",
+  "cashbackError": "Cashback must be number and cannot be empty",
+  "amountError": "Amount must be number and cannot be empty",
+
 
 "@otherField validation": {},
   "pleaseSelectCardType": "Please select card type",
@@ -44,6 +56,9 @@
   "addUser": "Add user",
   "back": "Back",
   "complete": "Complete",
+
+"@cardPage": {},
+  "cashbackWhen": "Cashback when",
 
 
 "@loginPage": {},

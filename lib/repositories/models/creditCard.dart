@@ -34,7 +34,7 @@ class CreditCard extends Equatable {
   //convert object into firestore format
   Map<String, dynamic> toFirestore() {
     return {
-      //if (uid != null) "uid": uid,
+      if (uid != null) "uid": uid,
       if (name != null) "name": name,
       if (bank != null) "bank": bank,
       if (cardType != null) "cardType": cardType,

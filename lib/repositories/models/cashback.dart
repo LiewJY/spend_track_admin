@@ -24,8 +24,8 @@ class Cashback extends Equatable {
   final String? uid;
   //this is for identifying in add and edit
   final int? formId;
-  final String? category;
-  final List? spendingDay;
+   final String? category;
+  final String? spendingDay;
   final bool? isRateDifferent;
   final double? minSpend;
   final double? minSpendAchieved;

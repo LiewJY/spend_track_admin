@@ -18,7 +18,6 @@ class DynamicCashbackForm extends StatefulWidget {
     this.cashbackModel,
     this.onRemove,
   });
-  // : super(key: key);
 
   final index;
   Cashback? cashbackModel;
@@ -29,6 +28,7 @@ class DynamicCashbackForm extends StatefulWidget {
   State<DynamicCashbackForm> createState() {
     return state;
   }
+
   //facilitate multiform validation
   bool isValidated() => state.validate();
 }
@@ -40,19 +40,22 @@ class _DynamicCashbackFormState extends State<DynamicCashbackForm> {
   }
 
   final cashbackForm = GlobalKey<FormState>();
-  TextEditingController _descController = TextEditingController();
-    TextEditingController _aController = TextEditingController();
+  // TextEditingController _descController = TextEditingController();
+  // TextEditingController _aController = TextEditingController();
+
+  TextEditingController _cashbackController = TextEditingController();
+  TextEditingController _minSpendController = TextEditingController();
+  TextEditingController _minSpendAchievedController = TextEditingController();
+  TextEditingController _minSpendNotAchievedController =
+      TextEditingController();
+  TextEditingController _cappedAtController = TextEditingController();
 
   //hide show diff rate with min spend
   bool _isRateDifferent = false;
   //hide show capped at rate
-  bool _isCapped = false;
-  //todo
+  bool _isCapped = true;
   late String _categoryType;
   late String _spendingDay;
-
-  //day list
-  // List<bool> _daySelections = List.generate(7, (_) => false);
 
   @override
   Widget build(BuildContext context) {
@@ -66,13 +69,12 @@ class _DynamicCashbackFormState extends State<DynamicCashbackForm> {
           child: Padding(
             padding: AppStyle.cardPadding,
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    CategoryDropDownField(
-                        // items: dropdownItems,
-                        onChanged: (value) {
+                    CategoryDropDownField(onChanged: (value) {
                       _categoryType = value;
                     }),
                     Padding(
@@ -90,7 +92,6 @@ class _DynamicCashbackFormState extends State<DynamicCashbackForm> {
                     _spendingDay = value;
                   });
                 }),
-
                 AppStyle.sizedBoxSpace,
                 SwitchField(
                     label: l10n.differentCashbackRate,
@@ -101,20 +102,82 @@ class _DynamicCashbackFormState extends State<DynamicCashbackForm> {
                       });
                     }),
                 AppStyle.sizedBoxSpace,
-                //todo
                 if (_isRateDifferent) ...[
-                  NameField(controller: _descController),
-                ] else
-                  ...[],
+                  Text(
+                    l10n.cashbackWhen,
+                    style: Theme.of(context).textTheme.bodyLarge,
+                  ),
+                  AppStyle.sizedBoxSpace,
+                  AmountField(
+                    controller: _minSpendController,
+                    label: l10n.minSpendAmount,
+                  ),
+                  AppStyle.sizedBoxSpace,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: CashbackPercentField(
+                          controller: _minSpendAchievedController,
+                          label: l10n.minSpendAchieved,
+                        ),
+                      ),
+                      //todo move to style
+                      SizedBox(width: 10),
+                      Expanded(
+                        child: CashbackPercentField(
+                          controller: _minSpendNotAchievedController,
+                          label: l10n.minSpendNotAchieved,
+                        ),
+                      ),
+                    ],
+                  ),
+                ] else ...[
+                  //cashback rate no difference (extra with min spend)
+                  CashbackPercentField(
+                    controller: _cashbackController,
+                    label: l10n.cashback,
+                  ),
+                ],
                 AppStyle.sizedBoxSpace,
+                SwitchField(
+                    label: l10n.cashbackCapped,
+                    switchState: _isCapped,
+                    onChanged: (value) {
+                      setState(() {
+                        _isCapped = value;
+                      });
+                    }),
+                if (_isCapped) ...[
+                  AppStyle.sizedBoxSpace,
+                  AmountField(
+                    controller: _cappedAtController,
+                    label: l10n.amountCappedAt,
+                  ),
+                ]
               ],
             ),
           )),
     );
   }
 
+  double? stringToDounble(value) {
+    return double.tryParse(value);
+  }
+
   bool validate() {
     if (cashbackForm.currentState!.validate()) {
+      widget.cashbackModel = Cashback(
+        category: _categoryType,
+        spendingDay: _spendingDay,
+        isRateDifferent: _isRateDifferent,
+        minSpend: stringToDounble(_minSpendController.text),
+        minSpendAchieved: stringToDounble(_minSpendAchievedController.text),
+        minSpendNotAchieved: stringToDounble(_minSpendAchievedController.text),
+        cashback: stringToDounble(_cashbackController.text),
+        isCapped: _isCapped,
+        cappedAt: stringToDounble(_cappedAtController.text),
+      );
       cashbackForm.currentState?.save();
       return true;
     }
