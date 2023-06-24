@@ -17,10 +17,10 @@ class CardTypeDropDownField extends StatefulWidget {
 //todo make it dynamic
 List<DropdownMenuItem> get dropdownItems {
   List<DropdownMenuItem> menuItems = [
-    const DropdownMenuItem(value: 'visa', child: Text('visa')),
-    const DropdownMenuItem(value: 'master', child: Text('master')),
-    const DropdownMenuItem(value: 'amex', child: Text('amex')),
-    const DropdownMenuItem(value: 'union-pay', child: Text('union pay')),
+    const DropdownMenuItem(value: 'Visa', child: Text('Visa')),
+    const DropdownMenuItem(value: 'Master', child: Text('Master')),
+    const DropdownMenuItem(value: 'Amex', child: Text('Amex')),
+    const DropdownMenuItem(value: 'Union Pay', child: Text('Union Pay')),
   ];
   return menuItems;
 }

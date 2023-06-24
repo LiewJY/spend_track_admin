@@ -119,12 +119,12 @@ class _TestStepperState extends State<TestStepper> {
         return basicInformationForm.currentState!.validate();
       } else if (currentStep == 1) {
         bool allValid = true;
-        cashbackForms.forEach(
-          (element) => allValid = (allValid && element.isValidated()),
-        );
+        for (var element in cashbackForms) {
+          allValid = (allValid && element.isValidated());
+        }
         if (allValid) {
           cashbacks = [];
-          cashbackForms.forEach((element) {
+          for (var element in cashbackForms) {
             cashbacks.add(Cashback(
               formId: element.index,
               categoryId: element.cashbackModel?.categoryId,
@@ -138,11 +138,9 @@ class _TestStepperState extends State<TestStepper> {
               isCapped: element.cashbackModel?.isCapped,
               cappedAt: element.cashbackModel?.cappedAt,
             ));
-          });
+          }
         }
         return allValid;
-      } else if (currentStep == 2) {
-        addCard();
       }
       return basicInformationForm.currentState!.validate();
     }
@@ -165,6 +163,8 @@ class _TestStepperState extends State<TestStepper> {
             setState(() {
               isCompleted = true;
             });
+            //add the card
+            addCard();
           } else {
             //skip step 2
             if (currentStep == 0 && _isCashback == false) {
@@ -222,13 +222,59 @@ class _TestStepperState extends State<TestStepper> {
           content: StepperContainer(child: cashbackForm(l10n)),
         ),
         Step(
-          title: Text('Step 3 title'),
-          content: Container(
-            alignment: Alignment.topLeft,
-            child: Text('Content for Step 3'),
-          ),
+          title: Text(l10n.reviewCardInformation),
+          content: StepperContainer(child: reviewCard(l10n)),
         ),
       ];
+
+  reviewCard(l10n) {
+    return OutlineCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: double.infinity,
+            child: Padding(
+              padding: AppStyle.cardPadding,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(l10n.name + ':  ' + _nameController.text),
+                  Text(l10n.bank + ':  ' + _bankController.text),
+                  Text(l10n.cardType + ':  ' + _cardType.toString()),
+                  //iterate
+                  for (var item in cashbacks)
+                  CashbackReviewCard(element: item)
+                    // Card(
+                    //     child: Padding(
+                    //   padding: AppStyle.cardPadding,
+                    //   child: Column(
+                    //     children: [
+                    //       Text(l10n.category + ':  ' + item.category),
+                    //       Text(l10n.spendingDay + ':  ' + item.spendingDay),
+                    //       Text(l10n.differentCashbackRate + ':  ' + item.isRateDifferent ? l10n.yes : l10n.no),
+
+
+                    //     ],
+
+                    //     //Text(l10n.category + ':  ' + _nameController.text),
+                    //   ),
+                    // )),
+                  //  cashbacks.forEach((element) {
+                  //    return Text(element.name + ': '+ element.cashback);
+                  // })
+                ],
+              ),
+            ),
+          ),
+
+          //todo repeat each card for cashback cat
+
+          AppStyle.sizedBoxSpace,
+        ],
+      ),
+    );
+  }
 
   Form cashbackForm(l10n) {
     return Form(

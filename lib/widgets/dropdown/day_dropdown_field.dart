@@ -17,9 +17,9 @@ class SpendingDayDropDownField extends StatefulWidget {
 //todo make it dynamic
 List<DropdownMenuItem> get dayDropdownItems {
   List<DropdownMenuItem> menuItems = [
-    const DropdownMenuItem(value: 'everyday', child: Text('everyday')),
-    const DropdownMenuItem(value: 'weekdays', child: Text('weekdays')),
-    const DropdownMenuItem(value: 'weekends', child: Text('weekends')),
+    const DropdownMenuItem(value: 'Everyday', child: Text('Everyday')),
+    const DropdownMenuItem(value: 'Weekdays', child: Text('Weekdays')),
+    const DropdownMenuItem(value: 'Weekends', child: Text('Weekends')),
   ];
   return menuItems;
 }

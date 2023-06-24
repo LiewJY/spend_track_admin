@@ -80,9 +80,13 @@
 "@cardPage": {},
   "basicInformation": "Basic Information",
   "cashbackInformation": "Cashback Information",
-  "ReviewCardInformation": "Review Card Information",
+  "reviewCardInformation": "Review Card Information",
   "cashbackWhen": "Cashback when",
   "addCashbackForm": "Add cashback form",
+  "cardType": "Card Type",
+  "spendingDay": "Spending Day",
+  "yes": "Yes",
+  "no": "No",
 
 
 
