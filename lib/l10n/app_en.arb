@@ -57,10 +57,6 @@
   "back": "Back",
   "complete": "Complete",
 
-"@cardPage": {},
-  "cashbackWhen": "Cashback when",
-
-
 "@loginPage": {},
   "forgetPassword": "Forget Password",
 
@@ -81,9 +77,15 @@
   "editCategory": "Edit Category",
   "deleteCategory": "Delete Category",
 
-"@managementPage": {},
+"@cardPage": {},
   "basicInformation": "Basic Information",
   "cashbackInformation": "Cashback Information",
+  "ReviewCardInformation": "Review Card Information",
+  "cashbackWhen": "Cashback when",
+  "addCashbackForm": "Add cashback form",
+
+
+
 
 "@SuccessMessage": {},
   "nameChanged": "Name successfully changed",

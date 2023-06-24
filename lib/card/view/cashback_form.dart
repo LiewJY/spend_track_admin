@@ -161,22 +161,30 @@ class _DynamicCashbackFormState extends State<DynamicCashbackForm> {
     );
   }
 
-  double? stringToDounble(value) {
+  double? stringToDouble(value) {
     return double.tryParse(value);
   }
 
   bool validate() {
     if (cashbackForm.currentState!.validate()) {
+      SpendingCategory category = SpendingCategory.fromJson(_categoryType);
       widget.cashbackModel = Cashback(
-        category: _categoryType,
+        categoryId: category.uid.toString(),
+        category: category.name,
         spendingDay: _spendingDay,
         isRateDifferent: _isRateDifferent,
-        minSpend: stringToDounble(_minSpendController.text),
-        minSpendAchieved: stringToDounble(_minSpendAchievedController.text),
-        minSpendNotAchieved: stringToDounble(_minSpendAchievedController.text),
-        cashback: stringToDounble(_cashbackController.text),
+        minSpend:
+            _isRateDifferent ? stringToDouble(_minSpendController.text) : null,
+        minSpendAchieved: _isRateDifferent
+            ? stringToDouble(_minSpendAchievedController.text)
+            : null,
+        minSpendNotAchieved: _isRateDifferent
+            ? stringToDouble(_minSpendAchievedController.text)
+            : null,
+        cashback:
+            _isRateDifferent ? null : stringToDouble(_cashbackController.text),
         isCapped: _isCapped,
-        cappedAt: stringToDounble(_cappedAtController.text),
+        cappedAt: _isCapped ? stringToDouble(_cappedAtController.text) : null,
       );
       cashbackForm.currentState?.save();
       return true;

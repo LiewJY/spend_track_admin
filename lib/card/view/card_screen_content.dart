@@ -67,7 +67,7 @@ class TestStepper extends StatefulWidget {
 }
 
 class _TestStepperState extends State<TestStepper> {
-  int currentStep = 1;
+  int currentStep = 0;
   bool isCompleted = false;
 
   // final cashbackInformationForm = GlobalKey<FormState>(debugLabel: 'cashback');
@@ -98,17 +98,24 @@ class _TestStepperState extends State<TestStepper> {
   //cashback form
   final List<DynamicCashbackForm> cashbackForms = List.empty(growable: true);
 
+  //list of cashback
+  List<Cashback> cashbacks = [];
+
   @override
   Widget build(BuildContext context) {
+    //make call to store data input
+    addCard() {
+      context.read<CardBloc>().add(AddCardRequested(
+            name: _nameController.text,
+            bank: _bankController.text,
+            cardType: _cardType.toString(),
+            isCashback: _isCashback,
+            cashbacks: cashbacks,
+          ));
+    }
+
     bool validate() {
       if (currentStep == 0) {
-        //fixme remove later
-        // context.read<CardBloc>().add(AddCardRequested(
-        //       name: _nameController.text,
-        //       bank: _bankController.text,
-        //       cardType: _cardType.toString(),
-        //       isCashback: _isCashback,
-        //     ));
         return basicInformationForm.currentState!.validate();
       } else if (currentStep == 1) {
         bool allValid = true;
@@ -116,11 +123,26 @@ class _TestStepperState extends State<TestStepper> {
           (element) => allValid = (allValid && element.isValidated()),
         );
         if (allValid) {
+          cashbacks = [];
           cashbackForms.forEach((element) {
-            print('ss' + element.cashbackModel.toString());
+            cashbacks.add(Cashback(
+              formId: element.index,
+              categoryId: element.cashbackModel?.categoryId,
+              category: element.cashbackModel?.category,
+              spendingDay: element.cashbackModel?.spendingDay,
+              isRateDifferent: element.cashbackModel?.isRateDifferent,
+              minSpend: element.cashbackModel?.minSpend,
+              minSpendAchieved: element.cashbackModel?.minSpendAchieved,
+              minSpendNotAchieved: element.cashbackModel?.minSpendNotAchieved,
+              cashback: element.cashbackModel?.cashback,
+              isCapped: element.cashbackModel?.isCapped,
+              cappedAt: element.cashbackModel?.cappedAt,
+            ));
           });
         }
         return allValid;
+      } else if (currentStep == 2) {
+        addCard();
       }
       return basicInformationForm.currentState!.validate();
     }
@@ -223,7 +245,7 @@ class _TestStepperState extends State<TestStepper> {
                       return cashbackForms[index];
                     })
                 : Center(
-                    child: Text('add aad jjkjjjn '),
+                    child: Text(l10n.addCashbackForm),
                   ),
             AppStyle.sizedBoxSpace,
             OutlinedButton(
@@ -280,11 +302,6 @@ class _TestStepperState extends State<TestStepper> {
                     _isCashback = value;
                   });
                 }),
-            // ElevatedButton(
-            //     onPressed: () {
-            //       log('cardtype ' + _cardType.toString());
-            //     },
-            //     child: Text('ddd')),
             AppStyle.sizedBoxSpace,
           ],
         ));

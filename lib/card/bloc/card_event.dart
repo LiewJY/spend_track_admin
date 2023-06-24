@@ -23,12 +23,14 @@ class AddCardRequested extends CardEvent {
     required this.bank,
     required this.cardType,
     required this.isCashback,
+    required this.cashbacks,
   });
 
   final String name;
   final String bank;
   final String cardType;
   final bool isCashback;
+  final List<Cashback> cashbacks;
 
   @override
   List<Object> get props => [];

@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:track_admin/repositories/models/cashback.dart';
 import 'package:track_admin/repositories/repos/card/card_repository.dart';
 
 part 'card_event.dart';
@@ -45,6 +46,8 @@ class CardBloc extends Bloc<CardEvent, CardState> {
         bank: event.bank,
         cardType: event.cardType,
         isCashback: event.isCashback,
+        cashbacks: event.cashbacks,
+        
       );
       emit(state.copyWith(
         status: CardStatus.success,

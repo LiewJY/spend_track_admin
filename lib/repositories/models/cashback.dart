@@ -1,4 +1,3 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 
@@ -6,6 +5,7 @@ class Cashback extends Equatable {
   const Cashback({
     this.uid,
     this.formId,
+    this.categoryId,
     this.category, //? id and name from fb
     this.spendingDay, //list
     this.isRateDifferent, // bool
@@ -24,7 +24,8 @@ class Cashback extends Equatable {
   final String? uid;
   //this is for identifying in add and edit
   final int? formId;
-   final String? category;
+  final String? categoryId;
+  final String? category;
   final String? spendingDay;
   final bool? isRateDifferent;
   final double? minSpend;
@@ -34,28 +35,60 @@ class Cashback extends Equatable {
   final bool? isCapped;
   final double? cappedAt;
 
-  //convert firestore format into object
-  // factory Cashback.fromFirestore(
-  //   DocumentSnapshot<Map<String, dynamic>> snapshot,
-  //   SnapshotOptions? options,
-  // ) {
-  //   final data = snapshot.data();
-  //   return Cashback(
-  //     uid: snapshot.id,
-  //     name: data?['name'],
-  //     description: data?['description'],
-  //   );
-  // }
+  // convert firestore format into object
+  factory Cashback.fromFirestore(
+    DocumentSnapshot<Map<String, dynamic>> snapshot,
+    SnapshotOptions? options,
+  ) {
+    final data = snapshot.data();
+    return Cashback(
+      uid: snapshot.id,
+        formId : data?['formId'],
+        categoryId : data?['categoryId'],
+        category : data?['category'],
+        spendingDay : data?['spendingDay'],
+        isRateDifferent : data?['isRateDifferent'],
+        minSpend : data?['minSpend'],
+        minSpendAchieved : data?['minSpendAchieved'],
+        minSpendNotAchieved: data?['minSpendNotAchieved'],
+        cashback: data?['cashback'],
+        isCapped: data?['isCapped'],
+        cappedAt: data?['cappedAt'],
+    );
+  }
 
-  // //convert object into firestore format
-  // Map<String, dynamic> toFirestore() {
-  //   return {
-  //     //if (uid != null) "uid": uid,
-  //     if (name != null) "name": name,
-  //     if (description != null) "description": description,
-  //   };
-  // }
+  //convert object into firestore format
+  Map<String, dynamic> toFirestore() {
+    return {
+      if (uid != null) "uid": uid,
+      if (formId != null) "formId": formId,
+            if (categoryId != null) "categoryId": categoryId,
+      if (category != null) "category": category,
+      if (spendingDay != null) "spendingDay": spendingDay,
+      if (isRateDifferent != null) "isRateDifferent": isRateDifferent,
+      if (minSpend != null) "minSpend": minSpend,
+      if (minSpendAchieved != null) "minSpendAchieved": minSpendAchieved,
+      if (minSpendNotAchieved != null) "minSpendNotAchieved": minSpendNotAchieved,
+      if (cashback != null) "cashback": cashback,
+      if (isCapped != null) "isCapped": isCapped,
+
+      if (cappedAt != null) "cappedAt": cappedAt,
+    };
+  }
 
   @override
-  List<Object?> get props => [uid, formId, category, spendingDay, isRateDifferent, minSpend, minSpendAchieved, minSpendNotAchieved, cashback, isCapped, cappedAt];
+  List<Object?> get props => [
+        uid,
+        formId,
+        categoryId,
+        category,
+        spendingDay,
+        isRateDifferent,
+        minSpend,
+        minSpendAchieved,
+        minSpendNotAchieved,
+        cashback,
+        isCapped,
+        cappedAt
+      ];
 }
