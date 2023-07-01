@@ -43,17 +43,17 @@ class Cashback extends Equatable {
     final data = snapshot.data();
     return Cashback(
       uid: snapshot.id,
-        formId : data?['formId'],
-        categoryId : data?['categoryId'],
-        category : data?['category'],
-        spendingDay : data?['spendingDay'],
-        isRateDifferent : data?['isRateDifferent'],
-        minSpend : data?['minSpend'],
-        minSpendAchieved : data?['minSpendAchieved'],
-        minSpendNotAchieved: data?['minSpendNotAchieved'],
-        cashback: data?['cashback'],
-        isCapped: data?['isCapped'],
-        cappedAt: data?['cappedAt'],
+      formId: data?['formId'],
+      categoryId: data?['categoryId'],
+      category: data?['category'],
+      spendingDay: data?['spendingDay'],
+      isRateDifferent: data?['isRateDifferent'],
+      minSpend: data?['minSpend'],
+      minSpendAchieved: data?['minSpendAchieved'],
+      minSpendNotAchieved: data?['minSpendNotAchieved'],
+      cashback: data?['cashback'],
+      isCapped: data?['isCapped'],
+      cappedAt: data?['cappedAt'],
     );
   }
 
@@ -62,16 +62,16 @@ class Cashback extends Equatable {
     return {
       if (uid != null) "uid": uid,
       if (formId != null) "formId": formId,
-            if (categoryId != null) "categoryId": categoryId,
+      if (categoryId != null) "categoryId": categoryId,
       if (category != null) "category": category,
       if (spendingDay != null) "spendingDay": spendingDay,
       if (isRateDifferent != null) "isRateDifferent": isRateDifferent,
       if (minSpend != null) "minSpend": minSpend,
       if (minSpendAchieved != null) "minSpendAchieved": minSpendAchieved,
-      if (minSpendNotAchieved != null) "minSpendNotAchieved": minSpendNotAchieved,
+      if (minSpendNotAchieved != null)
+        "minSpendNotAchieved": minSpendNotAchieved,
       if (cashback != null) "cashback": cashback,
       if (isCapped != null) "isCapped": isCapped,
-
       if (cappedAt != null) "cappedAt": cappedAt,
     };
   }

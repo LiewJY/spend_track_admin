@@ -8,6 +8,7 @@ import 'package:track_admin/card/view/card_data_table.dart';
 import 'package:track_admin/category/category.dart';
 import 'package:track_admin/l10n/l10n.dart';
 import 'package:track_admin/repositories/models/cashback.dart';
+import 'package:track_admin/repositories/models/creditCard.dart';
 import 'package:track_admin/repositories/repos/card/card_repository.dart';
 import 'package:track_admin/repositories/repos/category/category_repository.dart';
 import 'package:track_admin/widgets/widgets.dart';
@@ -43,21 +44,26 @@ class CardScreenContent extends StatelessWidget {
         ],
         child: ListView(children: [
           PageTitleText(title: l10n.card),
-          StepperFormLoader(),
+          CardDataLoader(),
+          //StepperFormLoader(),
         ]),
       ),
     );
   }
 }
 
-class StepperFormLoader extends StatefulWidget {
-  const StepperFormLoader({super.key});
+//list from firebase
+List<CreditCard>? filterCardData;
+List<CreditCard>? myCardData;
+
+class CardDataLoader extends StatefulWidget {
+  const CardDataLoader({super.key});
 
   @override
-  State<StepperFormLoader> createState() => _StepperFormLoaderState();
+  State<CardDataLoader> createState() => _CardDataLoaderState();
 }
 
-class _StepperFormLoaderState extends State<StepperFormLoader> {
+class _CardDataLoaderState extends State<CardDataLoader> {
   @override
   void initState() {
     super.initState();
@@ -68,46 +74,23 @@ class _StepperFormLoaderState extends State<StepperFormLoader> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    myCardData = context.select((CardBloc bloc) => bloc.state.CardList);
 
-    refresh() {
-      //call load data function
-      context.read<CategoryBloc>().add(DisplayAllCategoryRequested());
-    }
-
+    filterCardData = myCardData!;
     return BlocListener<CardBloc, CardState>(
       listener: (context, state) {
         if (state.status == CardStatus.failure) {
           switch (state.error) {
-            // case 'email-already-exists':
-            //   AppSnackBar.error(context, l10n.emailAlreadyInUse);
-            //   break;
-            //todo
-            default:
-              AppSnackBar.error(context, l10n.unknownError);
+            case 'cannotRetrieveData':
+              AppSnackBar.error(context, l10n.cannotRetrieveData);
+              break;
           }
         }
-        if (state.status == CategoryStatus.success) {
+        if (state.status == CardStatus.success) {
           switch (state.success) {
-            case 'added':
-              // if (isDialogOpen) {
-              //   Navigator.of(context, rootNavigator: true).pop();
-              // }
-              // AppSnackBar.success(context, l10n.addedAdmin);
-              // refresh();
-              //todo
-              break;
-            case 'updated':
-              // if (isDialogOpen) {
-              //   Navigator.of(context, rootNavigator: true).pop();
-              // }
-              // AppSnackBar.success(context, l10n.categoryUpdatedSuccess);
-              // refresh();
-              //todo
-              break;
-            case 'deleted':
-              // AppSnackBar.success(context, l10n.catxegoryDeleteSuccess);
-              // refresh();
-              //todo
+            case 'loadedData':
+              //reload the data table when data is loaded
+              setState(() {});
               break;
           }
         }
@@ -116,3 +99,57 @@ class _StepperFormLoaderState extends State<StepperFormLoader> {
     );
   }
 }
+
+
+
+
+
+
+
+//todo move to another page
+// class StepperFormLoader extends StatefulWidget {
+//   const StepperFormLoader({super.key});
+
+//   @override
+//   State<StepperFormLoader> createState() => _StepperFormLoaderState();
+// }
+
+// class _StepperFormLoaderState extends State<StepperFormLoader> {
+//   @override
+//   void initState() {
+//     super.initState();
+//     //load data from firebase
+//     context.read<CardBloc>().add(DisplayAllCardRequested());
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     final l10n = context.l10n;
+
+//     refresh() {
+//       //call load data function
+//       context.read<CategoryBloc>().add(DisplayAllCategoryRequested());
+//     }
+
+//     return BlocListener<CardBloc, CardState>(
+//       listener: (context, state) {
+//         if (state.status == CardStatus.failure) {
+//           switch (state.error) {
+//             case 'cannotRetrieveData':
+//               AppSnackBar.error(context, l10n.cannotRetrieveData);
+//               break;
+//           }
+//         }
+//         if (state.status == CategoryStatus.success) {
+//           switch (state.success) {
+//             case 'loadedData':
+//               //reload the data table when data is loaded
+//               setState(() {});
+//               break;
+//           }
+//         }
+//       },
+//       child: CardDataTable(),
+//     );
+//   }
+// }

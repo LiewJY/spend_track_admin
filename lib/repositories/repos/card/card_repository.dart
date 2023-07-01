@@ -10,7 +10,24 @@ class CardRepository {
   final ref = FirebaseFirestore.instance.collection('cards').withConverter(
       fromFirestore: CreditCard.fromFirestore,
       toFirestore: (CreditCard cat, _) => cat.toFirestore());
+  //batch write categories into firebase
   WriteBatch batch = FirebaseFirestore.instance.batch();
+
+  List<CreditCard> cards = [];
+  Future<List<CreditCard>> getCards() async {
+    cards.clear();
+    try {
+      await ref.get().then((querySnapshot) {
+        for (var docSnapshot in querySnapshot.docs) {
+          cards.add(docSnapshot.data());
+        }
+      });
+      return cards;
+    } catch (e) {
+      log(e.toString());
+      throw 'cannotRetrieveData';
+    }
+  }
 
   Future<void> addCard({
     required String name,
@@ -30,8 +47,14 @@ class CardRepository {
           .add(store)
           .then((value) => {
                 cashbacks.forEach((element) {
-                  var cashbackRef =
-                      ref.doc(value.id).collection('cashbacks').withConverter(fromFirestore: Cashback.fromFirestore, toFirestore: (Cashback cashback, _) => cashback.toFirestore()).doc();
+                  var cashbackRef = ref
+                      .doc(value.id)
+                      .collection('cashbacks')
+                      .withConverter(
+                          fromFirestore: Cashback.fromFirestore,
+                          toFirestore: (Cashback cashback, _) =>
+                              cashback.toFirestore())
+                      .doc();
                   batch.set(cashbackRef, element);
                 }),
                 batch.commit(),

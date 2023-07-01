@@ -1,6 +1,9 @@
+import 'dart:developer';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:track_admin/repositories/models/cashback.dart';
+import 'package:track_admin/repositories/models/creditCard.dart';
 import 'package:track_admin/repositories/repos/card/card_repository.dart';
 
 part 'card_event.dart';
@@ -20,11 +23,16 @@ class CardBloc extends Bloc<CardEvent, CardState> {
   _onDisplayAllCardRequested(
     DisplayAllCardRequested event,
     Emitter emit,
-  ) {
+  ) async {
     if (state.status == CardStatus.loading) return;
     emit(state.copyWith(status: CardStatus.loading));
     try {
-      //todo
+      List<CreditCard> cardList = await cardRepository.getCards();
+      emit(state.copyWith(
+        status: CardStatus.success,
+        success: 'loadedData',
+        CardList: cardList,
+      ));
     } catch (e) {
       emit(state.copyWith(
         status: CardStatus.failure,
@@ -47,7 +55,6 @@ class CardBloc extends Bloc<CardEvent, CardState> {
         cardType: event.cardType,
         isCashback: event.isCashback,
         cashbacks: event.cashbacks,
-        
       );
       emit(state.copyWith(
         status: CardStatus.success,

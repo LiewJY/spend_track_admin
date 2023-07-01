@@ -8,10 +8,6 @@ abstract class CardEvent extends Equatable {
 }
 
 class DisplayAllCardRequested extends CardEvent {
-  //const AddCategoryRequested({required this.name, required this.description});
-
-  // final String name;
-  // final String description;
 
   @override
   List<Object> get props => [];
