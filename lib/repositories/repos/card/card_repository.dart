@@ -15,7 +15,7 @@ class CardRepository {
   Future<List<CreditCard>> getCards() async {
     cards.clear();
     try {
-      await ref.get().then((querySnapshot) {
+      await ref.orderBy('name').get().then((querySnapshot) {
         for (var docSnapshot in querySnapshot.docs) {
           cards.add(docSnapshot.data());
         }

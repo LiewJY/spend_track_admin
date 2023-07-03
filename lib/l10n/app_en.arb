@@ -77,6 +77,13 @@
   "editCategory": "Edit Category",
   "deleteCategory": "Delete Category",
 
+"@walletPage": {},
+  "searchByWalletName": "Search by wallet name",
+  "walletName": "Wallet Name",
+  "addWallet": "Add Wallet",
+  "editWallet": "Edit Wallet",
+  "deleteWallet": "Delete Wallet",
+
 "@cardPage": {},
   "basicInformation": "Basic Information",
   "cashbackInformation": "Cashback Information",
@@ -109,7 +116,9 @@
   "cardAddSuccess": "Card successfully added",
   "cardUpdateSuccess": "Card successfully updated",
   "cardDeleteSuccess": "Card successfully deleted",
-
+  "walletAddSuccess": "Wallet successfully added",
+  "walletUpdatedSuccess": "Wallet successfully updated",
+  "walletDeleteSuccess": "Wallet successfully deleted",
 
 
 "@navigation": {},
@@ -123,6 +132,7 @@
   "users": "Users",
   "adminManagement": "Admin Management",
   "userManagement": "User Management",
+  "wallet": "Wallet",
 
 "@home": {},
   "hi": "Hi {name},",

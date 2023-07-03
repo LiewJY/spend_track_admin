@@ -3,16 +3,17 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:track_admin/repositories/models/category.dart';
+import 'package:track_admin/repositories/models/wallet.dart';
 
-class CategoryRepository {
+class WalletRepository {
   //firestore instance
-  final ref = FirebaseFirestore.instance.collection('categories').withConverter(
-      fromFirestore: SpendingCategory.fromFirestore,
-      toFirestore: (SpendingCategory cat, _) => cat.toFirestore());
+  final ref = FirebaseFirestore.instance.collection('wallets').withConverter(
+      fromFirestore: Wallet.fromFirestore,
+      toFirestore: (Wallet wallet, _) => wallet.toFirestore());
 
-  List<SpendingCategory> categories = [];
+  List<Wallet> categories = [];
 
-  Future<List<SpendingCategory>> getCategories() async {
+  Future<List<Wallet>> getWallets() async {
     categories.clear();
     try {
       await ref.orderBy('name').get().then((querySnapshot) {
@@ -27,12 +28,12 @@ class CategoryRepository {
     }
   }
 
-  Future<void> addCategory({
+  Future<void> addWallet({
     required String name,
     required String description,
   }) async {
     try {
-      final store = SpendingCategory(
+      final store = Wallet(
         name: name,
         description: description,
       );
@@ -42,13 +43,13 @@ class CategoryRepository {
     }
   }
 
-  Future<void> updateCategory({
+  Future<void> updateWallet({
     required String uid,
     required String name,
     required String description,
   }) async {
     try {
-      final store = SpendingCategory(
+      final store = Wallet(
         name: name,
         description: description,
       );
@@ -58,7 +59,7 @@ class CategoryRepository {
     }
   }
 
-  Future<void> deleteCategory({required String uid}) async {
+  Future<void> deleteWallet({required String uid}) async {
     try {
       await ref.doc(uid).delete().onError((e, _) => throw e.toString());
     } catch (e) {
