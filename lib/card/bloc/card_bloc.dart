@@ -14,11 +14,11 @@ class CardBloc extends Bloc<CardEvent, CardState> {
 
   CardBloc({required this.cardRepository}) : super(CardState.initial()) {
     on<DisplayAllCardRequested>(_onDisplayAllCardRequested);
-    on<DisplayCardCashbackRequested>(_onDisplayCardCashbackRequested);
+    // on<DisplayCardCashbackRequested>(_onDisplayCardCashbackRequested);
 
     on<AddCardRequested>(_onAddCardRequested);
     // on<UpdateCardRequested>(_onUpdateCardRequested);
-    // on<DeleteCardRequested>(_onDeleteCardRequested);
+     on<DeleteCardRequested>(_onDeleteCardRequested);
   }
 
   //actions
@@ -82,6 +82,26 @@ class CardBloc extends Bloc<CardEvent, CardState> {
       emit(state.copyWith(
         status: CardStatus.success,
         success: 'added',
+      ));
+    } catch (e) {
+      emit(state.copyWith(
+        status: CardStatus.failure,
+        error: e.toString(),
+      ));
+    }
+  }
+
+_onDeleteCardRequested(
+    DeleteCardRequested event,
+    Emitter emit,
+  ) async {
+    if (state.status == CardStatus.loading) return;
+    emit(state.copyWith(status: CardStatus.loading));
+    try {
+      await cardRepository.deleteCard(uid: event.uid);
+      emit(state.copyWith(
+        status: CardStatus.success,
+        success: 'deleted',
       ));
     } catch (e) {
       emit(state.copyWith(

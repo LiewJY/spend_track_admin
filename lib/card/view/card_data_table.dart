@@ -249,14 +249,15 @@ DataRow recentFileDataRow(CreditCard data) {
                 itemBuilder: (context) {
                   final l10n = context.l10n;
                   return [
-                    PopupMenuItem(
-                      value: 0,
-                      child: Text(l10n.viewCard),
-                    ),
-                    PopupMenuItem(
-                      value: 1,
-                      child: Text(l10n.editCard),
-                    ),
+                    //todo
+                    // PopupMenuItem(
+                    //   value: 0,
+                    //   child: Text(l10n.viewCard),
+                    // ),
+                    // PopupMenuItem(
+                    //   value: 1,
+                    //   child: Text(l10n.editCard),
+                    // ),
                     PopupMenuItem(
                       value: 2,
                       child: Text(l10n.deleteCard),
@@ -265,14 +266,15 @@ DataRow recentFileDataRow(CreditCard data) {
                 },
                 onSelected: (value) {
                   switch (value) {
+                    //todo
                     case 0:
                       //viewCard(data, context);
                       break;
                     case 1:
-                      editCard(data, context);
+                     // editCard(data, context);
                       break;
                     case 2:
-                      //deleteCard(data, context);
+                      deleteCard(data, context);
                       break;
                   }
                 },
@@ -285,35 +287,39 @@ DataRow recentFileDataRow(CreditCard data) {
   );
 }
 
-void editCard(CreditCard data, BuildContext context) {
-  final l10n = context.l10n;
-  //query cashback data
-  //List<Cashback>? cashbackData;
-  // context.read<CardBloc>().add(DisplayCardCashbackRequested(uid: data.uid!));
-
-  if (!isDialogOpen) {
-    showDialog(
-        context: context,
-        builder: (_) {
-          return MultiBlocProvider(
-            providers: [
-              BlocProvider.value(
-                value: BlocProvider.of<CardBloc>(context),
-              ),
-              BlocProvider.value(
-                value: BlocProvider.of<CategoryBloc>(context),
-              ),
-            ],
-            child: CardDialog(
-              dialogTitle: l10n.editCard,
-              // actionName: l10n.update,
-              action: 'editCard',
-              data: data,
-            ),
-          );
-        }).then((value) {
-      toggleDialog();
-    });
-    toggleDialog();
-  }
+void deleteCard(CreditCard data, BuildContext context) {
+  context.read<CardBloc>().add(DeleteCardRequested(uid: data.uid!));
 }
+
+// void editCard(CreditCard data, BuildContext context) {
+//   final l10n = context.l10n;
+//   //query cashback data
+//   //List<Cashback>? cashbackData;
+//   // context.read<CardBloc>().add(DisplayCardCashbackRequested(uid: data.uid!));
+
+//   if (!isDialogOpen) {
+//     showDialog(
+//         context: context,
+//         builder: (_) {
+//           return MultiBlocProvider(
+//             providers: [
+//               BlocProvider.value(
+//                 value: BlocProvider.of<CardBloc>(context),
+//               ),
+//               BlocProvider.value(
+//                 value: BlocProvider.of<CategoryBloc>(context),
+//               ),
+//             ],
+//             child: CardDialog(
+//               dialogTitle: l10n.editCard,
+//               // actionName: l10n.update,
+//               action: 'editCard',
+//               data: data,
+//             ),
+//           );
+//         }).then((value) {
+//       toggleDialog();
+//     });
+//     toggleDialog();
+//   }
+// }

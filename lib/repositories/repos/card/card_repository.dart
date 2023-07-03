@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:track_admin/repositories/models/cashback.dart';
 import 'package:track_admin/repositories/models/creditCard.dart';
 
@@ -9,8 +10,6 @@ class CardRepository {
   final ref = FirebaseFirestore.instance.collection('cards').withConverter(
       fromFirestore: CreditCard.fromFirestore,
       toFirestore: (CreditCard card, _) => card.toFirestore());
-  //batch write categories into firebase
-  WriteBatch batch = FirebaseFirestore.instance.batch();
 
   List<CreditCard> cards = [];
   Future<List<CreditCard>> getCards() async {
@@ -39,11 +38,12 @@ class CardRepository {
           .withConverter(
               fromFirestore: Cashback.fromFirestore,
               toFirestore: (Cashback cashback, _) => cashback.toFirestore())
+          .orderBy('formId')
           .get()
           .then((querySnapshot) {
         for (var docSnapshot in querySnapshot.docs) {
-          log('repo');
-          log(docSnapshot.data().toString());
+          // log('repo');
+          // log(docSnapshot.data().toString());
           cardCashbacks.add(docSnapshot.data());
         }
       });
@@ -68,9 +68,12 @@ class CardRepository {
         cardType: cardType,
         isCashback: isCashback,
       );
+      WriteBatch batch = FirebaseFirestore.instance.batch();
+
       await ref
           .add(store)
           .then((value) => {
+                //batch write categories into firebase
                 cashbacks.forEach((element) {
                   var cashbackRef = ref
                       .doc(value.id)
@@ -89,5 +92,45 @@ class CardRepository {
       log('errror      ' + e.toString());
       throw e.toString();
     }
+  }
+
+  Future<void> deleteCard({required String uid}) async {
+     try {
+      HttpsCallable callable =
+          FirebaseFunctions.instance.httpsCallable('deleteCard');
+      final result = await callable.call(
+        {
+           'uid': uid,
+          // 'isAdmin': false,
+        },
+      );
+      log(result.data.toString());
+      if (result.data.toString() != 'null') {
+        throw 'unknown';
+      }
+    } catch (e) {
+      throw e.toString();
+    }
+  
+    // try {
+
+
+
+
+    //   //await ref.doc(uid).collection('cashbacks').
+      
+      
+      
+      
+    //   // .delete().onError((e, _) => throw e.toString());
+    //   // await ref
+    //   //     .doc(uid)
+    //   //     .collection('cashbacks')
+    //   //     .doc()
+    //   //     .delete()
+    //   //     .onError((e, _) => throw e.toString());
+    // } catch (e) {
+    //   throw e.toString();
+    // }
   }
 }

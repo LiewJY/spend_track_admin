@@ -11,9 +11,11 @@ class CategoryDropDownField extends StatefulWidget {
   const CategoryDropDownField({
     super.key,
     required this.onChanged,
+    this.value,
   });
 
   final onChanged;
+  final value;
 
   @override
   State<CategoryDropDownField> createState() => _CategoryDropDownFieldState();
@@ -56,6 +58,7 @@ class _CategoryDropDownFieldState extends State<CategoryDropDownField> {
 
     return Expanded(
       child: DropdownButtonFormField(
+        value: widget.value,
         decoration: InputDecoration(
           labelText: l10n.selectCategory,
         ),

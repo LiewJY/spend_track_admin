@@ -116,7 +116,7 @@ class _CardStepperFormState extends State<CardStepperForm> {
     formKeys.add(GlobalKey<FormState>());
     basicInformationForm = formKeys[0];
     cashbackInformationForm = formKeys[1];
-
+    //todo
     //set data for edit / update option
     if (widget.action == 'editCard') {
       //todo
@@ -133,9 +133,12 @@ class _CardStepperFormState extends State<CardStepperForm> {
 
       //query cashbacks
     }
+    log(cashbackData!.length.toString());
+    cashbackData!.forEach((element) {
+      onAddCashbackForm();
+    });
 
     //todo add cashbackfrom add option to pump in modal if it is edit
-    //onAddCashbackForm();
   }
 
   @override

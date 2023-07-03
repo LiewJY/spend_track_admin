@@ -38,7 +38,7 @@ class SpendingCategory extends Equatable {
   }
 
   factory SpendingCategory.fromJson(dynamic jsonString) {
-    final regex = RegExp(r'(\w+)\s*:\s*([\w\s]+)');
+        final regex = RegExp(r'(\w+)\s*:\s*([\w\s]+)');
     final matches = regex.allMatches(jsonString);
 
     final jsonMap = <String, String>{};
@@ -50,7 +50,7 @@ class SpendingCategory extends Equatable {
     return SpendingCategory(
       uid: jsonMap['uid'].toString(),
       name: jsonMap['name'].toString(),
-      //  description: json['description'],
+    //  description: json['description'],
     );
   }
 

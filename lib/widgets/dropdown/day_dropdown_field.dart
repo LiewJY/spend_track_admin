@@ -5,12 +5,15 @@ class SpendingDayDropDownField extends StatefulWidget {
   const SpendingDayDropDownField({
     super.key,
     required this.onChanged,
+    this.value,
   });
 
   final onChanged;
+  final value;
 
   @override
-  State<SpendingDayDropDownField> createState() => _SpendingDayDropDownFieldState();
+  State<SpendingDayDropDownField> createState() =>
+      _SpendingDayDropDownFieldState();
 }
 
 //dropdown
@@ -37,6 +40,7 @@ class _SpendingDayDropDownFieldState extends State<SpendingDayDropDownField> {
     }
 
     return DropdownButtonFormField(
+      value: widget.value,
       decoration: InputDecoration(
         labelText: l10n.selectSpendingDay,
       ),

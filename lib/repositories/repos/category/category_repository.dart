@@ -63,5 +63,6 @@ class CategoryRepository {
       await ref.doc(uid).delete().onError((e, _) => throw e.toString());
     } catch (e) {
       throw e.toString();
-    }  }
+    }
+  }
 }

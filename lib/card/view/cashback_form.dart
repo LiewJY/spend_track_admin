@@ -37,6 +37,12 @@ class _DynamicCashbackFormState extends State<DynamicCashbackForm> {
   @override
   void initState() {
     super.initState();
+    //todo if edit
+    // _cashbackController.text = widget.cashbackModel!.cappedAt.toString();
+    //_cashbackController.text = widget.cashbackModel?.cappedAt as String;
+    _categoryType = "Petrol";
+    //_spendingDay = widget.cashbackModel!.spendingDay;
+    _spendingDay = null;
   }
 
   final cashbackForm = GlobalKey<FormState>();
@@ -55,7 +61,7 @@ class _DynamicCashbackFormState extends State<DynamicCashbackForm> {
   //hide show capped at rate
   bool _isCapped = true;
   late String _categoryType;
-  late String _spendingDay;
+  String? _spendingDay;
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +80,9 @@ class _DynamicCashbackFormState extends State<DynamicCashbackForm> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    CategoryDropDownField(onChanged: (value) {
+                    CategoryDropDownField(
+                        // value: _categoryType,
+                        onChanged: (value) {
                       _categoryType = value;
                     }),
                     Padding(
@@ -87,11 +95,13 @@ class _DynamicCashbackFormState extends State<DynamicCashbackForm> {
                   ],
                 ),
                 AppStyle.sizedBoxSpace,
-                SpendingDayDropDownField(onChanged: (value) {
-                  setState(() {
-                    _spendingDay = value;
-                  });
-                }),
+                SpendingDayDropDownField(
+                    value: _spendingDay,
+                    onChanged: (value) {
+                      setState(() {
+                        _spendingDay = value;
+                      });
+                    }),
                 AppStyle.sizedBoxSpace,
                 SwitchField(
                     label: l10n.differentCashbackRate,
