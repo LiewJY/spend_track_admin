@@ -5,9 +5,11 @@ class CardTypeDropDownField extends StatefulWidget {
   const CardTypeDropDownField({
     super.key,
     required this.onChanged,
+    this.value,
   });
 
   final onChanged;
+  final value;
 
   @override
   State<CardTypeDropDownField> createState() => _CardTypeDropDownFieldState();
@@ -38,6 +40,10 @@ class _CardTypeDropDownFieldState extends State<CardTypeDropDownField> {
     }
 
     return DropdownButtonFormField(
+      // widget.value!==null ? value:
+      value: widget.value,
+
+
       decoration: InputDecoration(
         labelText: l10n.selectCardType,
       ),

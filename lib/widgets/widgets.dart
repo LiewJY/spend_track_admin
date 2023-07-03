@@ -17,6 +17,7 @@ export 'outline_card.dart';
 //dialog
 export 'dialog/user_management_dialog.dart';
 export 'dialog/category_dialog.dart';
+export 'dialog/card_dialog.dart';
 
 //data table
 //fixme not in use now

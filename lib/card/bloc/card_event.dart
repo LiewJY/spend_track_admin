@@ -12,6 +12,13 @@ class DisplayAllCardRequested extends CardEvent {
   @override
   List<Object> get props => [];
 }
+class DisplayCardCashbackRequested extends CardEvent {
+  const DisplayCardCashbackRequested ({required this.uid,});
+  final String uid;
+
+  @override
+  List<Object> get props => [uid];
+}
 
 class AddCardRequested extends CardEvent {
   const AddCardRequested({

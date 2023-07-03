@@ -74,7 +74,7 @@ class _CardDataLoaderState extends State<CardDataLoader> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    myCardData = context.select((CardBloc bloc) => bloc.state.CardList);
+    myCardData = context.select((CardBloc bloc) => bloc.state.cardList);
 
     filterCardData = myCardData!;
     return BlocListener<CardBloc, CardState>(
@@ -96,6 +96,7 @@ class _CardDataLoaderState extends State<CardDataLoader> {
         }
       },
       child: CardDataTable(),
+      //child: TestStepper(),
     );
   }
 }

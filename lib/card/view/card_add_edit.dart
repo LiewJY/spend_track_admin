@@ -39,6 +39,9 @@ class _TestStepperState extends State<TestStepper> {
     formKeys.add(GlobalKey<FormState>());
     basicInformationForm = formKeys[0];
     cashbackInformationForm = formKeys[1];
+
+    //todo add cashbackfrom add option to pump in modal if it is edit
+    onAddCashbackForm();
   }
 
   //text field controllers
@@ -49,13 +52,19 @@ class _TestStepperState extends State<TestStepper> {
   bool _isCashback = true;
 
   //cashback form
-  final List<DynamicCashbackForm> cashbackForms = List.empty(growable: true);
+  // final List<DynamicCashbackForm> cashbackForms = List.empty(growable: true);
+
+  final List<DynamicCashbackForm> cashbackForms = [];
 
   //list of cashback
   List<Cashback> cashbacks = [];
 
   @override
   Widget build(BuildContext context) {
+    // cashbackForms.add(DynamicCashbackForm(
+    //   cashbackModel: Cashback(formId: 1),
+    // ));
+
     //make call to store data input
     addCard() {
       context.read<CardBloc>().add(AddCardRequested(
@@ -99,7 +108,9 @@ class _TestStepperState extends State<TestStepper> {
     }
 
     final l10n = context.l10n;
-    return Stepper(
+    return 
+    
+    Stepper(
       steps: steps(l10n),
       currentStep: currentStep,
       onStepTapped: (int index) {
@@ -162,6 +173,8 @@ class _TestStepperState extends State<TestStepper> {
         ]);
       },
     );
+  
+  
   }
 
   List<Step> steps(l10n) => [
@@ -196,23 +209,21 @@ class _TestStepperState extends State<TestStepper> {
                   Text(l10n.bank + ':  ' + _bankController.text),
                   Text(l10n.cardType + ':  ' + _cardType.toString()),
                   //iterate
-                  for (var item in cashbacks)
-                  CashbackReviewCard(element: item)
-                    // Card(
-                    //     child: Padding(
-                    //   padding: AppStyle.cardPadding,
-                    //   child: Column(
-                    //     children: [
-                    //       Text(l10n.category + ':  ' + item.category),
-                    //       Text(l10n.spendingDay + ':  ' + item.spendingDay),
-                    //       Text(l10n.differentCashbackRate + ':  ' + item.isRateDifferent ? l10n.yes : l10n.no),
+                  for (var item in cashbacks) CashbackReviewCard(element: item)
+                  // Card(
+                  //     child: Padding(
+                  //   padding: AppStyle.cardPadding,
+                  //   child: Column(
+                  //     children: [
+                  //       Text(l10n.category + ':  ' + item.category),
+                  //       Text(l10n.spendingDay + ':  ' + item.spendingDay),
+                  //       Text(l10n.differentCashbackRate + ':  ' + item.isRateDifferent ? l10n.yes : l10n.no),
 
+                  //     ],
 
-                    //     ],
-
-                    //     //Text(l10n.category + ':  ' + _nameController.text),
-                    //   ),
-                    // )),
+                  //     //Text(l10n.category + ':  ' + _nameController.text),
+                  //   ),
+                  // )),
                   //  cashbacks.forEach((element) {
                   //    return Text(element.name + ': '+ element.cashback);
                   // })

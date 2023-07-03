@@ -87,7 +87,10 @@
   "spendingDay": "Spending Day",
   "yes": "Yes",
   "no": "No",
-  "view": "View",
+  "viewCard": "View Card",
+  "addCard": "Add Card",
+  "editCard": "Edit Card",
+  "deleteCard": "Delete Card",
 
 
 
@@ -100,8 +103,12 @@
   "userEnabledSuccess": "User successfully enabled",
   "userDisabledSuccess": "User successfully disabled",
   "userDeleteSuccess": "User successfully deleted",
+  "categoryAddSuccess": "Category successfully added",
   "categoryUpdatedSuccess": "Category successfully updated",
   "categoryDeleteSuccess": "Category successfully deleted",
+  "cardAddSuccess": "Card successfully added",
+  "cardUpdateSuccess": "Card successfully updated",
+  "cardDeleteSuccess": "Card successfully deleted",
 
 
 

@@ -6,10 +6,9 @@ import 'package:track_admin/repositories/models/creditCard.dart';
 
 class CardRepository {
   //firestore instance
-  //todo change
   final ref = FirebaseFirestore.instance.collection('cards').withConverter(
       fromFirestore: CreditCard.fromFirestore,
-      toFirestore: (CreditCard cat, _) => cat.toFirestore());
+      toFirestore: (CreditCard card, _) => card.toFirestore());
   //batch write categories into firebase
   WriteBatch batch = FirebaseFirestore.instance.batch();
 
@@ -23,6 +22,32 @@ class CardRepository {
         }
       });
       return cards;
+    } catch (e) {
+      log(e.toString());
+      throw 'cannotRetrieveData';
+    }
+  }
+
+  List<Cashback> cardCashbacks = [];
+  Future<List<Cashback>> getCardCashbacks(String uid) async {
+    cardCashbacks.clear();
+    try {
+      //todo
+      await ref
+          .doc(uid)
+          .collection('cashbacks')
+          .withConverter(
+              fromFirestore: Cashback.fromFirestore,
+              toFirestore: (Cashback cashback, _) => cashback.toFirestore())
+          .get()
+          .then((querySnapshot) {
+        for (var docSnapshot in querySnapshot.docs) {
+          log('repo');
+          log(docSnapshot.data().toString());
+          cardCashbacks.add(docSnapshot.data());
+        }
+      });
+      return cardCashbacks;
     } catch (e) {
       log(e.toString());
       throw 'cannotRetrieveData';
@@ -60,8 +85,6 @@ class CardRepository {
                 batch.commit(),
               })
           .onError((e, _) => throw e.toString());
-
-      //.onError((e, _) => throw e.toString());
     } catch (e) {
       log('errror      ' + e.toString());
       throw e.toString();

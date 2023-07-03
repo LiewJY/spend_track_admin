@@ -6,7 +6,9 @@ import 'package:track_admin/card/bloc/card_bloc.dart';
 import 'package:track_admin/card/card.dart';
 import 'package:track_admin/category/category.dart';
 import 'package:track_admin/l10n/l10n.dart';
+import 'package:track_admin/repositories/models/cashback.dart';
 import 'package:track_admin/repositories/models/creditCard.dart';
+import 'package:track_admin/widgets/dialog/card_dialog.dart';
 import 'package:track_admin/widgets/widgets.dart';
 import 'package:track_theme/track_theme.dart';
 
@@ -83,6 +85,12 @@ class _CardDataTableState extends State<CardDataTable> {
           style: AppStyle.dtHeader,
         ),
       ),
+      DataColumn(
+        label: Text(
+          l10n.cashback,
+          style: AppStyle.dtHeader,
+        ),
+      ),
       const DataColumn(
         label: Text(
           "",
@@ -105,18 +113,18 @@ class _CardDataTableState extends State<CardDataTable> {
               if (isDialogOpen) {
                 Navigator.of(context, rootNavigator: true).pop();
               }
-              AppSnackBar.success(context, l10n.addedAdmin);
+              AppSnackBar.success(context, l10n.cardAddSuccess);
               refresh();
               break;
             case 'updated':
               if (isDialogOpen) {
                 Navigator.of(context, rootNavigator: true).pop();
               }
-              AppSnackBar.success(context, l10n.categoryUpdatedSuccess);
+              AppSnackBar.success(context, l10n.cardUpdateSuccess);
               refresh();
               break;
             case 'deleted':
-              AppSnackBar.success(context, l10n.categoryDeleteSuccess);
+              AppSnackBar.success(context, l10n.cardDeleteSuccess);
               refresh();
               break;
           }
@@ -149,12 +157,20 @@ class _CardDataTableState extends State<CardDataTable> {
                     showDialog(
                         context: context,
                         builder: (_) {
-                          return BlocProvider.value(
-                            value: BlocProvider.of<CategoryBloc>(context),
-                            child: CategoryDialog(
-                              dialogTitle: l10n.addCategory,
-                              actionName: l10n.add,
-                              action: 'addCategory',
+                          return MultiBlocProvider(
+                            providers: [
+                              BlocProvider.value(
+                                value: BlocProvider.of<CardBloc>(context),
+                              ),
+                              BlocProvider.value(
+                                value: BlocProvider.of<CategoryBloc>(context),
+                              ),
+                            ],
+                            child: CardDialog(
+                              dialogTitle: l10n.addCard,
+                              // actionName: l10n.add,
+                              action: 'addCard',
+                              
                             ),
                           );
                         }).then((value) {
@@ -163,7 +179,7 @@ class _CardDataTableState extends State<CardDataTable> {
                     toggleDialog();
                   }
                 },
-                child: Text(l10n.addCategory),
+                child: Text(l10n.addCard),
               ),
             ),
           ],
@@ -221,6 +237,9 @@ DataRow recentFileDataRow(CreditCard data) {
         data.bank ?? "",
       )),
       DataCell(
+        data.isCashback! ? const Icon(Icons.check) : Text(''),
+      ),
+      DataCell(
         Builder(builder: (context) {
           return Row(
             mainAxisAlignment: MainAxisAlignment.end,
@@ -232,15 +251,15 @@ DataRow recentFileDataRow(CreditCard data) {
                   return [
                     PopupMenuItem(
                       value: 0,
-                      child: Text(l10n.view),
-                    ),
-                    PopupMenuItem(
-                      value: 0,
-                      child: Text(l10n.edit),
+                      child: Text(l10n.viewCard),
                     ),
                     PopupMenuItem(
                       value: 1,
-                      child: Text(l10n.deleteCategory),
+                      child: Text(l10n.editCard),
+                    ),
+                    PopupMenuItem(
+                      value: 2,
+                      child: Text(l10n.deleteCard),
                     ),
                   ];
                 },
@@ -250,7 +269,7 @@ DataRow recentFileDataRow(CreditCard data) {
                       //viewCard(data, context);
                       break;
                     case 1:
-                      //editCard(data, context);
+                      editCard(data, context);
                       break;
                     case 2:
                       //deleteCard(data, context);
@@ -264,4 +283,37 @@ DataRow recentFileDataRow(CreditCard data) {
       ),
     ],
   );
+}
+
+void editCard(CreditCard data, BuildContext context) {
+  final l10n = context.l10n;
+  //query cashback data
+  //List<Cashback>? cashbackData;
+  // context.read<CardBloc>().add(DisplayCardCashbackRequested(uid: data.uid!));
+
+  if (!isDialogOpen) {
+    showDialog(
+        context: context,
+        builder: (_) {
+          return MultiBlocProvider(
+            providers: [
+              BlocProvider.value(
+                value: BlocProvider.of<CardBloc>(context),
+              ),
+              BlocProvider.value(
+                value: BlocProvider.of<CategoryBloc>(context),
+              ),
+            ],
+            child: CardDialog(
+              dialogTitle: l10n.editCard,
+              // actionName: l10n.update,
+              action: 'editCard',
+              data: data,
+            ),
+          );
+        }).then((value) {
+      toggleDialog();
+    });
+    toggleDialog();
+  }
 }

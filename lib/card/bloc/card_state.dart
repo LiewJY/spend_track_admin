@@ -1,19 +1,20 @@
 part of 'card_bloc.dart';
 
-
 enum CardStatus { initial, loading, success, failure }
 
 class CardState extends Equatable {
   final CardStatus status;
   final String error;
   final String success;
-  final List<CreditCard> CardList;
+  final List<CreditCard> cardList;
+  final List<Cashback> cashbackList;
 
   const CardState({
     required this.status,
     required this.error,
     required this.success,
-    required this.CardList,
+    required this.cardList,
+    required this.cashbackList,
   });
 
   //initializing
@@ -22,24 +23,27 @@ class CardState extends Equatable {
       status: CardStatus.initial,
       error: '',
       success: '',
-      CardList: [],
+      cardList: [],
+      cashbackList: [],
     );
   }
 
   @override
-  List<Object> get props => [status, error, success];
+  List<Object> get props => [status, error, success, cardList, cashbackList];
 
   CardState copyWith({
     CardStatus? status,
     String? error,
     String? success,
-    List<CreditCard>? CardList,
+    List<CreditCard>? cardList,
+    List<Cashback>? cashbackList,
   }) {
     return CardState(
       status: status ?? this.status,
       error: error ?? this.error,
       success: success ?? this.success,
-      CardList: CardList ?? this.CardList,
+      cardList: cardList ?? this.cardList,
+      cashbackList: cashbackList?? this.cashbackList,
     );
   }
 }

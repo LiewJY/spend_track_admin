@@ -104,7 +104,7 @@ class _CategoryDataTableState extends State<CategoryDataTable> {
               if (isDialogOpen) {
                 Navigator.of(context, rootNavigator: true).pop();
               }
-              AppSnackBar.success(context, l10n.addedAdmin);
+              AppSnackBar.success(context, l10n.categoryAddSuccess);
               refresh();
               break;
             case 'updated':
@@ -255,7 +255,6 @@ DataRow recentFileDataRow(SpendingCategory data) {
   );
 }
 
-//todo
 void editCategory(SpendingCategory data, BuildContext context) {
   final l10n = context.l10n;
   if (!isDialogOpen) {
