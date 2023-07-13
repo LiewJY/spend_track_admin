@@ -11,8 +11,14 @@ require("firebase-functions/logger/compat");
 
 // get functions from specific files
 module.exports = {
-  ...require("./lib/user-management.js"),
-  ...require("./lib/card-management.js"),
+  //admin
+  ...require("./lib/admin/user-management.js"),
+  ...require("./lib/admin/card-management.js"),
+
+  //user
+  ...require("./lib/user/budget-management.js"),
+  ...require("./lib/user/card-management.js"),
+  ...require("./lib/user/transaction-management.js"),
 
   // ...require("./lib/bar.js") // add as many as you like
 };

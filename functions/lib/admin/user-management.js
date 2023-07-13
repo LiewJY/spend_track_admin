@@ -98,4 +98,9 @@ exports.deleteAdminUser = functions.https.onCall(async (data, context) => {
 
 });
 
+//trigger to create new users collection at signup
+exports.makeCollection = functions.auth.user().onCreate((user) => {
+  admin.firestore().collection('users').doc(user.uid).set({ 'user': true });
+});
+
 
