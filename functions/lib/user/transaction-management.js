@@ -9,20 +9,24 @@ const { getAuth } = require("firebase-admin/auth");
 // firebase function logging
 require("firebase-functions/logger/compat");
 
-const addSpendingCatSet = async (path, category, categoryId, amount) => {
-  const monthYearIdPathRef = admin.firestore().collection(path[0] + '/' + path[1] + '/' + path[2]).doc(path[3]);
+const addSpendingCatSet = async (monthYearIdPathRef, category, categoryId, amount) => {
+  // const monthYearIdPathRef = admin.firestore().collection(path[0] + '/' + path[1] + '/' + path[2]).doc(path[3]);
 
   var summary =
     (await monthYearIdPathRef.get()).data();
 
   if (summary.hasOwnProperty(categoryId)) {
     //update existing field
-    const currentCatSpending = (await monthYearIdPathRef.get()).data()[categoryId].amount;
+
+    const current = summary[categoryId];
+    const currentCatSpending = current.amount;
+    const currentColor = current.categoryColor;
     monthYearIdPathRef.update(
       {
         [categoryId]: {
           'amount': currentCatSpending + amount,
           'categoryName': category,
+          'categoryColor': currentColor
         }
       }
     );
@@ -30,10 +34,15 @@ const addSpendingCatSet = async (path, category, categoryId, amount) => {
   } else {
     //create new field
     //todo
+    //add color
+    //todo make changes here when update at admin
+    const color = (await admin.firestore().collection('categories').doc(categoryId).get()).data();
+    console.log(color);
     monthYearIdPathRef.set({
       [categoryId]: {
         'amount': amount,
         'categoryName': category,
+        'categoryColor': color.color,
       }
     }, { merge: true });
 
@@ -60,14 +69,177 @@ exports.addTransaction = functions.firestore.document('users/{userId}/myTransact
     console.log('aa', newValue.category);
 
     //category spending summary
-    addSpendingCatSet(path, newValue.category, newValue.categoryId, newValue.amount);
+    addSpendingCatSet(monthYearIdPathRef, newValue.category, newValue.categoryId, newValue.amount);
   } else {
     //initialize by setting it so can find later
     monthYearIdPathRef.set({ 'totalSpending': newValue.amount });
 
     //category spending summary
-    addSpendingCatSet(path, newValue.category, newValue.categoryId, newValue.amount);
+    addSpendingCatSet(monthYearIdPathRef, newValue.category, newValue.categoryId, newValue.amount);
 
   }
 });
 
+exports.deleteTransaction = functions.firestore.document('users/{userId}/myTransactions/{monthYearId}/monthlyTransactions/{transactionId}').onDelete(async (snap, context) => {
+  const deletedValue = snap.data();
+  const documentRef = snap.ref;
+  const path = documentRef.path.split("/");
+  const monthYearIdPathRef = admin.firestore().collection(path[0] + '/' + path[1] + '/' + path[2]).doc(path[3]);
+
+
+  const monthYearDocumentData = (await monthYearIdPathRef.get()).data();
+
+  // const currentTotalSpending = (await monthYearIdPathRef.get()).data().totalSpending;
+  const currentTotalSpending = monthYearDocumentData.totalSpending;
+  monthYearIdPathRef.update({ 'totalSpending': currentTotalSpending - deletedValue.amount });
+
+  const current = monthYearDocumentData[deletedValue.categoryId];
+  const currentCatSpending = current.amount;
+  const currentColor = current.categoryColor;
+  monthYearIdPathRef.update(
+    {
+      [deletedValue.categoryId]: {
+        'amount': currentCatSpending - deletedValue.amount,
+        'categoryName': deletedValue.category,
+        'categoryColor': currentColor
+      }
+    }
+  );
+});
+
+
+const updateSpendingCatSet = async (monthYearIdPathRef, before, after) => {
+  // const monthYearIdPathRef = admin.firestore().collection(path[0] + '/' + path[1] + '/' + path[2]).doc(path[3]);
+
+  //update the total speding
+  const currentTotalSpending = (await monthYearIdPathRef.get()).data().totalSpending;
+  console.log(currentTotalSpending);
+  monthYearIdPathRef.update({ 'totalSpending': currentTotalSpending - before.amount + after.amount });
+
+  //console.log(currentTotalSpending);
+
+  var summary =
+    (await monthYearIdPathRef.get()).data();
+  //category did not change
+  if (before.categoryId == after.categoryId) {
+
+    const current = summary[before.categoryId];
+    console.log(current);
+    const currentCatSpending = current.amount;
+    console.log(currentCatSpending);
+
+    const currentColor = current.categoryColor;
+    console.log(currentColor);
+    console.log(summary[before.categoryId].categoryName);
+
+    monthYearIdPathRef.update(
+      {
+        [before.categoryId]: {
+          'amount': currentCatSpending - before.amount + after.amount,
+          'categoryName': summary[before.categoryId].categoryName,
+          'categoryColor': currentColor
+        }
+      }
+    );
+  }
+
+
+  if (before.categoryId != after.categoryId) {
+
+    const currentBefore = summary[before.categoryId];
+    console.log(currentBefore);
+    const currentBeforeCatSpending = currentBefore.amount;
+    console.log(currentBeforeCatSpending);
+
+    const currentBeforeColor = currentBefore.categoryColor;
+    console.log(currentBeforeColor);
+    // console.log(summary[before.categoryId].categoryName);
+
+    //before category -- <-- here remove the amount form original
+    monthYearIdPathRef.update(
+      {
+        [before.categoryId]: {
+          'amount': currentBeforeCatSpending - before.amount,
+          'categoryName': summary[before.categoryId].categoryName,
+          'categoryColor': currentBeforeColor
+        }
+      }
+    );
+
+    addSpendingCatSet(monthYearIdPathRef, after.category, after.categoryId, after.amount);
+
+
+    //after category ++
+    //if exist 
+    // const currentAfter = summary[after.categoryId];
+    // console.log(currentAfter);
+    // const currentAfterCatSpending = currentAfter.amount;
+    // console.log(currentAfterCatSpending);
+
+    // const currentAfterColor = currentBefore.categoryColor;
+    // console.log(currentAfterColor);
+    // monthYearIdPathRef.update(
+    //   {
+    //     [after.categoryId]: {
+    //       'amount': currentCatSpending - before.amount + after.amount,
+    //       'categoryName': summary[before.categoryId].categoryName,
+    //       'categoryColor': currentColor
+    //     }
+    //   }
+    // );
+  }
+
+
+  // if (summary.hasOwnProperty(before.categoryId)) {
+  //   // update existing field
+
+
+  // }
+  //else {
+  //   //create new field
+  //   //todo
+  //   //add color
+  //   //todo make changes here when update at admin
+  //   // const color = (await admin.firestore().collection('categories').doc(categoryId).get()).data();
+  //   // console.log(color);
+  //   // monthYearIdPathRef.set({
+  //   //   [categoryId]: {
+  //   //     'amount': after.amount,
+  //   //     'categoryName': after.category,
+  //   //     'categoryColor': color.color,
+  //   //   }
+  //   // }, { merge: true });
+
+  // }
+}
+exports.updateTransaction = functions.firestore.document('users/{userId}/myTransactions/{monthYearId}/monthlyTransactions/{transactionId}').onUpdate(async (change, context) => {
+  const documentPath = context.params.userId;
+  const before = change.before.data();
+  const after = change.after.data();
+
+  const beforeYM = before.date.toDate().getFullYear() + '_' + (before.date.toDate().getMonth() + 1);
+  const afterYM = after.date.toDate().getFullYear() + '_' + (after.date.toDate().getMonth() + 1);
+
+  if (beforeYM != afterYM) {
+    const destinationCollection = admin.firestore().collection('users').doc(context.params.userId).collection('myTransactions').doc(afterYM).collection('monthlyTransactions');
+    //set the new data in the correct collection
+    destinationCollection.doc().set(after);
+    //delete the current one
+    admin.firestore().collection('users').doc(context.params.userId).collection('myTransactions').doc(context.params.monthYearId).collection('monthlyTransactions').doc(context.params.transactionId).delete();
+  } else {
+    //same yyyy_mm
+    console.log('same    ');
+    const monthYearIdPathRef = admin.firestore().collection('users').doc(context.params.userId).collection('myTransactions').doc(afterYM);
+    updateSpendingCatSet(monthYearIdPathRef, before, after);
+  }
+
+  //1. check if yyyy_mm same
+  // if(before.d)
+
+
+
+  //read old 
+
+  //update or remove it
+
+});
