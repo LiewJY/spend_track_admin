@@ -232,14 +232,4 @@ exports.updateTransaction = functions.firestore.document('users/{userId}/myTrans
     const monthYearIdPathRef = admin.firestore().collection('users').doc(context.params.userId).collection('myTransactions').doc(afterYM);
     updateSpendingCatSet(monthYearIdPathRef, before, after);
   }
-
-  //1. check if yyyy_mm same
-  // if(before.d)
-
-
-
-  //read old 
-
-  //update or remove it
-
 });
