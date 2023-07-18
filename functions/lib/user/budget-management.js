@@ -32,3 +32,30 @@ exports.addBudget = functions.firestore.document('users/{userId}/myBudgets/budge
     summaryPathRef.set({ 'totalBudget': newValue.amount });
   }
 });
+
+exports.updateBudget = functions.firestore.document('users/{userId}/myBudgets/budgetSummary/budgets/{budgetId}').onUpdate(async (change, context) => {
+  const before = change.before.data();
+  const after = change.after.data();
+
+  const budgetSummaryRef = (await admin.firestore().collection('users').doc(context.params.userId).collection('myBudgets').doc('budgetSummary'));
+  const oldTotalBudget = (await budgetSummaryRef.get()).data().totalBudget;
+
+  //update the amount
+  budgetSummaryRef.update({ 'totalBudget': oldTotalBudget - before.amount +  after.amount});
+
+});
+
+
+exports.deleteBudget = functions.firestore.document('users/{userId}/myBudgets/budgetSummary/budgets/{budgetId}').onDelete(async (snap, context) => {
+  const deletedValue = snap.data();
+  const budgetSummaryRef = (await admin.firestore().collection('users').doc(context.params.userId).collection('myBudgets').doc('budgetSummary'));
+  const oldTotalBudget = (await budgetSummaryRef.get()).data().totalBudget;
+
+  //update the amount
+  budgetSummaryRef.update({ 'totalBudget': oldTotalBudget - deletedValue.amount });
+
+});
+
+
+
+
