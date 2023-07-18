@@ -19,6 +19,8 @@ module.exports = {
   ...require("./lib/user/budget-management.js"),
   ...require("./lib/user/card-management.js"),
   ...require("./lib/user/transaction-management.js"),
+  ...require("./lib/user/wallet-management.js"),
+
 
   // ...require("./lib/bar.js") // add as many as you like
 };

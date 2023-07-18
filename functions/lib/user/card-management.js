@@ -38,3 +38,7 @@ exports.deleteMyCardCashbacksCollection = functions.firestore.document('users/{u
   });;
 
 });
+
+
+//todo updatecard
+//todo deleteAtMyCashback --> u(mycards) -> u(myCashbacks)   <-- not sure if needed 
