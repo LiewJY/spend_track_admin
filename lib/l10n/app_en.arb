@@ -76,6 +76,8 @@
   "addCategory": "Add Category",
   "editCategory": "Edit Category",
   "deleteCategory": "Delete Category",
+  "selectColor": "Select Color",
+  "color": "Color",
 
 "@walletPage": {},
   "searchByWalletName": "Search by wallet name",

@@ -69,6 +69,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   intl: any
+  flutter_colorpicker: ^1.0.3
 
 
 dev_dependencies:

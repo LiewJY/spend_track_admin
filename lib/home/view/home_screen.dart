@@ -23,7 +23,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   //fixme
-  int currentPageIndex = 2;
+  int currentPageIndex = 1;
   //repos
   final authRepository = AuthRepository();
 

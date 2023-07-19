@@ -9,11 +9,13 @@ class SpendingCategory extends Equatable {
     this.uid,
     this.name,
     this.description,
+    this.color,
   });
 
   final String? uid;
   final String? name;
   final String? description;
+  final String? color;
 
   //convert firestore format into object
   factory SpendingCategory.fromFirestore(
@@ -25,6 +27,7 @@ class SpendingCategory extends Equatable {
       uid: snapshot.id,
       name: data?['name'],
       description: data?['description'],
+      color: data?['color'],
     );
   }
 
@@ -34,11 +37,12 @@ class SpendingCategory extends Equatable {
       if (uid != null) "uid": uid,
       if (name != null) "name": name,
       if (description != null) "description": description,
+      if (color != null) "color": color,
     };
   }
 
   factory SpendingCategory.fromJson(dynamic jsonString) {
-        final regex = RegExp(r'(\w+)\s*:\s*([\w\s]+)');
+    final regex = RegExp(r'(\w+)\s*:\s*([\w\s]+)');
     final matches = regex.allMatches(jsonString);
 
     final jsonMap = <String, String>{};
@@ -50,7 +54,7 @@ class SpendingCategory extends Equatable {
     return SpendingCategory(
       uid: jsonMap['uid'].toString(),
       name: jsonMap['name'].toString(),
-    //  description: json['description'],
+      //  description: json['description'],
     );
   }
 

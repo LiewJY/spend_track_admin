@@ -30,11 +30,13 @@ class CategoryRepository {
   Future<void> addCategory({
     required String name,
     required String description,
+    required String color,
   }) async {
     try {
       final store = SpendingCategory(
         name: name,
         description: description,
+        color: color,
       );
       await ref.doc().set(store).onError((e, _) => throw e.toString());
     } catch (e) {
@@ -46,11 +48,13 @@ class CategoryRepository {
     required String uid,
     required String name,
     required String description,
+    required String color,
   }) async {
     try {
       final store = SpendingCategory(
         name: name,
         description: description,
+        color: color,
       );
       await ref.doc(uid).set(store).onError((e, _) => throw e.toString());
     } catch (e) {

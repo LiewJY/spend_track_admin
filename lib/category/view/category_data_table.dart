@@ -78,6 +78,12 @@ class _CategoryDataTableState extends State<CategoryDataTable> {
           style: AppStyle.dtHeader,
         ),
       ),
+      DataColumn(
+        label: Text(
+          l10n.color,
+          style: AppStyle.dtHeader,
+        ),
+      ),
       const DataColumn(
         label: Text(
           "",
@@ -215,6 +221,11 @@ DataRow recentFileDataRow(SpendingCategory data) {
       )),
       DataCell(Text(
         data.description ?? "",
+      )),
+      DataCell(Container(
+        color: Color(int.parse(data.color.toString())),
+        width: 25,
+        height: 25,
       )),
       DataCell(
         Builder(builder: (context) {

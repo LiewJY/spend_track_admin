@@ -15,25 +15,27 @@ class DisplayAllCategoryRequested extends CategoryEvent {
 }
 
 class AddCategoryRequested extends CategoryEvent {
-  const AddCategoryRequested({required this.name, required this.description});
+  const AddCategoryRequested({required this.name, required this.description, required this.color});
 
   final String name;
   final String description;
+  final String color;
 
   @override
-  List<Object> get props => [name, description];
+  List<Object> get props => [name, description, color];
 }
 
 class UpdateCategoryRequested extends CategoryEvent {
   const UpdateCategoryRequested(
-      {required this.uid, required this.name, required this.description});
+      {required this.uid, required this.name, required this.description, required this.color});
 
   final String uid;
   final String name;
   final String description;
+  final String color;
 
   @override
-  List<Object> get props => [name, description];
+  List<Object> get props => [name, description, color];
 }
 
 class DeleteCategoryRequested extends CategoryEvent {

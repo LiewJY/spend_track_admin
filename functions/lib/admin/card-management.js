@@ -54,11 +54,11 @@ exports.triggerUpdateCards = functions.firestore.document('wallets/{cardsId}')
     const usersSnapshot = await admin.firestore().collection('users').get();
     const batch = admin.firestore().batch();
     usersSnapshot.forEach(async (userDoc) => {
-      const myWalletsRef = userDoc.ref.collection('myWallets').where('uid', '==', uid).get();
-      //todo
-      myWalletsRef.forEach(async (walletref) => {
-        console.log('werewrwrw');
-      });
+      // const myWalletsRef = userDoc.ref.collection('myWallets').where('uid', '==', uid).get();
+      // //todo
+      // myWalletsRef.forEach(async (walletref) => {
+      //   console.log('werewrwrw');
+      // });
 
       // if (!myWalletsRef.empty) {
       //   // const targetDocumentRef = myWalletsRef.docs.ref;
