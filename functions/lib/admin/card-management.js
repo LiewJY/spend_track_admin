@@ -26,6 +26,10 @@ exports.deleteCard = functions.https.onCall(async (data, context) => {
 //firestore triggered functions
 //todo
 
+//todo updatecard -> admin(card) -> user(mycards)
+//similar to wallet
+
+
 
 
 
