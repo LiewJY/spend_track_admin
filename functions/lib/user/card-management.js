@@ -27,7 +27,7 @@ exports.addCashback = functions.firestore.document('users/{userId}/myCards/{card
 });
 
 //function to delete all cashback condition when card is removed
-exports.deleteMyCardCashbacksCollection = functions.firestore.document('users/{userId}/myCards/{cardsId}').onDelete((snap, context) => {
+exports.deleteMyCardCashbackCollection = functions.firestore.document('users/{userId}/myCards/{cardsId}').onDelete((snap, context) => {
   const deleteDocumentRef = snap.ref;
   admin.firestore().recursiveDelete(deleteDocumentRef).then(() => {
     console.log('Successfully deleted card');
@@ -38,6 +38,11 @@ exports.deleteMyCardCashbacksCollection = functions.firestore.document('users/{u
   });;
 
 });
+
+//todo 
+
+
+
 
 
 //todo updatecard
