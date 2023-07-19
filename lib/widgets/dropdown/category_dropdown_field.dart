@@ -21,25 +21,41 @@ class CategoryDropDownField extends StatefulWidget {
   State<CategoryDropDownField> createState() => _CategoryDropDownFieldState();
 }
 
-List<DropdownMenuItem> get categoryDropdownItems {
-  List<DropdownMenuItem> menuItems = [];
-  for (SpendingCategory element in myCategory!) {
-    menuItems.add(DropdownMenuItem(
-      value: element.toFirestore().toString(),
-      child: Text(element.name.toString()),
-    ));
-  }
-  return menuItems;
-}
-
-//store category
-List<SpendingCategory>? myCategory;
-
 class _CategoryDropDownFieldState extends State<CategoryDropDownField> {
   @override
   void initState() {
     super.initState();
     context.read<CategoryBloc>().add(DisplayAllCategoryRequested());
+  }
+
+//store category
+  List<SpendingCategory>? myCategory;
+  SpendingCategory? selectedValue;
+  List<DropdownMenuItem> get categoryDropdownItems {
+    List<DropdownMenuItem> menuItems = [];
+    for (SpendingCategory element in myCategory!) {
+      menuItems.add(DropdownMenuItem(
+        value: element.toFirestore().toString(),
+        child: Text(element.name.toString()),
+      ));
+    }
+    return menuItems;
+  }
+
+  SpendingCategory? selected(desiredUid) {
+    log(' df  ' + desiredUid.toString());
+    if (desiredUid != null) {
+      try {
+        return selectedValue = categoryDropdownItems
+            .firstWhere(
+              (item) => item.value?.uid == desiredUid,
+            )
+            .value;
+      } catch (e) {
+        return null;
+      }
+    }
+    return null;
   }
 
   @override
@@ -58,7 +74,7 @@ class _CategoryDropDownFieldState extends State<CategoryDropDownField> {
 
     return Expanded(
       child: DropdownButtonFormField(
-        value: widget.value,
+      value: selected(widget.value),
         decoration: InputDecoration(
           labelText: l10n.selectCategory,
         ),

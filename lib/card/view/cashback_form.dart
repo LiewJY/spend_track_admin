@@ -40,7 +40,7 @@ class _DynamicCashbackFormState extends State<DynamicCashbackForm> {
     //todo if edit
     // _cashbackController.text = widget.cashbackModel!.cappedAt.toString();
     //_cashbackController.text = widget.cashbackModel?.cappedAt as String;
-    _categoryType = "Petrol";
+    //_categoryType = "Petrol";
     //_spendingDay = widget.cashbackModel!.spendingDay;
     _spendingDay = null;
   }
@@ -60,7 +60,10 @@ class _DynamicCashbackFormState extends State<DynamicCashbackForm> {
   bool _isRateDifferent = false;
   //hide show capped at rate
   bool _isCapped = true;
-  late String _categoryType;
+
+  SpendingCategory? _categorySelected;
+  String? _categorySelectedId;
+
   String? _spendingDay;
 
   @override
@@ -81,10 +84,10 @@ class _DynamicCashbackFormState extends State<DynamicCashbackForm> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     CategoryDropDownField(
-                        // value: _categoryType,
+                        value: _categorySelectedId,
                         onChanged: (value) {
-                      _categoryType = value;
-                    }),
+                          _categorySelected = value;
+                        }),
                     Padding(
                       padding: AppStyle.dtButonHorizontalPadding,
                       child: IconButton(
@@ -177,10 +180,10 @@ class _DynamicCashbackFormState extends State<DynamicCashbackForm> {
 
   bool validate() {
     if (cashbackForm.currentState!.validate()) {
-      SpendingCategory category = SpendingCategory.fromJson(_categoryType);
+      // SpendingCategory category = SpendingCategory.fromJson(_categoryType);
       widget.cashbackModel = Cashback(
-        categoryId: category.uid.toString(),
-        category: category.name,
+        categoryId: _categorySelected?.uid,
+        category: _categorySelected?.name,
         spendingDay: _spendingDay,
         isRateDifferent: _isRateDifferent,
         minSpend:
