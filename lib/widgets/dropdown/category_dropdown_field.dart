@@ -35,7 +35,7 @@ class _CategoryDropDownFieldState extends State<CategoryDropDownField> {
     List<DropdownMenuItem> menuItems = [];
     for (SpendingCategory element in myCategory!) {
       menuItems.add(DropdownMenuItem(
-        value: element.toFirestore().toString(),
+        value: element,
         child: Text(element.name.toString()),
       ));
     }
