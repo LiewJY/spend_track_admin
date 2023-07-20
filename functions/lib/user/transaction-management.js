@@ -9,6 +9,10 @@ const { getAuth } = require("firebase-admin/auth");
 // firebase function logging
 require("firebase-functions/logger/compat");
 
+
+//  add
+//   ---------------------------------------------------------------- 
+//   ---------------------------------------------------------------- 
 const addSpendingCatSet = async (monthYearIdPathRef, category, categoryId, amount) => {
   // const monthYearIdPathRef = admin.firestore().collection(path[0] + '/' + path[1] + '/' + path[2]).doc(path[3]);
 
@@ -34,7 +38,7 @@ const addSpendingCatSet = async (monthYearIdPathRef, category, categoryId, amoun
   } else {
     //create new field
     const color = (await admin.firestore().collection('categories').doc(categoryId).get()).data();
-    console.log(color);
+    // console.log(color);
     monthYearIdPathRef.set({
       [categoryId]: {
         'amount': amount,
@@ -74,9 +78,9 @@ const addSpendingToCashback = async (newValue, userId) => {
     const year = validUntilDate.getFullYear();
     const lowerBoundDate = new Date(`${year}-${month - 1}-${day}`);
     const upperBoundDate = new Date(`${year}-${month}-${day}`);
-    console.log(' lowerBoundDate =>', lowerBoundDate);
-    console.log(' upperBoundDate =>', upperBoundDate);
-    console.log(' transactionDate =>', transactionDate);
+    // console.log(' lowerBoundDate =>', lowerBoundDate);
+    // console.log(' upperBoundDate =>', upperBoundDate);
+    // console.log(' transactionDate =>', transactionDate);
 
     // if()
     // if (targetTimestamp >= lowerBoundTimestamp && targetTimestamp <= upperBoundTimestamp) {
@@ -93,7 +97,7 @@ const addSpendingToCashback = async (newValue, userId) => {
     }
   });
 
-  console.log('he here have match ', '=>', haveMatch);
+  // console.log('he here have match ', '=>', haveMatch);
   if (haveMatch == false) {
     //create a new myCashback doc
     addToMyCashback(newValue.fundSourceCustomId, userId, newValue, sampleDate, sampleData, transactionDate);
@@ -125,7 +129,6 @@ const addToCashbackCategories = async (docId, userId, newValue, transactionDate)
     //add to any (will take all category other than mentioned to calculate the cashback)
     const myCashbackCategoryAnySnapshot = await myCashbackCategoryRef.where('category', '==', 'Any').get();
     myCashbackCategoryAnySnapshot.forEach(doc => {
-      //todo check spending day
       addTotalToCategory(doc.ref, transactionDate.getDay(), doc.data().spendingDay, doc.data().totalSpend, newValue.amount);
     });
   }
@@ -203,9 +206,6 @@ const addToMyCashback = async (myCardsUid, userId, newValue, sampleDate, sampleD
 
 };
 
-
-
-
 //?for transactions create summary items when document is created
 exports.addTransaction = functions.firestore.document('users/{userId}/myTransactions/{monthYearId}/monthlyTransactions/{transactionId}').onCreate(async (snap, context) => {
   const newDocumentRef = snap.ref;
@@ -237,11 +237,16 @@ exports.addTransaction = functions.firestore.document('users/{userId}/myTransact
   }
 
   //for cashback
-  addSpendingToCashback(newValue, context.params.userId);
+  //todo
+  if (newValue.isWallet == 'card' && newValue.isCashbackEligible == true) {
+    addSpendingToCashback(newValue, context.params.userId);
+  }
 
 });
 
-//todo for cashback
+//  delete
+//   ---------------------------------------------------------------- 
+//   ---------------------------------------------------------------- 
 exports.deleteTransaction = functions.firestore.document('users/{userId}/myTransactions/{monthYearId}/monthlyTransactions/{transactionId}').onDelete(async (snap, context) => {
   const deletedValue = snap.data();
   const documentRef = snap.ref;
@@ -250,7 +255,6 @@ exports.deleteTransaction = functions.firestore.document('users/{userId}/myTrans
 
 
   const monthYearDocumentData = (await monthYearIdPathRef.get()).data();
-
   // const currentTotalSpending = (await monthYearIdPathRef.get()).data().totalSpending;
   const currentTotalSpending = monthYearDocumentData.totalSpending;
   monthYearIdPathRef.update({ 'totalSpending': currentTotalSpending - deletedValue.amount });
@@ -267,15 +271,93 @@ exports.deleteTransaction = functions.firestore.document('users/{userId}/myTrans
       }
     }
   );
+  // console.log('falecvdfvsdfsd    dvdvsdfs     ', deletedValue.isWallet);
 
   //cashback part
-  const myCashbackCategoryRef = admin.firestore().collection('users').doc(context.params.userId).collection('myCashbacks');
-  // .doc(docId).collection('categories');
+  //date
+  if (deletedValue.isWallet == 'card' && deletedValue.isCashbackEligible == true) {
+    const day = deletedValue.date.toDate().getDate();
+    const month = deletedValue.date.toDate().getMonth() + 1;
+    const year = deletedValue.date.toDate().getFullYear();
+    const transactionDate = new Date(`${year}-${month}-${day + 1}`);
+    // console.log('transactionDate', transactionDate);
+
+    //similar to addSpendingToCashback
+    const myCashbackRef = admin.firestore().collection('users').doc(context.params.userId).collection('myCashbacks').where('myCardUid', '==', deletedValue.fundSourceCustomId).where('validUntil', '>=', transactionDate).orderBy('validUntil', 'desc');
+    const myCashbackSnapshot = await myCashbackRef.get();
 
 
+    myCashbackSnapshot.forEach(doc => {
+      // console.log(doc.id, '=>', doc.data());
+      const data = doc.data();
+      //  console.log(doc.id, '=>', doc.data());
+      const validUntilDate = data.validUntil.toDate();
+      //use as sample to add new one
+      const day = validUntilDate.getDate();
+      const month = validUntilDate.getMonth() + 1;
+      const year = validUntilDate.getFullYear();
+      const lowerBoundDate = new Date(`${year}-${month - 1}-${day}`);
+      const upperBoundDate = new Date(`${year}-${month}-${day}`);
+      // console.log(' lowerBoundDate =>', lowerBoundDate);
+      // console.log(' upperBoundDate =>', upperBoundDate);
+      // console.log(' transactionDate =>', transactionDate);
 
+      if (transactionDate > lowerBoundDate && transactionDate <= upperBoundDate) {
+        //add here because matches
+        // console.log('he here ' , doc.id, '=>', doc.data());
+        doc.ref.update({ 'totalSpending': data.totalSpending - deletedValue.amount });
+
+        minusTotalSpendInCategory(doc.id, context.params.userId, deletedValue, transactionDate);
+
+        return;
+      }
+    });
+  }
 });
 
+const minusTotalSpendInCategory = async (docId, userId, deletedValue, transactionDate) => {
+  const myCashbackCategoryRef = admin.firestore().collection('users').doc(userId).collection('myCashbacks').doc(docId).collection('categories');
+  // console.log('minusTotalSpendInCategory ');
+  // console.log('deletedValue ', deletedValue);
+  const myCashbackCategorySnapshot = await myCashbackCategoryRef.where('categoryId', '==', deletedValue.categoryId).get();
+
+  if (!myCashbackCategorySnapshot.empty) {
+    //delete from the category if exist
+    myCashbackCategorySnapshot.forEach(doc => {
+      console.log(doc.id, '=>', doc.data());
+      minusTotalInCategory(doc.ref, transactionDate.getDay(), doc.data().spendingDay, doc.data().totalSpend, deletedValue.amount);
+
+    });
+  } else if (!(await myCashbackCategoryRef.where('category', '==', 'Any').get()).empty) {
+    //delete at any (will take all category other than mentioned to calculate the cashback)
+    const myCashbackCategoryAnySnapshot = await myCashbackCategoryRef.where('category', '==', 'Any').get();
+    myCashbackCategoryAnySnapshot.forEach(doc => {
+      minusTotalInCategory(doc.ref, transactionDate.getDay(), doc.data().spendingDay, doc.data().totalSpend, deletedValue.amount);
+    });
+  }
+
+};
+
+const minusTotalInCategory = async (docRef, day, spendingDay, totalSpend, amount) => {
+  var dayCategory;
+  if (day == 0 || day == 6) {
+    dayCategory = 'Weekends';
+  } if (day >= 1 && day <= 5) {
+    dayCategory = 'Weekdays';
+  }
+  if (spendingDay == 'Weekends' && dayCategory == 'Weekends') {
+    docRef.update({ 'totalSpend': totalSpend - amount });
+  } else if (spendingDay == 'Weekdays' && dayCategory == 'Weekdays') {
+    docRef.update({ 'totalSpend': totalSpend - amount });
+  } else if (spendingDay == 'Everyday') {
+    docRef.update({ 'totalSpend': totalSpend - amount });
+  }
+};
+
+
+//  update
+//   ---------------------------------------------------------------- 
+//   ---------------------------------------------------------------- 
 
 const updateSpendingCatSet = async (monthYearIdPathRef, before, after) => {
   // const monthYearIdPathRef = admin.firestore().collection(path[0] + '/' + path[1] + '/' + path[2]).doc(path[3]);
@@ -293,12 +375,12 @@ const updateSpendingCatSet = async (monthYearIdPathRef, before, after) => {
   if (before.categoryId == after.categoryId) {
 
     const current = summary[before.categoryId];
-    console.log(current);
+    // console.log(current);
     const currentCatSpending = current.amount;
-    console.log(currentCatSpending);
+    // console.log(currentCatSpending);
 
     const currentColor = current.categoryColor;
-    console.log(currentColor);
+    // console.log(currentColor);
     console.log(summary[before.categoryId].categoryName);
 
     monthYearIdPathRef.update(
@@ -316,12 +398,12 @@ const updateSpendingCatSet = async (monthYearIdPathRef, before, after) => {
   if (before.categoryId != after.categoryId) {
 
     const currentBefore = summary[before.categoryId];
-    console.log(currentBefore);
+    // console.log(currentBefore);
     const currentBeforeCatSpending = currentBefore.amount;
-    console.log(currentBeforeCatSpending);
+    // console.log(currentBeforeCatSpending);
 
     const currentBeforeColor = currentBefore.categoryColor;
-    console.log(currentBeforeColor);
+    // console.log(currentBeforeColor);
     // console.log(summary[before.categoryId].categoryName);
 
     //before category -- <-- here remove the amount form original
@@ -356,8 +438,74 @@ exports.updateTransaction = functions.firestore.document('users/{userId}/myTrans
     admin.firestore().collection('users').doc(context.params.userId).collection('myTransactions').doc(context.params.monthYearId).collection('monthlyTransactions').doc(context.params.transactionId).delete();
   } else {
     //same yyyy_mm
-    console.log('same    ');
+    // console.log('same    ');
     const monthYearIdPathRef = admin.firestore().collection('users').doc(context.params.userId).collection('myTransactions').doc(afterYM);
     updateSpendingCatSet(monthYearIdPathRef, before, after);
   }
+
+
+  ///FOR CASHBACKS
+  //delete old one then add 
+  if (before.isWallet == 'card' && before.isCashbackEligible == true) {
+    //if is card then trigger the cashback part
+    await deleteCashback(context.params.userId, before, after);
+  }
+
+
+
+
+
+
+
 });
+const addCashback = async (userId, before) => {
+};
+
+const deleteCashback = async (userId, before, after) => {
+
+  const day = before.date.toDate().getDate();
+  const month = before.date.toDate().getMonth() + 1;
+  const year = before.date.toDate().getFullYear();
+  const transactionDate = new Date(`${year}-${month}-${day + 1}`);
+  // console.log('transactionDate', transactionDate);
+
+  //similar to addSpendingToCashback
+  const myCashbackRef = admin.firestore().collection('users').doc(userId).collection('myCashbacks').where('myCardUid', '==', before.fundSourceCustomId).where('validUntil', '>=', transactionDate).orderBy('validUntil', 'desc');
+  const myCashbackSnapshot = await myCashbackRef.get();
+
+
+  myCashbackSnapshot.forEach(doc => {
+    // console.log(doc.id, '=>', doc.data());
+    const data = doc.data();
+    //  console.log(doc.id, '=>', doc.data());
+    const validUntilDate = data.validUntil.toDate();
+    //use as sample to add new one
+    const day = validUntilDate.getDate();
+    const month = validUntilDate.getMonth() + 1;
+    const year = validUntilDate.getFullYear();
+    const lowerBoundDate = new Date(`${year}-${month - 1}-${day}`);
+    const upperBoundDate = new Date(`${year}-${month}-${day}`);
+    // console.log(' lowerBoundDate =>', lowerBoundDate);
+    // console.log(' upperBoundDate =>', upperBoundDate);
+    // console.log(' transactionDate =>', transactionDate);
+
+    if (transactionDate > lowerBoundDate && transactionDate <= upperBoundDate) {
+      //add here because matches
+      // console.log('he here ' , doc.id, '=>', doc.data());
+      doc.ref.update({ 'totalSpending': data.totalSpending - before.amount });
+      minusTotalSpendInCategory(doc.id, userId, before, transactionDate);
+
+      return;
+    }
+  });
+  //add back
+  await addSpendingToCashback(after, userId);
+};
+
+
+
+
+
+
+
+

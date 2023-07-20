@@ -21,9 +21,13 @@ module.exports = {
   //user
   ...require("./lib/user/budget-management.js"),
   ...require("./lib/user/card-management.js"),
-  ...require("./lib/user/transaction-management.js"),
+  ...require("./lib/user/transaction-management.js"),   
   ...require("./lib/user/wallet-management.js"),
   ...require("./lib/user/cashback-management.js"),
+  // ...require("./lib/user/update-transaction.js"),
+  // ...require("./lib/user/delete-transaction.js"),
+
+
 
 
 
