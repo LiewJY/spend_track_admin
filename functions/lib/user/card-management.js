@@ -51,8 +51,12 @@ const addToMyCashback = async (myCardsUid, userId, newValue) => {
   const currentDate = new Date();
   const month = currentDate.getMonth() + 1;
   const year = currentDate.getFullYear();
-
-  const date = new Date(`${year}-${month + 1}-${day}`);
+  var date;
+  if (month > 11) {
+    date = new Date(`${year + 1}-${0}-${day}`);
+  } else {
+    date = new Date(`${year}-${month + 1}-${day}`);
+  }
   const newDocRef = myCashbackRef.doc();
   await newDocRef.set({
     'name': newValue.name,
@@ -102,7 +106,7 @@ exports.deleteMyCardCashbackCollection = functions.firestore.document('users/{us
 
 
 
-//todo updatecustomcardname   -- similar to wallet (update the custom name)
+// updatecustomcardname   -- similar to wallet (update the custom name)
 exports.updateCustomCardName = functions.firestore.document('users/{userId}/myCards/{myCardId}').onUpdate(async (change, context) => {
   const before = change.before.data();
   const after = change.after.data();

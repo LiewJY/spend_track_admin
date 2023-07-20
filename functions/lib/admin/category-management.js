@@ -56,6 +56,8 @@ exports.updateCategory = functions.firestore.document('categories/{categoryId}')
         await batch2.commit();
       });
 
+      //todo maybe for categories in mycashback
+      
       //batch write to firestore
       await batch.commit();
     });

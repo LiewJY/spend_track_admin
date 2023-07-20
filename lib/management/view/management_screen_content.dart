@@ -57,6 +57,7 @@ class _DataLoaderState extends State<DataLoader> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     myData = context.select((ManagementBloc bloc) => bloc.state.adminUsersList);
+    //todo remove ability to edit any
 
     filterData = myData!;
     return BlocListener<ManagementBloc, ManagementState>(
