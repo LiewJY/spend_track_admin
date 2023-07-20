@@ -23,12 +23,29 @@ exports.deleteCard = functions.https.onCall(async (data, context) => {
 
 });
 
-//firestore triggered functions
-//todo
 
-//todo updatecard -> admin(card) -> user(mycards)
-//similar to wallet
+exports.updateCard = functions.firestore.document('cards/{cardId}').onUpdate(async (change, context) => {
 
+  // updatecard -> admin(card) -> user(mycards)
+  const before = change.before.data();
+  const after = change.after.data();
+  const cardId = context.params.cardId;
+
+  const usersCollection = admin.firestore().collection('users');
+  const usersCollectionSnapshot = await usersCollection.get();
+  usersCollectionSnapshot.forEach(async doc => {
+    //create batch write
+    const batch = admin.firestore().batch();
+    // 1. update to user(myCards)
+    const cardRef = usersCollection.doc(doc.id).collection('myCards').where('uid', '==', cardId);
+    const cardSnapshot = await cardRef.get();
+    cardSnapshot.forEach(doc => {
+      batch.update(doc.ref, { 'name': after.name, 'bank': after.bank, 'cardType': after.cardType, 'isCashback': after.isCashback });
+    });
+    //batch write to firestore
+    await batch.commit();
+  });
+});
 
 
 
@@ -42,52 +59,52 @@ exports.deleteCard = functions.https.onCall(async (data, context) => {
 //todo
 //todo : trigger changes for credit cards, cashbacks and wallets
 //fixme  card update can replicate for wallet 
-exports.triggerUpdateCards = functions.firestore.document('wallets/{cardsId}')
-  .onUpdate(async (change, context) => {
+// exports.triggerUpdateCards = functions.firestore.document('wallets/{cardsId}')
+//   .onUpdate(async (change, context) => {
 
-    const before = change.before.data();
-    const after = change.after.data();
+//     const before = change.before.data();
+//     const after = change.after.data();
 
-    const uid = context.params.cardsId;
-    console.log('Document ID:', uid);
+//     const uid = context.params.cardsId;
+//     console.log('Document ID:', uid);
 
-    const usersSnapshot = await admin.firestore().collection('users').get();
-    const batch = admin.firestore().batch();
-    usersSnapshot.forEach(async (userDoc) => {
-      // const myWalletsRef = userDoc.ref.collection('myWallets').where('uid', '==', uid).get();
-      // //todo
-      // myWalletsRef.forEach(async (walletref) => {
-      //   console.log('werewrwrw');
-      // });
+//     const usersSnapshot = await admin.firestore().collection('users').get();
+//     const batch = admin.firestore().batch();
+//     usersSnapshot.forEach(async (userDoc) => {
+//       // const myWalletsRef = userDoc.ref.collection('myWallets').where('uid', '==', uid).get();
+//       // //todo
+//       // myWalletsRef.forEach(async (walletref) => {
+//       //   console.log('werewrwrw');
+//       // });
 
-      // if (!myWalletsRef.empty) {
-      //   // const targetDocumentRef = myWalletsRef.docs.ref;
-      //   // await targetDocumentRef.update({ description: after.description });
-      //   console.log('Description updated in target document');
-      // } else {
-      //   console.log('Target document not found');
-      // }
-
-
+//       // if (!myWalletsRef.empty) {
+//       //   // const targetDocumentRef = myWalletsRef.docs.ref;
+//       //   // await targetDocumentRef.update({ description: after.description });
+//       //   console.log('Description updated in target document');
+//       // } else {
+//       //   console.log('Target document not found');
+//       // }
 
 
-      // if (!myWalletsRef.empty) {
 
 
-      //     // const targetDocumentRef = querySnapshot.docs[0].ref;
-      //     // await targetDocumentRef.update({ description: after.description });
-      //     console.log('Description updated in target document');
-      //   } else {
-      //     console.log('Target document not found');
-      //   }
-      // batch.update(
-      //    myWalletsRef.update({description : 'dddddd'})
-      //   );
-      // Repeat the above line for each document within myWallets collection
+//       // if (!myWalletsRef.empty) {
 
 
-    });
-    await batch.commit();
+//       //     // const targetDocumentRef = querySnapshot.docs[0].ref;
+//       //     // await targetDocumentRef.update({ description: after.description });
+//       //     console.log('Description updated in target document');
+//       //   } else {
+//       //     console.log('Target document not found');
+//       //   }
+//       // batch.update(
+//       //    myWalletsRef.update({description : 'dddddd'})
+//       //   );
+//       // Repeat the above line for each document within myWallets collection
+
+
+//     });
+//     await batch.commit();
 
     //console.log('myWallets updated for all users');
 
@@ -157,7 +174,7 @@ exports.triggerUpdateCards = functions.firestore.document('wallets/{cardsId}')
     // const name = newValue.name;
 
     // perform desired operations ...
-  });
+  // });
 
 
 

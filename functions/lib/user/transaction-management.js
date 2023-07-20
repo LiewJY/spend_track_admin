@@ -33,9 +33,6 @@ const addSpendingCatSet = async (monthYearIdPathRef, category, categoryId, amoun
 
   } else {
     //create new field
-    //todo
-    //add color
-    //todo make changes here when update at admin
     const color = (await admin.firestore().collection('categories').doc(categoryId).get()).data();
     console.log(color);
     monthYearIdPathRef.set({
@@ -167,50 +164,7 @@ const updateSpendingCatSet = async (monthYearIdPathRef, before, after) => {
     );
 
     addSpendingCatSet(monthYearIdPathRef, after.category, after.categoryId, after.amount);
-
-
-    //after category ++
-    //if exist 
-    // const currentAfter = summary[after.categoryId];
-    // console.log(currentAfter);
-    // const currentAfterCatSpending = currentAfter.amount;
-    // console.log(currentAfterCatSpending);
-
-    // const currentAfterColor = currentBefore.categoryColor;
-    // console.log(currentAfterColor);
-    // monthYearIdPathRef.update(
-    //   {
-    //     [after.categoryId]: {
-    //       'amount': currentCatSpending - before.amount + after.amount,
-    //       'categoryName': summary[before.categoryId].categoryName,
-    //       'categoryColor': currentColor
-    //     }
-    //   }
-    // );
   }
-
-
-  // if (summary.hasOwnProperty(before.categoryId)) {
-  //   // update existing field
-
-
-  // }
-  //else {
-  //   //create new field
-  //   //todo
-  //   //add color
-  //   //todo make changes here when update at admin
-  //   // const color = (await admin.firestore().collection('categories').doc(categoryId).get()).data();
-  //   // console.log(color);
-  //   // monthYearIdPathRef.set({
-  //   //   [categoryId]: {
-  //   //     'amount': after.amount,
-  //   //     'categoryName': after.category,
-  //   //     'categoryColor': color.color,
-  //   //   }
-  //   // }, { merge: true });
-
-  // }
 }
 exports.updateTransaction = functions.firestore.document('users/{userId}/myTransactions/{monthYearId}/monthlyTransactions/{transactionId}').onUpdate(async (change, context) => {
   const documentPath = context.params.userId;
