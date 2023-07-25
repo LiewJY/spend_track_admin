@@ -2,9 +2,12 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:track_admin/repositories/repositories.dart';
 
 class UserRepository {
+  //final firebase_auth.FirebaseAuth _firebaseAuth;
+
   //firestore instance
   final db = FirebaseFirestore.instance;
   //cloud function instance
@@ -85,7 +88,7 @@ class UserRepository {
     }
   }
 
-   //delete user
+  //delete user
   deleteUser({required String uid}) async {
     try {
       HttpsCallable callable =
@@ -105,4 +108,15 @@ class UserRepository {
     }
   }
 
+   //final FirebaseAuth firebaseAuth;
+
+  Future<void> sendResetPasswordEmail({required String email}) async {
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+    // } on FirebaseAuth.FirebaseAuthException catch (e) {
+    //   throw e.code;
+    } catch (_) {
+      throw "unknown";
+    }
+  }
 }

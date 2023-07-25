@@ -86,7 +86,7 @@ class _CategoryDialogState extends State<CategoryDialog> {
                         int.parse(currentColor.toString())), //default color
                     onColorChanged: (Color color) {
                       //on color picked
-                      currentColor = color.value.toRadixString(16);
+                      currentColor = '0xff${color.value.toRadixString(16)}';
                       // log(color.value.toRadixString(16));
                     },
                   ),
@@ -119,7 +119,7 @@ class _CategoryDialogState extends State<CategoryDialog> {
           context.read<CategoryBloc>().add(AddCategoryRequested(
                 name: _nameController.text,
                 description: _descriptionController.text,
-                color: '0xff$currentColor',
+                color: '$currentColor',
               ));
           break;
         case 'editCategory':
@@ -127,7 +127,7 @@ class _CategoryDialogState extends State<CategoryDialog> {
                 uid: widget.data!.uid!,
                 name: _nameController.text,
                 description: _descriptionController.text,
-                color: '0xff$currentColor',
+                color: '$currentColor',
               ));
           break;
       }

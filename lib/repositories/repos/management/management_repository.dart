@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class ManagementRepository {
   //firestore instance
@@ -101,6 +102,16 @@ class ManagementRepository {
       }
     } catch (e) {
       throw e.toString();
+    }
+  }
+  
+    Future<void> sendResetPasswordEmail({required String email}) async {
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+    // } on FirebaseAuth.FirebaseAuthException catch (e) {
+    //   throw e.code;
+    } catch (_) {
+      throw "unknown";
     }
   }
 }

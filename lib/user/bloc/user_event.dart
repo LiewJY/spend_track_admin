@@ -55,3 +55,12 @@ class DeleteUserRequested extends UserEvent {
   @override
   List<Object> get props => [uid];
 }
+
+class ResetPasswordRequested extends UserEvent {
+  const ResetPasswordRequested({required this.email});
+
+  final String email;
+
+  @override
+  List<Object> get props => [email];
+}

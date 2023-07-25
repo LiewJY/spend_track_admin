@@ -170,7 +170,6 @@ class _CardDataTableState extends State<CardDataTable> {
                               dialogTitle: l10n.addCard,
                               // actionName: l10n.add,
                               action: 'addCard',
-                              
                             ),
                           );
                         }).then((value) {
@@ -271,7 +270,7 @@ DataRow recentFileDataRow(CreditCard data) {
                       //viewCard(data, context);
                       break;
                     case 1:
-                     // editCard(data, context);
+                      // editCard(data, context);
                       break;
                     case 2:
                       deleteCard(data, context);
@@ -288,7 +287,26 @@ DataRow recentFileDataRow(CreditCard data) {
 }
 
 void deleteCard(CreditCard data, BuildContext context) {
-  context.read<CardBloc>().add(DeleteCardRequested(uid: data.uid!));
+  final l10n = context.l10n;
+  if (!isDialogOpen) {
+    showDialog(
+        context: context,
+        builder: (_) {
+          return DeleteConfirmationDialog(
+              data: data,
+              description: l10n.deleting(data.name!),
+              dialogTitle: l10n.delete,
+              action: () {
+                context
+                    .read<CardBloc>()
+                    .add(DeleteCardRequested(uid: data.uid!));
+                Navigator.of(context, rootNavigator: true).pop();
+              });
+        }).then((value) {
+      toggleDialog();
+    });
+    toggleDialog();
+  }
 }
 
 // void editCard(CreditCard data, BuildContext context) {

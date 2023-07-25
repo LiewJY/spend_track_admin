@@ -14,10 +14,10 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   //for testing local cloud funciton
-  FirebaseFunctions.instanceFor(region: 'us-central1')
-      .useFunctionsEmulator('localhost', 5001);
+  // FirebaseFunctions.instanceFor(region: 'us-central1')
+  //     .useFunctionsEmulator('localhost', 5001);
 
-  FirebaseFirestore.instance.useFirestoreEmulator('localhost', 8080);
-  await FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
+  // FirebaseFirestore.instance.useFirestoreEmulator('localhost', 8080);
+  // await FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
   runApp(const App());
 }

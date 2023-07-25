@@ -276,5 +276,25 @@ void editWallet(Wallet data, BuildContext context) {
 }
 
 void deleteWallet(Wallet data, BuildContext context) {
-  context.read<WalletBloc>().add(DeleteWalletRequested(uid: data.uid!));
+  final l10n = context.l10n;
+  if (!isDialogOpen) {
+    showDialog(
+        context: context,
+        builder: (_) {
+          return DeleteConfirmationDialog(
+              data: data,
+              description: l10n.deleting(data.name!),
+              dialogTitle: l10n.delete,
+              action: () {
+                context
+                    .read<WalletBloc>()
+                    .add(DeleteWalletRequested(uid: data.uid!));
+
+                Navigator.of(context, rootNavigator: true).pop();
+              });
+        }).then((value) {
+      toggleDialog();
+    });
+    toggleDialog();
+  }
 }

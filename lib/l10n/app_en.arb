@@ -56,6 +56,8 @@
   "addUser": "Add user",
   "back": "Back",
   "complete": "Complete",
+  "delete": "Delete",
+  "deleting": "Deleting {name}",
 
 "@loginPage": {},
   "forgetPassword": "Forget Password",
@@ -87,6 +89,7 @@
   "deleteWallet": "Delete Wallet",
 
 "@cardPage": {},
+  "searchByCardName": "Search by card name",
   "basicInformation": "Basic Information",
   "cashbackInformation": "Cashback Information",
   "reviewCardInformation": "Review Card Information",
@@ -109,8 +112,10 @@
   "emailChanged": "Email successfully changed",
   "resetPasswordEmailSent": "Reset your password with the link sent to your email",
   "addedAdmin": "Admin user successfully added",
+  "addedUser": "User user successfully added",
   "userEnabledSuccess": "User successfully enabled",
   "userDisabledSuccess": "User successfully disabled",
+  "resetPasswordEmailSent": "Reset your password with the link sent to your email",
   "userDeleteSuccess": "User successfully deleted",
   "categoryAddSuccess": "Category successfully added",
   "categoryUpdatedSuccess": "Category successfully updated",

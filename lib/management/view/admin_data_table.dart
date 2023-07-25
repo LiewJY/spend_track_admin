@@ -1,7 +1,5 @@
 import 'dart:developer';
-import 'dart:js';
 
-import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:track_admin/l10n/l10n.dart';
@@ -41,12 +39,6 @@ class _AdminDataTableState extends State<AdminDataTable> {
   void clear() {
     myData = filterData!.toList();
     searchController.clear();
-  }
-
-  //for dialog
-  bool isDialogOpen = false;
-  void toggleDialog() {
-    isDialogOpen = !isDialogOpen;
   }
 
   @override
@@ -91,7 +83,7 @@ class _AdminDataTableState extends State<AdminDataTable> {
         ),
       ),
     ];
-    
+
     return BlocListener<ManagementBloc, ManagementState>(
       listener: (context, state) {
         if (state.status == ManagementStatus.failure) {
@@ -106,7 +98,7 @@ class _AdminDataTableState extends State<AdminDataTable> {
         if (state.status == ManagementStatus.success) {
           switch (state.success) {
             case 'added':
-              if (isDialogOpen) {
+              if (isAdminDialogOpen) {
                 Navigator.of(context, rootNavigator: true).pop();
               }
               AppSnackBar.success(context, l10n.addedAdmin);
@@ -122,6 +114,10 @@ class _AdminDataTableState extends State<AdminDataTable> {
               break;
             case 'deleted':
               AppSnackBar.success(context, l10n.userDeleteSuccess);
+              refresh();
+              break;
+            case 'resetPasswordEmailSent':
+              AppSnackBar.success(context, l10n.resetPasswordEmailSent);
               refresh();
               break;
           }
@@ -152,7 +148,7 @@ class _AdminDataTableState extends State<AdminDataTable> {
               padding: AppStyle.dtButonHorizontalPadding,
               child: FilledButton(
                 onPressed: () {
-                  if (!isDialogOpen) {
+                  if (!isAdminDialogOpen) {
                     showDialog(
                         context: context,
                         builder: (_) {
@@ -165,9 +161,9 @@ class _AdminDataTableState extends State<AdminDataTable> {
                             ),
                           );
                         }).then((value) {
-                      toggleDialog();
+                      toggleAdminDialog();
                     });
-                    toggleDialog();
+                    toggleAdminDialog();
                   }
                 },
                 child: Text(l10n.addAdmin),
@@ -187,6 +183,12 @@ class _AdminDataTableState extends State<AdminDataTable> {
       ),
     );
   }
+}
+
+//for dialog
+bool isAdminDialogOpen = false;
+void toggleAdminDialog() {
+  isAdminDialogOpen = !isAdminDialogOpen;
 }
 
 //data source
@@ -328,9 +330,10 @@ DataRow recentFileDataRow(var data) {
   }
 }
 
-//todo
 void resetPassword(User data, BuildContext context) {
-  log('reset password');
+  context
+      .read<ManagementBloc>()
+      .add(ResetPasswordRequested(email: data.email.toString()));
 }
 
 disableAccount(User data, BuildContext context) {
@@ -342,5 +345,24 @@ void enableAccount(User data, BuildContext context) {
 }
 
 void deleteAccount(User data, BuildContext context) {
-  context.read<ManagementBloc>().add(DeleteAdminRequested(uid: data.uid));
+  final l10n = context.l10n;
+  if (!isAdminDialogOpen) {
+    showDialog(
+        context: context,
+        builder: (_) {
+          return DeleteConfirmationDialog(
+              data: data,
+              description: l10n.deleting(data.email!),
+              dialogTitle: l10n.delete,
+              action: () {
+                context
+                    .read<ManagementBloc>()
+                    .add(DeleteAdminRequested(uid: data.uid));
+                Navigator.of(context, rootNavigator: true).pop();
+              });
+        }).then((value) {
+      toggleAdminDialog();
+    });
+    toggleAdminDialog();
+  }
 }

@@ -17,9 +17,32 @@ class ManagementBloc extends Bloc<ManagementEvent, ManagementState> {
     on<DisableAdminRequested>(_onDisableAdminRequested);
     on<EnableAdminRequested>(_onEnableAdminRequested);
     on<DeleteAdminRequested>(_onDeleteAdminRequested);
+    on<ResetPasswordRequested>(_onResetPasswordRequested);
   }
 
   //actions
+  _onResetPasswordRequested(
+    ResetPasswordRequested event,
+    Emitter emit,
+  ) async {
+    if (state.status == ManagementStatus.loading) return;
+    emit(state.copyWith(status: ManagementStatus.loading));
+    try {
+      await managementRepository.sendResetPasswordEmail(email: event.email);
+
+      emit(state.copyWith(
+        status: ManagementStatus.success,
+        success: 'resetPasswordEmailSent',
+        // usersList: mappedList,
+      ));
+    } catch (e) {
+      emit(state.copyWith(
+        status: ManagementStatus.failure,
+        error: e.toString(),
+      ));
+    }
+  }
+
   _onDisplayAllAdminRequested(
     DisplayAllAdminRequested event,
     Emitter emit,

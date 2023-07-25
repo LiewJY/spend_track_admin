@@ -134,7 +134,7 @@ class _CategoryDataTableState extends State<CategoryDataTable> {
             Expanded(
               flex: 7,
               child: DataTableSearchField(
-                  hintText: l10n.searchByCategoryName,
+                  hintText: l10n.searchByCardName,
                   controller: searchController,
                   action: (value) {
                     setState(() {
@@ -289,5 +289,24 @@ void editCategory(SpendingCategory data, BuildContext context) {
 }
 
 void deleteCategory(SpendingCategory data, BuildContext context) {
-  context.read<CategoryBloc>().add(DeleteCategoryRequested(uid: data.uid!));
+  final l10n = context.l10n;
+  if (!isDialogOpen) {
+    showDialog(
+        context: context,
+        builder: (_) {
+          return DeleteConfirmationDialog(
+              data: data,
+              description: l10n.deleting(data.name!),
+              dialogTitle: l10n.delete,
+              action: () {
+                context
+                    .read<CategoryBloc>()
+                    .add(DeleteCategoryRequested(uid: data.uid!));
+                Navigator.of(context, rootNavigator: true).pop();
+              });
+        }).then((value) {
+      toggleDialog();
+    });
+    toggleDialog();
+  }
 }
