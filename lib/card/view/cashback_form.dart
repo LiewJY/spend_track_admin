@@ -192,7 +192,7 @@ class _DynamicCashbackFormState extends State<DynamicCashbackForm> {
             ? stringToDouble(_minSpendAchievedController.text)
             : null,
         minSpendNotAchieved: _isRateDifferent
-            ? stringToDouble(_minSpendAchievedController.text)
+            ? stringToDouble(_minSpendNotAchievedController.text)
             : null,
         cashback:
             _isRateDifferent ? null : stringToDouble(_cashbackController.text),

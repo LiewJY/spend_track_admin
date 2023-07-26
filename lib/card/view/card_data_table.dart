@@ -253,10 +253,10 @@ DataRow recentFileDataRow(CreditCard data) {
                     //   value: 0,
                     //   child: Text(l10n.viewCard),
                     // ),
-                    // PopupMenuItem(
-                    //   value: 1,
-                    //   child: Text(l10n.editCard),
-                    // ),
+                    PopupMenuItem(
+                      value: 1,
+                      child: Text(l10n.editCard),
+                    ),
                     PopupMenuItem(
                       value: 2,
                       child: Text(l10n.deleteCard),

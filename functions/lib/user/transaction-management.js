@@ -14,14 +14,10 @@ require("firebase-functions/logger/compat");
 //   ---------------------------------------------------------------- 
 //   ---------------------------------------------------------------- 
 const addSpendingCatSet = async (monthYearIdPathRef, category, categoryId, amount) => {
-  // const monthYearIdPathRef = admin.firestore().collection(path[0] + '/' + path[1] + '/' + path[2]).doc(path[3]);
-
   var summary =
     (await monthYearIdPathRef.get()).data();
-
   if (summary.hasOwnProperty(categoryId)) {
     //update existing field
-
     const current = summary[categoryId];
     const currentCatSpending = current.amount;
     const currentColor = current.categoryColor;
@@ -34,11 +30,9 @@ const addSpendingCatSet = async (monthYearIdPathRef, category, categoryId, amoun
         }
       }
     );
-
   } else {
     //create new field
     const color = (await admin.firestore().collection('categories').doc(categoryId).get()).data();
-    // console.log(color);
     monthYearIdPathRef.set({
       [categoryId]: {
         'amount': amount,
@@ -52,8 +46,6 @@ const addSpendingCatSet = async (monthYearIdPathRef, category, categoryId, amoun
 
 // add for cashback calculation
 const addSpendingToCashback = async (newValue, userId) => {
-  console.log(' in addSpendingToCashback', newValue.fundSourceCustomId, ' ', newValue.category, ' ', newValue.categoryId, ' ', newValue.amount, ' ', newValue.date, ' ', userId);
-
   //date
   const day = newValue.date.toDate().getDate();
   const month = newValue.date.toDate().getMonth() + 1;
@@ -68,9 +60,8 @@ const addSpendingToCashback = async (newValue, userId) => {
   var sampleData;
   myCashbackSnapshot.forEach(doc => {
     const data = doc.data();
-    //  console.log(doc.id, '=>', doc.data());
     const validUntilDate = data.validUntil.toDate();
-    //use as sample to add new one
+    //use as sample to add new info
     sampleDate = validUntilDate;
     sampleData = data;
     const day = validUntilDate.getDate();
@@ -78,26 +69,16 @@ const addSpendingToCashback = async (newValue, userId) => {
     const year = validUntilDate.getFullYear();
     const lowerBoundDate = new Date(`${year}-${month - 1}-${day}`);
     const upperBoundDate = new Date(`${year}-${month}-${day}`);
-    // console.log(' lowerBoundDate =>', lowerBoundDate);
-    // console.log(' upperBoundDate =>', upperBoundDate);
-    // console.log(' transactionDate =>', transactionDate);
-
-    // if()
-    // if (targetTimestamp >= lowerBoundTimestamp && targetTimestamp <= upperBoundTimestamp) {
 
     if (transactionDate > lowerBoundDate && transactionDate <= upperBoundDate) {
       //add here because matches
-      // console.log('he here ' , doc.id, '=>', doc.data());
       doc.ref.update({ 'totalSpending': data.totalSpending + newValue.amount });
       addToCashbackCategories(doc.id, userId, newValue, transactionDate);
-
       //there is match no need to create new one
       haveMatch = true;
       return;
     }
   });
-
-  // console.log('he here have match ', '=>', haveMatch);
   if (haveMatch == false) {
     //create a new myCashback doc
     addToMyCashback(newValue.fundSourceCustomId, userId, newValue, sampleDate, sampleData, transactionDate);
@@ -112,16 +93,6 @@ const addToCashbackCategories = async (docId, userId, newValue, transactionDate)
   if (!myCashbackCategorySnapshot.empty) {
     //add to the category if exist
     myCashbackCategorySnapshot.forEach(doc => {
-      // console.log(doc.id, '=> ' , doc.data());
-      //doc.data().spendingDay
-      //1 - 7 sunday - saturday
-
-      // console.log('day of spendingDay ', doc.data().spendingDay);
-      // console.log('day of transactionDate ', transactionDate);
-
-      //  const day = transactionDate.getDay();
-
-      // console.log('day of transaction ', day);
       addTotalToCategory(doc.ref, transactionDate.getDay(), doc.data().spendingDay, doc.data().totalSpend, newValue.amount);
 
     });
@@ -212,36 +183,27 @@ exports.addTransaction = functions.firestore.document('users/{userId}/myTransact
   const newValue = snap.data();
   const path = newDocumentRef.path.split("/");
   const monthYearIdPathRef = admin.firestore().collection(path[0] + '/' + path[1] + '/' + path[2]).doc(path[3]);
-
   //get transaction count to determine use set or update option
   var transactionDocCount =
     (await admin.firestore().collection(path[0] + '/' + path[1] + '/' + path[2] + '/' + path[3] + '/' + path[4]).count().get()).data().count;
-
   //for total spend
   if (transactionDocCount > 1) {
     //when transaction of the month is more than 1
-    //read current then add new value to it
+    //read current spending then add new value to it
     const currentTotalSpending = (await monthYearIdPathRef.get()).data().totalSpending;
     monthYearIdPathRef.update({ 'totalSpending': currentTotalSpending + newValue.amount });
-    console.log('aa', newValue.category);
-
     //category spending summary
     addSpendingCatSet(monthYearIdPathRef, newValue.category, newValue.categoryId, newValue.amount);
   } else {
     //initialize by setting it so can find later
     monthYearIdPathRef.set({ 'totalSpending': newValue.amount });
-
     //category spending summary
     addSpendingCatSet(monthYearIdPathRef, newValue.category, newValue.categoryId, newValue.amount);
-
   }
-
   //for cashback
-  //todo
   if (newValue.isWallet == 'card' && newValue.isCashbackEligible == true) {
     addSpendingToCashback(newValue, context.params.userId);
   }
-
 });
 
 //  delete
