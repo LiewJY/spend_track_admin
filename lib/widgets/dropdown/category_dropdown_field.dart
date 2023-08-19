@@ -43,7 +43,7 @@ class _CategoryDropDownFieldState extends State<CategoryDropDownField> {
   }
 
   SpendingCategory? selected(desiredUid) {
-    log(' df  ' + desiredUid.toString());
+    // log(' df  ' + desiredUid.toString());
     if (desiredUid != null) {
       try {
         return selectedValue = categoryDropdownItems

@@ -20,6 +20,7 @@ export 'dialog/category_dialog.dart';
 export 'dialog/card_dialog.dart';
 export 'dialog/wallet_dialog.dart';
 export 'dialog/delete_confirmation_dialog.dart';
+export 'dialog/card_edit_dialog.dart';
 
 //data table
 //fixme not in use now

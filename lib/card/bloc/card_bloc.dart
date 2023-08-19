@@ -14,14 +14,53 @@ class CardBloc extends Bloc<CardEvent, CardState> {
 
   CardBloc({required this.cardRepository}) : super(CardState.initial()) {
     on<DisplayAllCardRequested>(_onDisplayAllCardRequested);
-    // on<DisplayCardCashbackRequested>(_onDisplayCardCashbackRequested);
+    on<DisplayCardCashbackRequested>(_onDisplayCardCashbackRequested);
+    on<SetTempRequested>(_onSetTempRequested);
 
     on<AddCardRequested>(_onAddCardRequested);
-    // on<UpdateCardRequested>(_onUpdateCardRequested);
-     on<DeleteCardRequested>(_onDeleteCardRequested);
+     on<UpdateCardRequested>(_onUpdateCardRequested);
+    on<DeleteCardRequested>(_onDeleteCardRequested);
   }
 
   //actions
+    _onUpdateCardRequested(
+    UpdateCardRequested event,
+    Emitter emit,
+  ) async {
+    if (state.status == CardStatus.loading) return;
+    emit(state.copyWith(status: CardStatus.loading));
+    try {
+      await cardRepository.updateCard(
+        uid: event.uid,
+        name: event.name,
+        bank: event.bank,
+        cardType: event.cardType,
+        isCashback: event.isCashback,
+        cashbacks: event.cashbacks,
+      );
+      emit(state.copyWith(
+        status: CardStatus.success,
+        success: 'added',
+      ));
+    } catch (e) {
+      emit(state.copyWith(
+        status: CardStatus.failure,
+        error: e.toString(),
+      ));
+    }
+  }
+
+  _onSetTempRequested(
+    SetTempRequested event,
+    Emitter emit,
+  ) async {
+    emit(state.copyWith(
+      status: CardStatus.success,
+      success: 'temp',
+      // cardList: cardList,
+    ));
+  }
+
   _onDisplayAllCardRequested(
     DisplayAllCardRequested event,
     Emitter emit,
@@ -91,7 +130,7 @@ class CardBloc extends Bloc<CardEvent, CardState> {
     }
   }
 
-_onDeleteCardRequested(
+  _onDeleteCardRequested(
     DeleteCardRequested event,
     Emitter emit,
   ) async {

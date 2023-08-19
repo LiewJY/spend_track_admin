@@ -12,14 +12,14 @@ import 'package:track_admin/repositories/repos/category/category_repository.dart
 import 'package:track_admin/widgets/widgets.dart';
 import 'package:track_theme/track_theme.dart';
 
-class TestStepper extends StatefulWidget {
-  const TestStepper({super.key});
+class CardAdd extends StatefulWidget {
+  const CardAdd({super.key});
 
   @override
-  State<TestStepper> createState() => _TestStepperState();
+  State<CardAdd> createState() => _CardAddState();
 }
 
-class _TestStepperState extends State<TestStepper> {
+class _CardAddState extends State<CardAdd> {
   int currentStep = 0;
   bool isCompleted = false;
 

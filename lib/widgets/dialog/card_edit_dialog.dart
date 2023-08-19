@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -11,8 +12,8 @@ import 'package:track_admin/repositories/models/creditCard.dart';
 import 'package:track_admin/widgets/widgets.dart';
 import 'package:track_theme/track_theme.dart';
 
-class CardDialog extends StatefulWidget {
-  const CardDialog({
+class CardEditDialog extends StatefulWidget {
+  const CardEditDialog({
     super.key,
     required this.dialogTitle,
     // required this.actionName,
@@ -26,12 +27,12 @@ class CardDialog extends StatefulWidget {
   final CreditCard? data;
 
   @override
-  State<CardDialog> createState() => _CardDialogState();
+  State<CardEditDialog> createState() => _CardEditDialogState();
 }
 
-List<Cashback>? cashbackData = [];
+List<Cashback>? cashbackData1 = [];
 
-class _CardDialogState extends State<CardDialog> {
+class _CardEditDialogState extends State<CardEditDialog> {
   @override
   void initState() {
     super.initState();
@@ -45,7 +46,7 @@ class _CardDialogState extends State<CardDialog> {
 
   @override
   Widget build(BuildContext context) {
-    cashbackData = context.select((CardBloc bloc) => bloc.state.cashbackList);
+    // cashbackData1 = context.select((CardBloc bloc) => bloc.state.cashbackList);
 
     return BlocListener<CardBloc, CardState>(
       listener: (context, state) {
@@ -53,11 +54,13 @@ class _CardDialogState extends State<CardDialog> {
           switch (state.success) {
             case 'cashbackLoaded':
               // setState(() {});
+              //                      cashbackData1 =
+              // context.select((CardBloc bloc) => bloc.state.cashbackList);
               break;
           }
         }
       },
-      child: CardStepperForm(
+      child: CardStepperForm1(
         dialogTitle: widget.dialogTitle,
         action: widget.action,
         data: widget.data,
@@ -66,8 +69,8 @@ class _CardDialogState extends State<CardDialog> {
   }
 }
 
-class CardStepperForm extends StatefulWidget {
-  const CardStepperForm({
+class CardStepperForm1 extends StatefulWidget {
+  const CardStepperForm1({
     super.key,
     required this.dialogTitle,
     // required this.actionName,
@@ -82,10 +85,12 @@ class CardStepperForm extends StatefulWidget {
   final CreditCard? data;
   // final List<Cashback>? cashbackList;
   @override
-  State<CardStepperForm> createState() => _CardStepperFormState();
+  State<CardStepperForm1> createState() => _CardStepperForm1State();
 }
 
-class _CardStepperFormState extends State<CardStepperForm> {
+bool runned = false;
+
+class _CardStepperForm1State extends State<CardStepperForm1> {
   int currentStep = 0;
   bool isCompleted = false;
 
@@ -99,7 +104,7 @@ class _CardStepperFormState extends State<CardStepperForm> {
   final _nameController = TextEditingController();
   final _bankController = TextEditingController();
   String? _cardType;
-  bool _isCashback = false;
+  bool _isCashback = true;
 
   //cashback form
   final List<DynamicCashbackForm> cashbackForms = [];
@@ -111,7 +116,7 @@ class _CardStepperFormState extends State<CardStepperForm> {
   void initState() {
     super.initState();
     // Create a new GlobalKey and assign to a variable for each form.
-
+    runned = false;
     formKeys.add(GlobalKey<FormState>());
     formKeys.add(GlobalKey<FormState>());
     basicInformationForm = formKeys[0];
@@ -124,19 +129,24 @@ class _CardStepperFormState extends State<CardStepperForm> {
       _bankController.text = widget.data!.bank!;
       _isCashback = widget.data!.isCashback!;
       _cardType = widget.data!.cardType!;
+      //              cashbackData1 =
+      // context.select((CardBloc bloc) => bloc.state.cashbackList);
+
+      //          log('init  www' + cashbackData1.toString());
+
       //widget.data.uid
       // log('for each');
-      // cashbackData?.forEach((element) {
+      // cashbackData1?.forEach((element) {
       //   log(element.toString());
       // });
-      // print('lengtj ssss ' + cashbackData!.length.toString());
+      // print('lengtj ssss ' + cashbackData1!.length.toString());
 
       //query cashbacks
     }
-    log(cashbackData!.length.toString());
-    cashbackData!.forEach((element) {
-      onAddCashbackForm();
-    });
+    // cashbackData1!.forEach((element) {
+    //       log(' cashbackData1 element ' + element.toString());
+    //   onAddCashbackForm();
+    // });
 
     //todo add cashbackfrom add option to pump in modal if it is edit
   }
@@ -144,9 +154,18 @@ class _CardStepperFormState extends State<CardStepperForm> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    if (widget.action == 'editCard') {
-      //==print('lengtj ssss ' + cashbackData!.length.toString());
-    }
+    //        cashbackData1 =
+    // context.select((CardBloc bloc) => bloc.state.cashbackList);
+    // BlocListener<CardBloc, CardState>(
+    //   listener: (context, state) {
+    //     // TODO: implement listener
+    //     if (state.status == CardStatus.success &&
+    //         state.success == 'cashbackLoaded') {
+    //       log('date retrieved');
+    //       cashbackData1 = state.cashbackList;
+    //     }
+    //   },
+    // );
 
     action(type) {
       switch (type) {
@@ -160,8 +179,16 @@ class _CardStepperFormState extends State<CardStepperForm> {
               ));
           break;
         case 'editCard':
-          //todo
-
+          //todo\
+          log('edit save');
+          context.read<CardBloc>().add(UpdateCardRequested(
+                uid: widget.data!.uid.toString(),
+                name: _nameController.text,
+                bank: _bankController.text,
+                cardType: _cardType.toString(),
+                isCashback: _isCashback,
+                cashbacks: cashbacks,
+              ));
           break;
       }
     }
@@ -171,12 +198,43 @@ class _CardStepperFormState extends State<CardStepperForm> {
         return basicInformationForm.currentState!.validate();
       } else if (currentStep == 1) {
         bool allValid = true;
+        log('element in cbform length ' + cashbackForms.length.toString());
+
         for (var element in cashbackForms) {
+          log('element in cbform ' + element.toString());
+
+          log(Cashback(
+            formId: element?.index,
+            categoryId: element.cashbackModel?.categoryId,
+            category: element.cashbackModel?.category,
+            spendingDay: element.cashbackModel?.spendingDay,
+            isRateDifferent: element.cashbackModel?.isRateDifferent,
+            minSpend: element.cashbackModel?.minSpend,
+            minSpendAchieved: element.cashbackModel?.minSpendAchieved,
+            minSpendNotAchieved: element.cashbackModel?.minSpendNotAchieved,
+            cashback: element.cashbackModel?.cashback,
+            isCapped: element.cashbackModel?.isCapped,
+            cappedAt: element.cashbackModel?.cappedAt,
+          ).toString());
           allValid = (allValid && element.isValidated());
         }
         if (allValid) {
           cashbacks = [];
           for (var element in cashbackForms) {
+            log('element in cbform valid ' + element.toString());
+            log(Cashback(
+              formId: element?.index,
+              categoryId: element.cashbackModel?.categoryId,
+              category: element.cashbackModel?.category,
+              spendingDay: element.cashbackModel?.spendingDay,
+              isRateDifferent: element.cashbackModel?.isRateDifferent,
+              minSpend: element.cashbackModel?.minSpend,
+              minSpendAchieved: element.cashbackModel?.minSpendAchieved,
+              minSpendNotAchieved: element.cashbackModel?.minSpendNotAchieved,
+              cashback: element.cashbackModel?.cashback,
+              isCapped: element.cashbackModel?.isCapped,
+              cappedAt: element.cashbackModel?.cappedAt,
+            ).toString());
             cashbacks.add(Cashback(
               formId: element.index,
               categoryId: element.cashbackModel?.categoryId,
@@ -334,41 +392,120 @@ class _CardStepperFormState extends State<CardStepperForm> {
   }
 
   Form cashbackForm(l10n) {
+    // cashbackData1 = context.select((CardBloc bloc) => bloc.state.cashbackList);
+
     return Form(
         key: cashbackInformationForm,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            AppStyle.sizedBoxSpace,
-            cashbackForms.isNotEmpty
-                ? ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: cashbackForms.length,
-                    itemBuilder: (_, index) {
-                      return cashbackForms[index];
-                    })
-                : Center(
-                    child: Text(l10n.addCashbackForm),
-                  ),
-            AppStyle.sizedBoxSpace,
-            OutlinedButton(
-              onPressed: () {
-                onAddCashbackForm();
-              },
-              child: Text(l10n.add),
-            ),
-            AppStyle.sizedBoxSpace,
-          ],
+        child: BlocBuilder<CardBloc, CardState>(
+          //here we add data into the local arrays
+          builder: (context, state) {
+            // sleep(Duration(seconds: 10));
+            if (state.status == CardStatus.success &&
+                state.success == 'cashbackLoaded') {
+              log('runned  www' + runned.toString());
+              // sleep(Duration(seconds: 10));
+              if (!runned) {
+                cashbackData1?.forEach((element) {
+                  log('runned  elemetn before  ' + element.toString());
+                });
+                cashbackData1 =
+                    context.select((CardBloc bloc) => bloc.state.cashbackList);
+                cashbackForms.clear(); // Clear existing forms
+                cashbackData1?.forEach((element) {
+                  log('runned  elemetn after  ' + element.toString());
+                });
+
+                cashbackData1?.forEach((element) {
+                  log('runned  elemetn ' + element.toString());
+
+                  cashbackForms.add(DynamicCashbackForm(
+                    index: cashbackForms.length,
+                    cashbackModel: element,
+                    onRemove: () => onRemoveCashbackForm(element),
+                  ));
+                });
+                runned = true;
+                // conSetTempRequested
+
+                context.read<CardBloc>().add(SetTempRequested());
+              }
+            }
+
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                AppStyle.sizedBoxSpace,
+                Text('data     ' + cashbackData1.toString()),
+
+                //todo replace
+                cashbackForms.isNotEmpty
+                    ? ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: cashbackForms.length,
+                        itemBuilder: (_, index) {
+                          return cashbackForms[index];
+                        })
+                    : Center(
+                        child: Text(l10n.addCashbackForm),
+                      ),
+                AppStyle.sizedBoxSpace,
+                OutlinedButton(
+                  onPressed: () {
+                    onAddCashbackForm();
+                  },
+                  child: Text(l10n.add),
+                ),
+                AppStyle.sizedBoxSpace,
+              ],
+            );
+          },
         ));
   }
 
   //Delete specific form
   onRemoveCashbackForm(Cashback cashbackInformation) {
+    log('searching' + cashbackInformation.toString());
+    for (var element in cashbackForms) {
+      log('searching element in onRemoveCashbackForm ' + element.toString());
+
+      log(Cashback(
+        formId: element?.index,
+        categoryId: element.cashbackModel?.categoryId,
+        category: element.cashbackModel?.category,
+        spendingDay: element.cashbackModel?.spendingDay,
+        isRateDifferent: element.cashbackModel?.isRateDifferent,
+        minSpend: element.cashbackModel?.minSpend,
+        minSpendAchieved: element.cashbackModel?.minSpendAchieved,
+        minSpendNotAchieved: element.cashbackModel?.minSpendNotAchieved,
+        cashback: element.cashbackModel?.cashback,
+        isCapped: element.cashbackModel?.isCapped,
+        cappedAt: element.cashbackModel?.cappedAt,
+      ).toString());
+    }
+
     setState(() {
       int index = cashbackForms.indexWhere((element) =>
           element.cashbackModel?.formId == cashbackInformation.formId);
+      log('found index xx' + index.toString());
+      // //print('a  ' + cashbackForms.toString());
+      print('Index to remove: $index');
+      print('Before removal: ${cashbackForms.length} forms');
 
-      if (cashbackForms != null) cashbackForms.removeAt(index);
+      if (cashbackForms != null) {
+        cashbackForms.removeAt(index);
+        print('After removal: ${cashbackForms.length} forms');
+      }
+    });
+  }
+
+  onAddCashbackFormData(cashback) {
+    setState(() {
+      Cashback _cashback = Cashback(formId: cashback.formId);
+      cashbackForms.add(DynamicCashbackForm(
+        index: cashbackForms.length,
+        cashbackModel: cashback,
+        onRemove: () => onRemoveCashbackForm(_cashback),
+      ));
     });
   }
 

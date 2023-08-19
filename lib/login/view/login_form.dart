@@ -23,9 +23,9 @@ class _LoginFormState extends State<LoginForm> {
 
   //text field controllers
   //fixme remove setted value
-  final _emailController = TextEditingController();
+  final _emailController = TextEditingController(text: 'liewjunyoung@gmail.com');
 
-  final _passwordController = TextEditingController();
+  final _passwordController = TextEditingController(text: '111111');
 
   @override
   Widget build(BuildContext context) {

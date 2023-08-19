@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:track_admin/category/category.dart';
 import 'package:track_admin/l10n/l10n.dart';
@@ -11,8 +10,8 @@ import 'package:track_admin/repositories/models/category.dart';
 import 'package:track_admin/widgets/widgets.dart';
 import 'package:track_theme/track_theme.dart';
 
-class DynamicCashbackForm extends StatefulWidget {
-  DynamicCashbackForm({
+class DynamicCashbackFormEdit extends StatefulWidget {
+  DynamicCashbackFormEdit({
     //  Key key,
     super.key,
     this.index,
@@ -23,10 +22,10 @@ class DynamicCashbackForm extends StatefulWidget {
   final index;
   Cashback? cashbackModel;
   final onRemove;
-  final state = _DynamicCashbackFormState();
+  final state = _DynamicCashbackFormEditState();
 
   @override
-  State<DynamicCashbackForm> createState() {
+  State<DynamicCashbackFormEdit> createState() {
     return state;
   }
 
@@ -34,48 +33,16 @@ class DynamicCashbackForm extends StatefulWidget {
   bool isValidated() => state.validate();
 }
 
-class _DynamicCashbackFormState extends State<DynamicCashbackForm> {
+class _DynamicCashbackFormEditState extends State<DynamicCashbackFormEdit> {
   @override
   void initState() {
     super.initState();
     //todo if edit
-    setState(() {
-      
-    });
-    Cashback cashbackModelData = widget.cashbackModel!;
-
-    _cashbackController.text = cashbackModelData.cashback == null
-        ? ''
-        : cashbackModelData.cashback.toString();
-    _categorySelectedId = cashbackModelData.categoryId == null
-        ? ''
-        : cashbackModelData.categoryId.toString();
-    _spendingDay = cashbackModelData.spendingDay == null
-        ? null
-        : cashbackModelData.spendingDay;
-    _isRateDifferent = cashbackModelData.isRateDifferent ?? false;
-    _isCapped = cashbackModelData.isCapped ?? true;
-
-    _minSpendController.text = cashbackModelData.minSpend == null
-        ? ''
-        : cashbackModelData.minSpend.toString();
-
-            _minSpendAchievedController.text = cashbackModelData.minSpendAchieved == null
-        ? ''
-        : cashbackModelData.minSpendAchieved.toString();
-
-        _minSpendNotAchievedController.text = cashbackModelData.minSpendNotAchieved == null
-        ? ''
-        : cashbackModelData.minSpendNotAchieved.toString();
-          _cappedAtController.text = cashbackModelData.cappedAt == null
-        ? ''
-        : cashbackModelData.cappedAt.toString();
-// _isCapped
-    //_cashbackController.text = widget.cashbackModel?.cappedAt as String;
-    //_categoryType = "Petrol";
-
-    //_spendingDay = widget.cashbackModel!.spendingDay;
-    // _spendingDay = null;
+     _cashbackController.text = widget.cashbackModel!.cappedAt.toString();
+    _cashbackController.text = widget.cashbackModel?.cappedAt as String;
+    // _categoryType = "Petrol";
+    _spendingDay = widget.cashbackModel!.spendingDay;
+    _spendingDay = null;
   }
 
   final cashbackForm = GlobalKey<FormState>();
@@ -116,7 +83,6 @@ class _DynamicCashbackFormState extends State<DynamicCashbackForm> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('my id   ' + widget.cashbackModel!.formId.toString()),
                     CategoryDropDownField(
                         value: _categorySelectedId,
                         onChanged: (value) {

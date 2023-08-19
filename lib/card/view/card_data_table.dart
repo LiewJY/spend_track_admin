@@ -23,6 +23,10 @@ class CardDataTable extends StatefulWidget {
 bool isDialogOpen = false;
 void toggleDialog() {
   isDialogOpen = !isDialogOpen;
+    runned = false;
+
+  
+
 }
 
 class _CardDataTableState extends State<CardDataTable> {
@@ -195,6 +199,8 @@ class _CardDataTableState extends State<CardDataTable> {
       ),
     );
   }
+
+
 }
 
 //data source
@@ -270,7 +276,7 @@ DataRow recentFileDataRow(CreditCard data) {
                       //viewCard(data, context);
                       break;
                     case 1:
-                      // editCard(data, context);
+                      editCard(data, context);
                       break;
                     case 2:
                       deleteCard(data, context);
@@ -304,40 +310,42 @@ void deleteCard(CreditCard data, BuildContext context) {
               });
         }).then((value) {
       toggleDialog();
+      
     });
     toggleDialog();
   }
 }
 
-// void editCard(CreditCard data, BuildContext context) {
-//   final l10n = context.l10n;
-//   //query cashback data
-//   //List<Cashback>? cashbackData;
-//   // context.read<CardBloc>().add(DisplayCardCashbackRequested(uid: data.uid!));
+void editCard(CreditCard data, BuildContext context) {
+  final l10n = context.l10n;
+  // //query cashback data
+  // List<Cashback>? cashbackData;
+  // context.read<CardBloc>().add(DisplayCardCashbackRequested(uid: data.uid!));
 
-//   if (!isDialogOpen) {
-//     showDialog(
-//         context: context,
-//         builder: (_) {
-//           return MultiBlocProvider(
-//             providers: [
-//               BlocProvider.value(
-//                 value: BlocProvider.of<CardBloc>(context),
-//               ),
-//               BlocProvider.value(
-//                 value: BlocProvider.of<CategoryBloc>(context),
-//               ),
-//             ],
-//             child: CardDialog(
-//               dialogTitle: l10n.editCard,
-//               // actionName: l10n.update,
-//               action: 'editCard',
-//               data: data,
-//             ),
-//           );
-//         }).then((value) {
-//       toggleDialog();
-//     });
-//     toggleDialog();
-//   }
-// }
+  if (!isDialogOpen) {
+    showDialog(
+        context: context,
+        builder: (_) {
+          return MultiBlocProvider(
+            providers: [
+              BlocProvider.value(
+                value: BlocProvider.of<CardBloc>(context),
+              ),
+              BlocProvider.value(
+                value: BlocProvider.of<CategoryBloc>(context),
+              ),
+            ],
+            child: CardEditDialog(
+              dialogTitle: l10n.editCard,
+              // actionName: l10n.update,
+              action: 'editCard',
+              data: data,
+            ),
+          );
+        }).then((value) {
+      toggleDialog();
+      
+    });
+    toggleDialog();
+  }
+}

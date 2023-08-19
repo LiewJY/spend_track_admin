@@ -12,6 +12,65 @@ class CardRepository {
       toFirestore: (CreditCard card, _) => card.toFirestore());
 
   List<CreditCard> cards = [];
+
+  Future<void> updateCard({
+    required String uid,
+    required String name,
+    required String bank,
+    required String cardType,
+    required bool isCashback,
+    required List<Cashback> cashbacks,
+  }) async {
+    try {
+      final store = CreditCard(
+        name: name,
+        bank: bank,
+        cardType: cardType,
+        isCashback: isCashback,
+      );
+      WriteBatch batch = FirebaseFirestore.instance.batch();
+
+      // HttpsCallable callable =
+      //     FirebaseFunctions.instance.httpsCallable('deleteCashback');
+      // final result = await callable.call(
+      //   {
+      //     'uid': uid,
+      //     // 'isAdmin': false,
+      //   },
+      // );
+           QuerySnapshot cashbackSubcollectionSnapshot =  await ref.doc(uid).collection('cashbacks').get();
+                 for (QueryDocumentSnapshot doc in cashbackSubcollectionSnapshot.docs) {
+        await doc.reference.delete();
+      }
+
+
+      // await ref.doc(uid).collection('cashbacks').era
+
+      await ref
+          .doc(uid)
+          .set(store)
+          .then((value) => {
+                //batch write categories into firebase
+                cashbacks.forEach((element) {
+                  var cashbackRef = ref
+                      .doc(uid)
+                      .collection('cashbacks')
+                      .withConverter(
+                          fromFirestore: Cashback.fromFirestore,
+                          toFirestore: (Cashback cashback, _) =>
+                              cashback.toFirestore())
+                      .doc();
+                  batch.set(cashbackRef, element);
+                }),
+                batch.commit(),
+              })
+          .onError((e, _) => throw e.toString());
+    } catch (e) {
+      log('errror      ' + e.toString());
+      throw e.toString();
+    }
+  }
+
   Future<List<CreditCard>> getCards() async {
     cards.clear();
     try {
@@ -42,8 +101,7 @@ class CardRepository {
           .get()
           .then((querySnapshot) {
         for (var docSnapshot in querySnapshot.docs) {
-          // log('repo');
-          // log(docSnapshot.data().toString());
+          ///log('cahsback' + docSnapshot.data().toString());
           cardCashbacks.add(docSnapshot.data());
         }
       });
@@ -95,12 +153,12 @@ class CardRepository {
   }
 
   Future<void> deleteCard({required String uid}) async {
-     try {
+    try {
       HttpsCallable callable =
           FirebaseFunctions.instance.httpsCallable('deleteCard');
       final result = await callable.call(
         {
-           'uid': uid,
+          'uid': uid,
           // 'isAdmin': false,
         },
       );
@@ -111,17 +169,11 @@ class CardRepository {
     } catch (e) {
       throw e.toString();
     }
-  
+
     // try {
 
-
-
-
     //   //await ref.doc(uid).collection('cashbacks').
-      
-      
-      
-      
+
     //   // .delete().onError((e, _) => throw e.toString());
     //   // await ref
     //   //     .doc(uid)
