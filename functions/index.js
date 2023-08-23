@@ -1,10 +1,10 @@
-// const functions = require("firebase-functions");
+ const functions = require("firebase-functions");
 
 // Firebase Admin SDK
 const admin = require("firebase-admin");
 admin.initializeApp();
 // auth
-// const { getAuth } = require("firebase-admin/auth");
+ const { getAuth } = require("firebase-admin/auth");
 
 // firebase function logging
 require("firebase-functions/logger/compat");
@@ -24,14 +24,12 @@ module.exports = {
   ...require("./lib/user/transaction-management.js"),   
   ...require("./lib/user/wallet-management.js"),
   ...require("./lib/user/cashback-management.js"),
+
+  ...require("./lib/notification/notification-management.js"),
+
   // ...require("./lib/user/update-transaction.js"),
   // ...require("./lib/user/delete-transaction.js"),
 
-
-
-
-
   // ...require("./lib/bar.js") // add as many as you like
 };
-
 
