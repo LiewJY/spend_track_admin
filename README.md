@@ -1,6 +1,6 @@
-# track_admin
+# spend_track_admin
 
-A new Flutter project.
+A flutter-based project for FYP. Dashboard for spend_track app and built with bloc, looker studio & firebase.
 
 ## Getting Started
 
