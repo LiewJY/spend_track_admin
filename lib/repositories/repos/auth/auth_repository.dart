@@ -86,7 +86,7 @@ class AuthRepository {
   get isAdmin async {
     try {
       bool documentExists = false;
-      //  log('uid ' + _firebaseAuth.currentUser!.uid );
+        log('uid ' + _firebaseAuth.currentUser!.uid );
       documentExists = await FirebaseFirestore.instance
           .collection('admins')
           .doc(_firebaseAuth.currentUser?.uid)

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>507351825430-eupkb92b0d46rp35lnekgnt22fe49khm.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.507351825430-eupkb92b0d46rp35lnekgnt22fe49khm</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCkJ73Oyilb_aO8_tXxxZcQ_zVp86DrlYY</string>
+	<key>GCM_SENDER_ID</key>
+	<string>507351825430</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.trackAdmin</string>
+	<key>PROJECT_ID</key>
+	<string>jy-fyp</string>
+	<key>STORAGE_BUCKET</key>
+	<string>jy-fyp.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:507351825430:ios:06f49f9a655a53652cc937</string>
+</dict>
+</plist>

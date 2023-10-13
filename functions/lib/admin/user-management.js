@@ -98,3 +98,22 @@ exports.deleteAdminUser = functions.https.onCall(async (data, context) => {
 
 });
 
+//trigger to create new users collection at signup
+exports.makeCollection = functions.auth.user().onCreate((user) => {
+  admin.firestore().collection('users').doc(user.uid).set({ 'user': true });
+});
+
+
+// exports.resetPassword = functions.https.onCall(async (data, context) => {
+//   getAuth()
+//   .generatePasswordResetLink(data.userEmail, actionCodeSettings)
+//   .then((link) => {
+//     // Construct password reset email template, embed the link and send
+//     // using custom SMTP server.
+//     return sendCustomPasswordResetEmail(data.userEmail, displayName, link);
+//   })
+//   .catch((error) => {
+//     // Some error occurred.
+//   });
+
+// });

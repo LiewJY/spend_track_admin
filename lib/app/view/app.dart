@@ -77,7 +77,7 @@ class _AppViewState extends State<AppView> {
   Widget build(BuildContext context) {
     return MaterialApp(
       //todo uncomment when complete
-      //debugShowCheckedModeBanner: false,
+      debugShowCheckedModeBanner: false,
       title: 'track',
       //todo change to changeble --> themeMode
       themeMode: ThemeMode.light,

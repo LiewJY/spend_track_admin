@@ -55,3 +55,11 @@ class DeleteAdminRequested extends ManagementEvent {
   @override
   List<Object> get props => [uid];
 }
+class ResetPasswordRequested extends ManagementEvent {
+  const ResetPasswordRequested({required this.email});
+
+  final String email;
+
+  @override
+  List<Object> get props => [email];
+}

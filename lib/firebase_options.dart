@@ -31,10 +31,7 @@ class DefaultFirebaseOptions {
           'you can reconfigure this by running the FlutterFire CLI again.',
         );
       case TargetPlatform.macOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for macos - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return macos;
       case TargetPlatform.windows:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for windows - '
@@ -53,12 +50,22 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyCJloItz28KY-A2zqdIdPVlD53vrUHvjmE',
-    appId: '1:93249083635:web:25379303a6874c785c7f86',
-    messagingSenderId: '93249083635',
-    projectId: 'track-efe9f',
-    authDomain: 'track-efe9f.firebaseapp.com',
-    storageBucket: 'track-efe9f.appspot.com',
-    measurementId: 'G-J1YRNWZ2QX',
+    apiKey: 'AIzaSyBNqGlO0ZNNjv-HmNeSsjZWRnFDN73B22U',
+    appId: '1:507351825430:web:7b01681e5712b4242cc937',
+    messagingSenderId: '507351825430',
+    projectId: 'jy-fyp',
+    authDomain: 'jy-fyp.firebaseapp.com',
+    storageBucket: 'jy-fyp.appspot.com',
+    measurementId: 'G-5FSE7HR4HY',
+  );
+
+  static const FirebaseOptions macos = FirebaseOptions(
+    apiKey: 'AIzaSyCkJ73Oyilb_aO8_tXxxZcQ_zVp86DrlYY',
+    appId: '1:507351825430:ios:06f49f9a655a53652cc937',
+    messagingSenderId: '507351825430',
+    projectId: 'jy-fyp',
+    storageBucket: 'jy-fyp.appspot.com',
+    iosClientId: '507351825430-eupkb92b0d46rp35lnekgnt22fe49khm.apps.googleusercontent.com',
+    iosBundleId: 'com.example.trackAdmin',
   );
 }

@@ -8,14 +8,14 @@ class CategoryRepository {
   //firestore instance
   final ref = FirebaseFirestore.instance.collection('categories').withConverter(
       fromFirestore: SpendingCategory.fromFirestore,
-      toFirestore: (SpendingCategory city, _) => city.toFirestore());
+      toFirestore: (SpendingCategory cat, _) => cat.toFirestore());
 
   List<SpendingCategory> categories = [];
 
   Future<List<SpendingCategory>> getCategories() async {
     categories.clear();
     try {
-      await ref.get().then((querySnapshot) {
+      await ref.orderBy('name').get().then((querySnapshot) {
         for (var docSnapshot in querySnapshot.docs) {
           categories.add(docSnapshot.data());
         }
@@ -30,11 +30,13 @@ class CategoryRepository {
   Future<void> addCategory({
     required String name,
     required String description,
+    required String color,
   }) async {
     try {
       final store = SpendingCategory(
         name: name,
         description: description,
+        color: color,
       );
       await ref.doc().set(store).onError((e, _) => throw e.toString());
     } catch (e) {
@@ -46,11 +48,13 @@ class CategoryRepository {
     required String uid,
     required String name,
     required String description,
+    required String color,
   }) async {
     try {
       final store = SpendingCategory(
         name: name,
         description: description,
+        color: color,
       );
       await ref.doc(uid).set(store).onError((e, _) => throw e.toString());
     } catch (e) {
@@ -63,5 +67,6 @@ class CategoryRepository {
       await ref.doc(uid).delete().onError((e, _) => throw e.toString());
     } catch (e) {
       throw e.toString();
-    }  }
+    }
+  }
 }

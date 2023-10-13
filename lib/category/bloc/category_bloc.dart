@@ -52,6 +52,7 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
       categoryRepository.addCategory(
         name: event.name,
         description: event.description,
+        color: event.color,
       );
       emit(state.copyWith(
         status: CategoryStatus.success,
@@ -76,6 +77,8 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
         uid: event.uid,
         name: event.name,
         description: event.description,
+                color: event.color,
+
       );
       emit(state.copyWith(
         status: CategoryStatus.success,

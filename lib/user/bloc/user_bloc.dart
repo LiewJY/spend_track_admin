@@ -14,9 +14,32 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     on<DisableUserRequested>(_onDisableUserRequested);
     on<EnableUserRequested>(_onEnableUserRequested);
     on<DeleteUserRequested>(_onDeleteUserRequested);
+    on<ResetPasswordRequested>(_onResetPasswordRequested);
   }
 
 //actions
+  _onResetPasswordRequested(
+    ResetPasswordRequested event,
+    Emitter emit,
+  ) async {
+    if (state.status == UserStatus.loading) return;
+    emit(state.copyWith(status: UserStatus.loading));
+    try {
+      await userRepository.sendResetPasswordEmail(email: event.email);
+
+      emit(state.copyWith(
+        status: UserStatus.success,
+        success: 'resetPasswordEmailSent',
+        // usersList: mappedList,
+      ));
+    } catch (e) {
+      emit(state.copyWith(
+        status: UserStatus.failure,
+        error: e.toString(),
+      ));
+    }
+  }
+
   _onDisplayAllUserRequested(
     DisplayAllUserRequested event,
     Emitter emit,
@@ -139,7 +162,6 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         status: UserStatus.failure,
         error: e.toString(),
       ));
-    
     }
   }
 }

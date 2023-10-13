@@ -6,6 +6,24 @@
   "password": "Password",
   "name": "Name",
   "confirmPassword": "Confirm Password",
+  "bank": "Bank",
+  "cashback": "Cashback",
+  "amount": "Amount",
+  "amountCappedAt": "Amount capped at",
+  "minSpendAmount": "Min spend amount",
+  
+
+"@otherField": {},
+  "selectCardType": "Select Card Type",
+  "selectCategory": "Select Category",
+  "selectSpendingDay": "Select Spending Day",
+  "doesCardHaveCashback": "Does card have cashback?",
+  "differentCashbackRate": "Is cashback rate different based on spending?",
+  "minSpendAchieved": "Min spend achieved", 
+  "minSpendNotAchieved": "Min spend not achieved",
+  "cashbackCapped": "Is cashback amount capped at?",
+
+
 
 "@textfield validation": {},
   "invalidEmail": "Invalid email address",
@@ -14,6 +32,16 @@
   "nameEmpty": "Name cannot be empty",
   "passwordDoesNotMatch": "Password does not match",
   "descriptionEmpty": "Description cannot be empty",
+  "bankEmpty": "Bank cannot be empty",
+  "cashbackError": "Cashback must be number and cannot be empty",
+  "amountError": "Amount must be number and cannot be empty",
+
+
+"@otherField validation": {},
+  "pleaseSelectCardType": "Please select card type",
+  "pleaseSelectCategory": "Please select category",
+  "pleaseSelectSpendingDay": "Please select spending day",
+
 
 "@button": {},
   "login": "Login",
@@ -26,7 +54,10 @@
   "add": "Add",
   "addAdmin": "Add admin",
   "addUser": "Add user",
-
+  "back": "Back",
+  "complete": "Complete",
+  "delete": "Delete",
+  "deleting": "Deleting {name}",
 
 "@loginPage": {},
   "forgetPassword": "Forget Password",
@@ -47,6 +78,32 @@
   "addCategory": "Add Category",
   "editCategory": "Edit Category",
   "deleteCategory": "Delete Category",
+  "selectColor": "Select Color",
+  "color": "Color",
+
+"@walletPage": {},
+  "searchByWalletName": "Search by wallet name",
+  "walletName": "Wallet Name",
+  "addWallet": "Add Wallet",
+  "editWallet": "Edit Wallet",
+  "deleteWallet": "Delete Wallet",
+
+"@cardPage": {},
+  "searchByCardName": "Search by card name",
+  "basicInformation": "Basic Information",
+  "cashbackInformation": "Cashback Information",
+  "reviewCardInformation": "Review Card Information",
+  "cashbackWhen": "Cashback when",
+  "addCashbackForm": "Add cashback form",
+  "cardType": "Card Type",
+  "spendingDay": "Spending Day",
+  "yes": "Yes",
+  "no": "No",
+  "viewCard": "View Card",
+  "addCard": "Add Card",
+  "editCard": "Edit Card",
+  "deleteCard": "Delete Card",
+
 
 
 
@@ -55,12 +112,20 @@
   "emailChanged": "Email successfully changed",
   "resetPasswordEmailSent": "Reset your password with the link sent to your email",
   "addedAdmin": "Admin user successfully added",
+  "addedUser": "User successfully added",
   "userEnabledSuccess": "User successfully enabled",
   "userDisabledSuccess": "User successfully disabled",
+  "resetPasswordEmailSent": "Reset password with the link sent",
   "userDeleteSuccess": "User successfully deleted",
+  "categoryAddSuccess": "Category successfully added",
   "categoryUpdatedSuccess": "Category successfully updated",
   "categoryDeleteSuccess": "Category successfully deleted",
-
+  "cardAddSuccess": "Card successfully added",
+  "cardUpdateSuccess": "Card successfully updated",
+  "cardDeleteSuccess": "Card successfully deleted",
+  "walletAddSuccess": "Wallet successfully added",
+  "walletUpdatedSuccess": "Wallet successfully updated",
+  "walletDeleteSuccess": "Wallet successfully deleted",
 
 
 "@navigation": {},
@@ -74,6 +139,7 @@
   "users": "Users",
   "adminManagement": "Admin Management",
   "userManagement": "User Management",
+  "wallet": "Wallet",
 
 "@home": {},
   "hi": "Hi {name},",
@@ -91,9 +157,12 @@
   "invalidEmail": "Invalid email address.",
   "emailAlreadyInUse": "An account already exists with that email.",
   "operationNotAllowed": "Operation is not allowed.  Please contact support.",
-  "weakPassword": "Please enter a stronger password."
+  "weakPassword": "Please enter a stronger password.",
 
-
+"@day": {},
+  "weekdays": "Weekdays",
+  "weekends": "Weekends",
+  "everyday": "Everyday"
 
 
 

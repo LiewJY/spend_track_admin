@@ -78,6 +78,12 @@ class _CategoryDataTableState extends State<CategoryDataTable> {
           style: AppStyle.dtHeader,
         ),
       ),
+      DataColumn(
+        label: Text(
+          l10n.color,
+          style: AppStyle.dtHeader,
+        ),
+      ),
       const DataColumn(
         label: Text(
           "",
@@ -104,7 +110,7 @@ class _CategoryDataTableState extends State<CategoryDataTable> {
               if (isDialogOpen) {
                 Navigator.of(context, rootNavigator: true).pop();
               }
-              AppSnackBar.success(context, l10n.addedAdmin);
+              AppSnackBar.success(context, l10n.categoryAddSuccess);
               refresh();
               break;
             case 'updated':
@@ -128,7 +134,7 @@ class _CategoryDataTableState extends State<CategoryDataTable> {
             Expanded(
               flex: 7,
               child: DataTableSearchField(
-                  hintText: l10n.searchByCategoryName,
+                  hintText: l10n.searchByCardName,
                   controller: searchController,
                   action: (value) {
                     setState(() {
@@ -216,6 +222,11 @@ DataRow recentFileDataRow(SpendingCategory data) {
       DataCell(Text(
         data.description ?? "",
       )),
+      DataCell(Container(
+        color: Color(int.parse(data.color.toString())),
+        width: 25,
+        height: 25,
+      )),
       DataCell(
         Builder(builder: (context) {
           return Row(
@@ -255,7 +266,6 @@ DataRow recentFileDataRow(SpendingCategory data) {
   );
 }
 
-//todo
 void editCategory(SpendingCategory data, BuildContext context) {
   final l10n = context.l10n;
   if (!isDialogOpen) {
@@ -279,5 +289,24 @@ void editCategory(SpendingCategory data, BuildContext context) {
 }
 
 void deleteCategory(SpendingCategory data, BuildContext context) {
-  context.read<CategoryBloc>().add(DeleteCategoryRequested(uid: data.uid!));
+  final l10n = context.l10n;
+  if (!isDialogOpen) {
+    showDialog(
+        context: context,
+        builder: (_) {
+          return DeleteConfirmationDialog(
+              data: data,
+              description: l10n.deleting(data.name!),
+              dialogTitle: l10n.delete,
+              action: () {
+                context
+                    .read<CategoryBloc>()
+                    .add(DeleteCategoryRequested(uid: data.uid!));
+                Navigator.of(context, rootNavigator: true).pop();
+              });
+        }).then((value) {
+      toggleDialog();
+    });
+    toggleDialog();
+  }
 }

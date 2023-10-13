@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:track_admin/card/view/card_data_table.dart';
 import 'package:track_admin/l10n/l10n.dart';
 import 'package:track_admin/repositories/models/user.dart';
 import 'package:track_admin/user/bloc/user_bloc.dart';
@@ -108,7 +109,7 @@ class _UserDataTableState extends State<UserDataTable> {
               if (isDialogOpen) {
                 Navigator.of(context, rootNavigator: true).pop();
               }
-              AppSnackBar.success(context, l10n.addedAdmin);
+              AppSnackBar.success(context, l10n.addedUser);
               refresh();
               break;
             case 'disabled':
@@ -121,6 +122,10 @@ class _UserDataTableState extends State<UserDataTable> {
               break;
             case 'deleted':
               AppSnackBar.success(context, l10n.userDeleteSuccess);
+              refresh();
+              break;
+            case 'resetPasswordEmailSent':
+              AppSnackBar.success(context, l10n.resetPasswordEmailSent);
               refresh();
               break;
           }
@@ -238,37 +243,42 @@ DataRow recentFileDataRow(var data) {
         )),
         DataCell(
           Builder(builder: (context) {
-            return PopupMenuButton(
-              icon: Icon(Icons.more_vert_rounded),
-              itemBuilder: (context) {
-                final l10n = context.l10n;
-                return [
-                  PopupMenuItem(
-                    value: 0,
-                    child: Text(l10n.resetPassword),
-                  ),
-                  PopupMenuItem(
-                    value: 1,
-                    child: Text(l10n.enableAccount),
-                  ),
-                  PopupMenuItem(
-                    value: 2,
-                    child: Text(l10n.deleteAccount),
-                  ),
-                ];
-              },
-              onSelected: (value) {
-                switch (value) {
-                  case 0:
-                    resetPassword(data, context);
-                    break;
-                  case 1:
-                    enableAccount(data, context);
-                    break;
-                  case 2:
-                    deleteAccount(data, context);
-                }
-              },
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                PopupMenuButton(
+                  icon: Icon(Icons.more_vert_rounded),
+                  itemBuilder: (context) {
+                    final l10n = context.l10n;
+                    return [
+                      PopupMenuItem(
+                        value: 0,
+                        child: Text(l10n.resetPassword),
+                      ),
+                      PopupMenuItem(
+                        value: 1,
+                        child: Text(l10n.enableAccount),
+                      ),
+                      PopupMenuItem(
+                        value: 2,
+                        child: Text(l10n.deleteAccount),
+                      ),
+                    ];
+                  },
+                  onSelected: (value) {
+                    switch (value) {
+                      case 0:
+                        resetPassword(data, context);
+                        break;
+                      case 1:
+                        enableAccount(data, context);
+                        break;
+                      case 2:
+                        deleteAccount(data, context);
+                    }
+                  },
+                ),
+              ],
             );
           }),
         ),
@@ -327,9 +337,10 @@ DataRow recentFileDataRow(var data) {
   }
 }
 
-//todo
 void resetPassword(User data, BuildContext context) {
-  log('reset password');
+  context
+      .read<UserBloc>()
+      .add(ResetPasswordRequested(email: data.email.toString()));
 }
 
 disableAccount(User data, BuildContext context) {
@@ -341,5 +352,25 @@ void enableAccount(User data, BuildContext context) {
 }
 
 void deleteAccount(User data, BuildContext context) {
-  context.read<UserBloc>().add(DeleteUserRequested(uid: data.uid));
+  final l10n = context.l10n;
+
+  if (!isDialogOpen) {
+    showDialog(
+        context: context,
+        builder: (_) {
+          return DeleteConfirmationDialog(
+              data: data,
+              description: l10n.deleting(data.email!),
+              dialogTitle: l10n.delete,
+              action: () {
+                context
+                    .read<UserBloc>()
+                    .add(DeleteUserRequested(uid: data.uid));
+                Navigator.of(context, rootNavigator: true).pop();
+              });
+        }).then((value) {
+      toggleDialog();
+    });
+    toggleDialog();
+  }
 }
